@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useCart } from '../context/CartContext';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useCart } from "../context/CartContext";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Trash2,
   Search,
@@ -10,38 +10,39 @@ import {
   Lock,
   ChevronDown,
   ShoppingBag,
-} from 'lucide-react';
+} from "lucide-react";
 
 const CartPage = () => {
   const { cartItems, removeFromCart } = useCart();
   const navigate = useNavigate();
-  const [coupon, setCoupon] = useState('');
+  const [coupon, setCoupon] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [removeConfirm, setRemoveConfirm] = useState(null);
-  const [showEmptyCartAlert, setShowEmptyCartAlert] = useState(false); 
-  
+  const [showEmptyCartAlert, setShowEmptyCartAlert] = useState(false);
 
-  const baseTotal = cartItems.reduce((sum, item) => sum + item.price, 0);
-  const discount = appliedCoupon === 'SUMMER20' ? 20 : 0;
+  const baseTotal = cartItems.reduce((sum, item) => sum + Number(item.price || 0), 0);
+  const discount = appliedCoupon === "SUMMER20" ? 20 : 0;
   const total = Math.max(0, baseTotal - discount);
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
-      setShowEmptyCartAlert(true); 
+      setShowEmptyCartAlert(true);
     } else {
-      navigate('/checkout/checkout', { state: { cartItems, total } });
+      navigate("/checkout/checkout", { state: { cartItems, total } });
     }
   };
 
   const applyCoupon = () => {
-    setAppliedCoupon(coupon.toUpperCase());
+    setAppliedCoupon(coupon.trim().toUpperCase());
   };
 
   return (
     <div className="min-h-screen bg-[#f9f9f9] text-[#071d49] font-inter">
-      {/* Sticky Header */}
+      {/* Header */}
       <header className="sticky top-0 z-50 bg-white shadow px-4 lg:px-10 py-4 flex items-center justify-between">
-        <Link to="/Courses" className="text-xl font-bold text-[#071d49]">E-Learn</Link>
+        <Link to="/Courses" className="text-xl font-bold text-[#071d49]">
+          E-Learn
+        </Link>
 
         <div className="hidden lg:flex items-center gap-4 flex-1 max-w-2xl mx-4 relative">
           <Search size={18} className="text-gray-400 absolute left-3 top-2.5" />
@@ -72,7 +73,7 @@ const CartPage = () => {
         </div>
       </header>
 
-      {/* Main Section */}
+      {/* Main Content */}
       <div className="px-4 lg:px-10 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-6">
@@ -92,42 +93,40 @@ const CartPage = () => {
                 🔍 Browse Courses
               </Link>
             </div>
-          ) : cartItems.map(item => (
-            <div
-              key={item.id}
-              className="bg-white rounded-lg p-4 shadow-sm border hover:border-[#ffd100] hover:shadow-md transition transform hover:scale-[1.01] animate-fadeInUp flex gap-4"
-            >
-              <img src={item.image} alt={item.title} className="w-28 h-28 rounded object-cover" />
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-[#071d49]">{item.title}</h3>
-                <p className="text-sm text-gray-500">By {item.author || 'Instructor'}</p>
-                <div className="flex items-center gap-2 text-sm text-yellow-600 mt-1">
-                  <Star size={14} /> 4.6 (12,322 ratings)
+          ) : (
+            cartItems.map((item) => (
+              <div
+                key={item.id}
+                className="bg-white rounded-lg p-4 shadow-sm border hover:border-[#ffd100] hover:shadow-md transition transform hover:scale-[1.01] flex gap-4"
+              >
+                <img src={item.image} alt={item.title} className="w-28 h-28 rounded object-cover" />
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-[#071d49]">{item.title}</h3>
+                  <p className="text-sm text-gray-500">By {item.instructor || "Instructor"}</p>
+                  <div className="flex items-center gap-2 text-sm text-yellow-600 mt-1">
+                    <Star size={14} /> 4.6 (12,322 ratings)
+                  </div>
+                  <div className="text-sm text-gray-600 mt-1">📚 {item.duration || "40h"} • Quizzes • Certificate</div>
+                  <div className="text-sm text-gray-600">🏷️ Bestseller • Lifetime Access</div>
+                  <div className="text-sm text-gray-500 mt-1 flex items-center gap-1">
+                    <Lock size={14} /> Secured • Mobile Friendly
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600 mt-1">
-                  📚 40h Video • Quizzes • Certificate
-                </div>
-                <div className="text-sm text-gray-600">
-                  🏷️ Bestseller • Subtitles • Lifetime Access
-                </div>
-                <div className="text-sm text-gray-500 mt-1 flex items-center gap-1">
-                  <Lock size={14} /> Secured • Mobile Friendly
-                </div>
-              </div>
-              <div className="flex flex-col items-end justify-between">
-                <p className="text-lg font-bold text-[#071d49]">${item.price.toFixed(2)}</p>
-                <div className="text-sm flex flex-col items-end gap-1">
-                  <button className="text-[#071d49] hover:underline text-xs">Move to Wishlist</button>
-                  <button
-                    className="text-red-600 hover:text-red-800 text-xs"
-                    onClick={() => setRemoveConfirm(item.id)}
-                  >
-                    Remove
-                  </button>
+                <div className="flex flex-col items-end justify-between">
+                  <p className="text-lg font-bold text-[#071d49]">{Number(item.price).toFixed(2)} EGP</p>
+                  <div className="text-sm flex flex-col items-end gap-1">
+                    <button className="text-[#071d49] hover:underline text-xs">Move to Wishlist</button>
+                    <button
+                      className="text-red-600 hover:text-red-800 text-xs"
+                      onClick={() => setRemoveConfirm(item.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         {/* Order Summary */}
@@ -135,32 +134,28 @@ const CartPage = () => {
           <h3 className="text-xl font-semibold mb-2">🧾 Order Summary</h3>
           <div className="flex justify-between text-sm">
             <span>Courses ({cartItems.length})</span>
-            <span>${baseTotal.toFixed(2)}</span>
+            <span>{baseTotal.toFixed(2)} EGP</span>
           </div>
           {discount > 0 && (
             <div className="flex justify-between text-sm text-green-600">
               <span>Discount ({appliedCoupon})</span>
-              <span>- ${discount.toFixed(2)}</span>
+              <span>- {discount.toFixed(2)} EGP</span>
             </div>
           )}
           <div className="flex justify-between text-sm">
             <span>Subtotal</span>
-            <span>${total.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span>VAT (0%)</span>
-            <span>$0.00</span>
+            <span>{total.toFixed(2)} EGP</span>
           </div>
           <hr />
           <div className="flex justify-between font-semibold text-lg">
             <span>Estimated Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>{total.toFixed(2)} EGP</span>
           </div>
 
           <input
             type="text"
             value={coupon}
-            onChange={e => setCoupon(e.target.value)}
+            onChange={(e) => setCoupon(e.target.value)}
             placeholder="Coupon Code"
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 ring-[#ffd100]"
           />
@@ -186,10 +181,7 @@ const CartPage = () => {
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <p className="mb-4">Are you sure you want to remove this course?</p>
             <div className="flex gap-4 justify-center">
-              <button
-                className="bg-gray-200 px-4 py-2 rounded"
-                onClick={() => setRemoveConfirm(null)}
-              >
+              <button className="bg-gray-200 px-4 py-2 rounded" onClick={() => setRemoveConfirm(null)}>
                 Cancel
               </button>
               <button
@@ -206,7 +198,7 @@ const CartPage = () => {
         </div>
       )}
 
-      {/* Empty Cart Alert Modal */}
+      {/* Empty Cart Alert */}
       {showEmptyCartAlert && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-md text-center max-w-sm mx-auto">
