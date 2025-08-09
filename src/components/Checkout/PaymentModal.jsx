@@ -110,7 +110,7 @@ const PaymentModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-xl flex items-center justify-center z-50">
-      <div className="bg-white border border-[#071d49] rounded-3xl shadow-2xl w-full max-w-md p-6 relative animate-slide-in">
+      <div className="bg-[#f9f9f9] border border-[#071d49] rounded-3xl shadow-2xl w-full max-w-md p-6 relative animate-slide-in">
         <button
           onClick={onClose}
           aria-label="Close"
@@ -124,7 +124,7 @@ const PaymentModal = ({
         </h2>
 
         {/* Order Summary */}
-        <div className="bg-[#f9f9f9] rounded-xl p-4 mb-4 shadow-sm border border-[#071d49]/20 transition duration-300 hover:border-[#ffd100] hover:shadow-md">
+        <div className="bg-white rounded-xl p-4 mb-4 shadow-sm border border-[#071d49]/20 transition duration-300 hover:border-[#ffd100] hover:shadow-md">
           <h3 className="text-lg font-semibold text-[#071d49] mb-3">
             Order Summary
           </h3>
