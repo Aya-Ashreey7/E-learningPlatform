@@ -9,6 +9,7 @@ import VerifyEmail from "./components/VerifyEmail";
 import Home from "./pages/Home";
 import Overview from "./pages/Overview";
 import AddCourse from "./pages/AddCourse";
+import ManageCourses from "./pages/ManageCourses";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
 
         <Route path="/dashboard/overview" element={<Overview />} />
         <Route path="/dashboard/add-course" element={<AddCourse />} />
+        <Route path="/dashboard/manage-courses" element={<ManageCourses />} />
       </Routes>
 
       <Toaster position="top-center" reverseOrder={false} />
