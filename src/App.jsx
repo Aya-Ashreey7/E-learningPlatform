@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import Overview from "./pages/Overview";
 import AddCourse from "./pages/AddCourse";
 import ManageCourses from "./pages/ManageCourses";
+import Users from "./pages/Users";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/dashboard/overview" element={<Overview />} />
         <Route path="/dashboard/add-course" element={<AddCourse />} />
         <Route path="/dashboard/manage-courses" element={<ManageCourses />} />
+        <Route path="/dashboard/users" element={<Users />} />
       </Routes>
 
       <Toaster position="top-center" reverseOrder={false} />
