@@ -56,7 +56,16 @@ export default function LoginForm() {
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
-      toast.error(error?.message ? `Login failed: ${error.message}` : "Login failed. Please try again.");
+      const errorMessages = {
+        "auth/user-not-found": "No account found with that email address.",
+        "auth/wrong-password": "Incorrect password. Please try again.",
+        "auth/invalid-email": "The email address is not valid.",
+        "auth/user-disabled": "This account has been disabled. Contact support.",
+        "auth/too-many-requests": "Too many login attempts. Please wait and try again.",
+      };
+
+      const friendlyMessage = errorMessages[error.code] || "Login failed. Please try again.";
+      toast.error(friendlyMessage);
     }
   };
 
