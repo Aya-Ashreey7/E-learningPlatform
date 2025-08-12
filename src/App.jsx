@@ -2,8 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import { Toaster } from "react-hot-toast";
-
-
 import CoursesPage from './pages/CoursesPage';
 import CartPage from './pages/CartPage';
 import ContactPage from './pages/ContactPage';
