@@ -1,7 +1,7 @@
-import './App.css';
-import './index.css';
-import { Routes, Route } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
+import { Routes, Route } from "react-router-dom";
+import "./App.css";
+import "./index.css";
+import { Toaster } from "react-hot-toast";
 
 
 import Home from './pages/Home';
@@ -35,13 +35,11 @@ function App() {
     <>
       <CartProvider>
         <Routes>
-        
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Hero />} />
+          <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/contact" element={<ContactPage />} />
-
-          
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
@@ -53,8 +51,8 @@ function App() {
           <Route path="/dashboard/overview" element={<Overview />} />
           <Route path="/dashboard/add-course" element={<AddCourse />} />
           <Route path="/dashboard/manage-courses" element={<ManageCourses />} />
-          <Route path="/dashboard/orders/" element={ <Orders/> } />
-          <Route path="/dashboard/feedback/" element={ <Feedback/> } />
+          <Route path="/dashboard/orders/" element={<Orders />} />
+          <Route path="/dashboard/feedback/" element={<Feedback />} />
 
 
           {/* Checkout */}
@@ -63,9 +61,8 @@ function App() {
           <Route path="/checkout/payment" element={<PaymentModal />} />
           <Route path="/paymentSuccess" element={<PaymentSuccess />} />
         </Routes>
+        <Toaster position="top-center" reverseOrder={false} />
       </CartProvider>
-
-      <Toaster position="top-center" reverseOrder={false} />
     </>
   );
 }
