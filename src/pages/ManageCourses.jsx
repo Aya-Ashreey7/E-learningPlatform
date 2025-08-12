@@ -14,12 +14,14 @@ import "react-toastify/dist/ReactToastify.css";
 export default function ManageCourses() {
   const [courses, setCourses] = useState([]);
   const [selectedDescription, setSelectedDescription] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [editCourseId, setEditCourseId] = useState(null);
   const [editFormData, setEditFormData] = useState({
     title: "",
-    category_id: "", // استخدم category_id بدل category
+    category_id: "",
     instructor: "",
     price: "",
     duration: "",
@@ -31,12 +33,14 @@ export default function ManageCourses() {
   // جلب الدورات والكورسات
   useEffect(() => {
     async function fetchCourses() {
+      setLoading(true);
       const querySnapshot = await getDocs(collection(db, "Courses"));
       const data = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setCourses(data);
+      setLoading(false);
     }
     fetchCourses();
   }, []);
@@ -44,12 +48,14 @@ export default function ManageCourses() {
   // جلب الكاتيجوريز من الفايرستور
   useEffect(() => {
     async function fetchCategories() {
+      setLoading(true);
       const querySnapshot = await getDocs(collection(db, "Categories"));
       const cats = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         name: doc.data().name,
       }));
       setCategories(cats);
+      setLoading(false);
     }
     fetchCategories();
   }, []);
@@ -115,13 +121,33 @@ export default function ManageCourses() {
     const category = categories.find((cat) => cat.id === catId);
     return category ? category.name : "Unknown Category";
   };
-
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-screen -translate-y-12">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
   return (
     <DashboardLayout>
       <div className="p-6 min-h-screen bg-[#fff]">
-        <h2 className="text-2xl font-bold text-[#071d49] pb-4">
-          Manage Courses
-        </h2>
+        <div className="flex justify-between items-center pb-4">
+          <h2 className="text-2xl font-bold text-[#071d49] pb-4">
+            Manage Courses
+          </h2>{" "}
+          <input
+            type="text"
+            placeholder="Search by any detail..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border-2 border-[#071d49] focus:border-[#fad947]  
+             p-2 rounded-lg w-full md:w-1/3 
+             text-[#071d49] placeholder-gray-400 outline-none transition"
+          />
+        </div>
+
         <div>
           <table className="min-w-[1200px] bg-white border border-gray-300 rounded-lg shadow-md text-center">
             <thead className="bg-[#ffd100] text-[#071d49]">
@@ -137,67 +163,85 @@ export default function ManageCourses() {
               </tr>
             </thead>
             <tbody>
-              {courses.map((course) => (
-                <tr key={course.id} className="border-t border-gray-200">
-                  <td className="p-6">
-                    {course.image ? (
-                      <img
-                        src={course.image}
-                        alt={course.title}
-                        className="w-16 h-16 object-cover rounded-md"
-                      />
-                    ) : (
-                      "No image"
-                    )}
-                  </td>
-                  <td className="p-3">{course.title}</td>
-                  <td className="p-3">{getCategoryName(course.category_id)}</td>
-                  <td className="p-3">{course.instructor}</td>
-                  <td className="p-3">{course.price}</td>
-                  <td className="p-3">{course.duration}</td>
-                  <td className="p-3 max-w-xs group relative">
-                    {course.description.length > 100 ? (
-                      <>
-                        <span className="truncate block">
-                          {course.description.slice(0, 100)}...
-                        </span>
-                        <div className="overflow-hidden transition-all duration-300 max-h-0 opacity-0 group-hover:max-h-10 group-hover:opacity-100 flex justify-end">
-                          <button
-                            className="mt-2 text-sm bg-[#071d49] text-white px-2 py-1 rounded hover:bg-[#ffd100] hover:text-[#071d49] transition"
-                            onClick={() =>
-                              handleShowDescription(course.description)
-                            }
-                          >
-                            Show All
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      course.description
-                    )}
-                  </td>
-                  <td>
-                    <div className="p-3 flex gap-2 justify-center">
-                      <button
-                        onClick={() => handleEditClick(course)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteClick(course.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {courses
+                .filter((course) => {
+                  const searchLower = search.toLowerCase();
+                  return (
+                    course.title?.toLowerCase().includes(searchLower) ||
+                    course.instructor?.toLowerCase().includes(searchLower) ||
+                    getCategoryName(course.category_id)
+                      ?.toLowerCase()
+                      .includes(searchLower) ||
+                    course.price
+                      ?.toString()
+                      .toLowerCase()
+                      .includes(searchLower) ||
+                    course.duration?.toLowerCase().includes(searchLower) ||
+                    course.description?.toLowerCase().includes(searchLower)
+                  );
+                })
+                .map((course) => (
+                  <tr key={course.id} className="border-t border-gray-200">
+                    <td className="p-6">
+                      {course.image ? (
+                        <img
+                          src={course.image}
+                          alt={course.title}
+                          className="w-16 h-16 object-cover rounded-md"
+                        />
+                      ) : (
+                        "No image"
+                      )}
+                    </td>
+                    <td className="p-3">{course.title}</td>
+                    <td className="p-3">
+                      {getCategoryName(course.category_id)}
+                    </td>
+                    <td className="p-3">{course.instructor}</td>
+                    <td className="p-3">{course.price}</td>
+                    <td className="p-3">{course.duration}</td>
+                    <td className="p-3 max-w-xs group relative">
+                      {course.description.length > 100 ? (
+                        <>
+                          <span className="truncate block">
+                            {course.description.slice(0, 100)}...
+                          </span>
+                          <div className="overflow-hidden transition-all duration-300 max-h-0 opacity-0 group-hover:max-h-10 group-hover:opacity-100 flex justify-end">
+                            <button
+                              className="mt-2 text-sm bg-[#071d49] text-white px-2 py-1 rounded hover:bg-[#ffd100] hover:text-[#071d49] transition"
+                              onClick={() =>
+                                handleShowDescription(course.description)
+                              }
+                            >
+                              Show All
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        course.description
+                      )}
+                    </td>
+                    <td>
+                      <div className="p-3 flex gap-2 justify-center">
+                        <button
+                          onClick={() => handleEditClick(course)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteClick(course.id)}
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
-
         {/* Description Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -217,7 +261,6 @@ export default function ManageCourses() {
             </div>
           </div>
         )}
-
         {/* Confirm Delete Modal */}
         {confirmDeleteId && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -243,7 +286,6 @@ export default function ManageCourses() {
             </div>
           </div>
         )}
-
         {/* Edit Modal */}
         {editCourseId && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -329,7 +371,6 @@ export default function ManageCourses() {
             </div>
           </div>
         )}
-
         <ToastContainer />
       </div>
     </DashboardLayout>

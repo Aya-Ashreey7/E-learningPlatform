@@ -8,15 +8,19 @@ import "react-toastify/dist/ReactToastify.css";
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [userDelet, setUserDelet] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function fetchUser() {
+      setLoading(true);
       const querySnapshot = await getDocs(collection(db, "users"));
       const data = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setUsers(data);
+      setLoading(false);
     }
     fetchUser();
   }, []);
@@ -33,11 +37,31 @@ export default function Users() {
       setUserDelet(null);
     }
   };
-
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-screen -translate-y-12">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
   return (
     <DashboardLayout>
       <div className="p-6 min-h-screen  bg-[#fff]">
-        <h2 className="text-2xl font-bold text-[#071d49] pb-4">Users</h2>
+        <div className="flex justify-between items-center pb-4">
+          <h2 className="text-2xl font-bold text-[#071d49] pb-2">Users</h2>
+          <input
+            type="text"
+            placeholder="Search by any detail..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border-2 border-[#071d49] focus:border-[#fad947]  
+             p-2 rounded-lg w-full md:w-1/3 
+             text-[#071d49] placeholder-gray-400 outline-none transition"
+          />
+        </div>
+
         <div>
           <table className="min-w-[1200px] bg-white border border-gray-300 rounded-lg shadow-md text-center">
             <thead className="bg-[#ffd100] text-[#071d49]">
@@ -49,27 +73,43 @@ export default function Users() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user, index) => (
-                <tr
-                  key={user.id}
-                  className="hover:bg-gray-50 border-t border-gray-200"
-                >
-                  <td className="p-3">{index + 1}</td>
-                  <td className="p-3">
-                    {`${user.firstName || ""} ${user.lastName || ""}`.trim() ||
-                      "N/A"}
-                  </td>
-                  <td className="p-3">{user.email}</td>
-                  <td className="p-3">
-                    <button
-                      onClick={() => handelDeleteClick(user.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {users
+                .filter((user) => {
+                  if (!search.trim()) return true;
+                  const searchLower = search.toLowerCase();
+
+                  const userData = `
+                          ${(user.firstName || "").trim()} ${(
+                    user.lastName || ""
+                  ).trim()}
+                        ${user.email || ""}
+                      
+                    `.toLowerCase();
+
+                  return userData.includes(searchLower);
+                })
+                .map((user, index) => (
+                  <tr
+                    key={user.id}
+                    className="hover:bg-gray-50 border-t border-gray-200"
+                  >
+                    <td className="p-3">{index + 1}</td>
+                    <td className="p-3">
+                      {`${user.firstName || ""} ${
+                        user.lastName || ""
+                      }`.trim() || "N/A"}
+                    </td>
+                    <td className="p-3">{user.email}</td>
+                    <td className="p-3">
+                      <button
+                        onClick={() => handelDeleteClick(user.id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
