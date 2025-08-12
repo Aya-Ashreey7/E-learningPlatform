@@ -8,6 +8,9 @@ import Home from './pages/Home';
 import CoursesPage from './pages/CoursesPage';
 import CartPage from './pages/CartPage';
 import ContactPage from './pages/ContactPage';
+import ProfilePage from './pages/ProfilePage';
+import EditProfile from './pages/EditProfile';
+import NotificationsPage from './pages/NotificationsPage';
 
 //
 import LoginForm from './pages/Login';
@@ -37,6 +40,11 @@ function App() {
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/ProfilePage" element={<ProfilePage />} />
+          <Route path="/edit-profile" element={<EditProfile />} />Notifications
+          <Route path="/Notifications" element={<NotificationsPage />} />
+          
+
 
           
           <Route path="/login" element={<LoginForm />} />
