@@ -26,6 +26,8 @@ import PaymentSuccess from './components/Checkout/PaymentSuccess';
 import Orders from './pages/orders';
 import ResetPassword from './pages/ResetPassword';
 import Feedback from './pages/Feedback';
+import { Route, Routes } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
