@@ -4,16 +4,28 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 
-// Validation schema
+// Validation schema with restrictions
 const schema = yup.object().shape({
-  fullName: yup.string().required("Full Name is required"),
+  fullName: yup
+    .string()
+    .required("Full Name is required")
+    .matches(/^[A-Za-z\s]+$/, "Full Name should not contain numbers or symbols"),
   phone: yup
     .string()
     .required("Phone Number is required")
     .matches(/^\d{10,11}$/, "Enter a valid phone number"),
-  city: yup.string().required("City is required"),
-  area: yup.string().required("Area is required"),
-  address: yup.string().required("Address is required"),
+  city: yup
+    .string()
+    .required("City is required")
+    .matches(/^[A-Za-z\s]+$/, "City should only contain letters"),
+  area: yup
+    .string()
+    .required("Area is required")
+    .matches(/^[A-Za-z\s]+$/, "Area should only contain letters"),
+  address: yup
+    .string()
+    .required("Address is required")
+    .matches(/^[A-Za-z\s,.-]+$/, "Address should not contain numbers"),
   floor: yup.string(), // optional
 });
 

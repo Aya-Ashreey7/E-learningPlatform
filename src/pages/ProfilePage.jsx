@@ -10,6 +10,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar/Navbar";
+import Footer from "../components/Footer/Footer";
 
 const ProfilePage = ({ design = 1 }) => {
   const auth = getAuth();
@@ -87,28 +89,38 @@ const ProfilePage = ({ design = 1 }) => {
   // Loading design
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#f9f9f9]">
-        <div className="w-12 h-12 border-4 border-[#071d49] border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-[#071d49] font-semibold">Loading your profile...</p>
-      </div>
+      <>
+        <Navbar />
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#f9f9f9]">
+          <div className="w-12 h-12 border-4 border-[#071d49] border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-[#071d49] font-semibold">
+            Loading your profile...
+          </p>
+        </div>
+        <Footer />
+      </>
     );
   }
 
   // If no user
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-[#071d49] px-4">
-        <h1 className="text-3xl font-bold mb-4">You're not logged in</h1>
-        <p className="mb-6 text-lg text-center">
-          Please log in to view your profile and orders.
-        </p>
-        <button
-          onClick={() => navigate("/login")}
-          className="px-6 py-3 bg-white text-[#071d49] font-semibold rounded-lg shadow hover:opacity-90 transition"
-        >
-          Go to Login
-        </button>
-      </div>
+      <>
+        <Navbar />
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-[#071d49] px-4">
+          <h1 className="text-3xl font-bold mb-4">You're not logged in</h1>
+          <p className="mb-6 text-lg text-center">
+            Please log in to view your profile and orders.
+          </p>
+          <button
+            onClick={() => navigate("/login")}
+            className="px-6 py-3 bg-white text-[#071d49] font-semibold rounded-lg shadow hover:opacity-90 transition"
+          >
+            Go to Login
+          </button>
+        </div>
+        <Footer />
+      </>
     );
   }
 
@@ -199,9 +211,13 @@ const ProfilePage = ({ design = 1 }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f9f9f9] flex items-center justify-center p-4">
-      {layouts[design]}
-    </div>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-[#f9f9f9] flex items-center justify-center p-4">
+        {layouts[design]}
+      </div>
+      <Footer />
+    </>
   );
 };
 
