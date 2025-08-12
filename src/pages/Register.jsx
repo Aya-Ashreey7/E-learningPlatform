@@ -11,8 +11,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const registerSchema = z
     .object({
-        firstName: z.string().min(2, "First name is required"),
-        lastName: z.string().min(2, "Last name is required"),
+        firstName: z.string().min(2, "First name is required").regex(/^[A-Za-z\s'-]+$/, "First name must contain only letters"),
+        lastName: z.string().min(2, "Last name is required").regex(/^[A-Za-z\s'-]+$/, "Last name must contain only letters"),
         email: z.string().email("Invalid email address"),
         password: z
             .string()
@@ -57,9 +57,13 @@ export default function RegisterForm() {
             }
         } catch (error) {
             console.error("Registration error:", error);
-            toast.error(error?.message || "Registration failed. Please try again.", {
-                position: "top-center",
-            });
+            if (error.code === "auth/email-already-in-use") {
+                toast.error("You already have an account", { position: "top-center" });
+            } else {
+                toast.error(error?.message || "Registration failed. Please try again.", {
+                    position: "top-center",
+                });
+            }
         }
     };
 

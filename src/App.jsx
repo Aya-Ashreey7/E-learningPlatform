@@ -26,6 +26,9 @@ import AddressForm from './components/Checkout/AddressForm';
 import Checkout from './components/Checkout/Checkout';
 import PaymentModal from './components/Checkout/PaymentModal';
 import PaymentSuccess from './components/Checkout/PaymentSuccess';
+import Orders from './pages/orders';
+import ResetPassword from './pages/ResetPassword';
+import Feedback from './pages/Feedback';
 
 function App() {
   return (
@@ -43,11 +46,16 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/verified-redirect" element={<VerifiedRedirect />} />
+          <Route path="/forgot-password" element={<ResetPassword />} />
+
 
           {/* Dashboard */}
           <Route path="/dashboard/overview" element={<Overview />} />
           <Route path="/dashboard/add-course" element={<AddCourse />} />
           <Route path="/dashboard/manage-courses" element={<ManageCourses />} />
+          <Route path="/dashboard/orders/" element={ <Orders/> } />
+          <Route path="/dashboard/feedback/" element={ <Feedback/> } />
+
 
           {/* Checkout */}
           <Route path="/checkout/address" element={<AddressForm />} />
