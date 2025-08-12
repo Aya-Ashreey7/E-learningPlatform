@@ -4,10 +4,11 @@ import "./index.css";
 import { Toaster } from "react-hot-toast";
 
 
-import Home from './pages/Home';
 import CoursesPage from './pages/CoursesPage';
 import CartPage from './pages/CartPage';
 import ContactPage from './pages/ContactPage';
+import Hero from "./components/Hero/Hero";
+import AboutUs from './pages/AboutUs';
 
 //
 import LoginForm from './pages/Login';

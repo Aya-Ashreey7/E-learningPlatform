@@ -20,7 +20,7 @@ const mockFeedbacks = [
         status: "pending", // pending, approved, rejected
         isPublic: false,
         helpfulVotes: 0,
-        category: "Adult courses",
+        category: "Adult",
     },
     {
         id: "feedback_002",
@@ -38,7 +38,7 @@ const mockFeedbacks = [
         status: "approved",
         isPublic: true,
         helpfulVotes: 12,
-        category: "Adult courses",
+        category: "Adult",
     },
     {
         id: "feedback_003",
@@ -56,7 +56,7 @@ const mockFeedbacks = [
         status: "approved",
         isPublic: true,
         helpfulVotes: 5,
-        category: "Kids courses",
+        category: "Kids",
     },
     {
         id: "feedback_004",
@@ -74,7 +74,7 @@ const mockFeedbacks = [
         status: "rejected",
         isPublic: false,
         helpfulVotes: 0,
-        category: "Adult courses",
+        category: "Adult",
     },
     {
         id: "feedback_005",
@@ -92,7 +92,7 @@ const mockFeedbacks = [
         status: "pending",
         isPublic: false,
         helpfulVotes: 0,
-        category: "Adult courses",
+        category: "Adult",
     },
 ]
 
