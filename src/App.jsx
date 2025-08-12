@@ -1,7 +1,3 @@
-import { Routes, Route } from "react-router-dom";
-import "./App.css";
-import "./index.css";
-import { Toaster } from "react-hot-toast";
 
 
 import CoursesPage from './pages/CoursesPage';
@@ -48,7 +44,7 @@ function App() {
           <Route path="/forgot-password" element={<ResetPassword />} />
 
 
-          {/* Dashboard */}
+         {/* Dashboard */}
           <Route path="/dashboard/overview" element={<Overview />} />
           <Route path="/dashboard/add-course" element={<AddCourse />} />
           <Route path="/dashboard/manage-courses" element={<ManageCourses />} />
@@ -61,6 +57,7 @@ function App() {
           <Route path="/checkout/checkout" element={<Checkout />} />
           <Route path="/checkout/payment" element={<PaymentModal />} />
           <Route path="/paymentSuccess" element={<PaymentSuccess />} />
+            
         </Routes>
         <Toaster position="top-center" reverseOrder={false} />
       </CartProvider>
