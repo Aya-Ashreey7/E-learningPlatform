@@ -8,14 +8,10 @@ import Footer from "../components/Footer/Footer";
 const CartPage = () => {
   const { cartItems, removeFromCart } = useCart();
   const navigate = useNavigate();
-  const [coupon, setCoupon] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [removeConfirm, setRemoveConfirm] = useState(null);
   const [showEmptyCartAlert, setShowEmptyCartAlert] = useState(false);
 
-  const baseTotal = cartItems.reduce((sum, item) => sum + Number(item.price || 0), 0);
-  const discount = appliedCoupon === "SUMMER20" ? 20 : 0;
-  const total = Math.max(0, baseTotal - discount);
+  const total = cartItems.reduce((sum, item) => sum + Number(item.price || 0), 0);
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
@@ -23,10 +19,6 @@ const CartPage = () => {
     } else {
       navigate("/checkout/checkout", { state: { cartItems, total } });
     }
-  };
-
-  const applyCoupon = () => {
-    setAppliedCoupon(coupon.trim().toUpperCase());
   };
 
   return (
@@ -95,16 +87,6 @@ const CartPage = () => {
           <h3 className="text-xl font-semibold mb-2">🧾 Order Summary</h3>
           <div className="flex justify-between text-sm">
             <span>Courses ({cartItems.length})</span>
-            <span>{baseTotal.toFixed(2)} EGP</span>
-          </div>
-          {discount > 0 && (
-            <div className="flex justify-between text-sm text-green-600">
-              <span>Discount ({appliedCoupon})</span>
-              <span>- {discount.toFixed(2)} EGP</span>
-            </div>
-          )}
-          <div className="flex justify-between text-sm">
-            <span>Subtotal</span>
             <span>{total.toFixed(2)} EGP</span>
           </div>
           <hr />
@@ -112,20 +94,6 @@ const CartPage = () => {
             <span>Estimated Total</span>
             <span>{total.toFixed(2)} EGP</span>
           </div>
-
-          <input
-            type="text"
-            value={coupon}
-            onChange={(e) => setCoupon(e.target.value)}
-            placeholder="Coupon Code"
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 ring-[#ffd100]"
-          />
-          <button
-            onClick={applyCoupon}
-            className="w-full bg-[#071d49] text-white rounded py-2 hover:bg-[#0a2b70] transition"
-          >
-            Apply Coupon
-          </button>
 
           <button
             onClick={handleCheckout}
