@@ -22,6 +22,7 @@ import AddressForm from "./components/Checkout/AddressForm";
 import Checkout from "./components/Checkout/Checkout";
 import PaymentModal from "./components/Checkout/PaymentModal";
 import PaymentSuccess from "./components/Checkout/PaymentSuccess";
+import CourseKids from "./pages/CourseKids";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/" element={<Hero />} />
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/kids" element={<CourseKids />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<LoginForm />} />
