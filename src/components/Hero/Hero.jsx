@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
-import "./Hero.css"; // Import the CSS file
+// import "./Hero.css"; // Import the CSS file
+
 import { FaChild, FaUserGraduate } from "react-icons/fa";
 import {
   FaDollarSign,
@@ -78,19 +79,25 @@ const Hero = () => {
   return (
     <div className="hero-container">
       <Navbar />
-      <section className="hero-section py-16 px-4 md:px-10" id="hero">
+      <section
+        id="hero"
+        className="
+          relative w-full bg-[url('/src/assets/hero.jpg')] bg-cover bg-center
+          py-16 px-4 md:px-10
+        "
+      >
         <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10">
           {/* Text Section */}
           <motion.div
-            className="md:w-1/2 text-center md:text-left"
+            className="md:w-1/2 text-center md:text-left bg-black/40 p-6 rounded-lg"
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-[#071d49] mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Learn something new everyday.
             </h1>
-            <p className="text-gray-700 text-lg md:text-xl mb-6">
+            <p className="text-white text-lg md:text-xl mb-6">
               Become professional and ready to join the world.
             </p>
             <motion.div
@@ -110,7 +117,7 @@ const Hero = () => {
       </section>
       <StatsSection /> {/* Add the new section here */}
       {/* Categories Section */}
-      <section className="bg-white py-16 px-4 md:px-10 mb-8">
+      <section id="categories" className="bg-white py-16 px-4 md:px-10 mb-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <motion.h2
@@ -223,7 +230,7 @@ const Hero = () => {
           {/* Button */}
           <div className="text-center mt-8">
             <Link
-              to="/about"
+              to="/aboutus"
               className="inline-block bg-[#071d49] text-[#ffd100] py-3 px-8 rounded-b-xl text-lg transition duration-300 hover:bg-[#071d49] hover:text-white"
             >
               Want to know more
