@@ -22,23 +22,27 @@ import Orders from "./pages/orders";
 import ResetPassword from "./pages/ResetPassword";
 import Feedback from "./pages/Feedback";
 
+import ProfilePage from "./pages/ProfilePage";
+import EditProfile from "./pages/EditProfile";
+import NotificationsPage from "./pages/NotificationsPage";
+import CourseKids from "./pages/CourseKids";
+
 // Checkout
 import { CartProvider } from "./context/CartContext";
 import AddressForm from "./components/Checkout/AddressForm";
 import Checkout from "./components/Checkout/Checkout";
 import PaymentModal from "./components/Checkout/PaymentModal";
 import PaymentSuccess from "./components/Checkout/PaymentSuccess";
-import ProfilePage from './pages/ProfilePage';
-import EditProfile from './pages/EditProfile';
-import NotificationsPage from './pages/NotificationsPage';
 
 function App() {
   return (
     <CartProvider>
       <Routes>
+        {/* Public Pages */}
         <Route path="/" element={<Hero />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/courses" element={<CoursesPage />} />
+        <Route path="/courses/kids" element={<CourseKids />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginForm />} />
@@ -51,6 +55,7 @@ function App() {
         <Route path="/dashboard/overview" element={<Overview />} />
         <Route path="/dashboard/add-course" element={<AddCourse />} />
         <Route path="/dashboard/manage-courses" element={<ManageCourses />} />
+        <Route path="/dashboard/users" element={<Users />} />
         <Route path="/dashboard/orders" element={<Orders />} />
         <Route path="/dashboard/feedback" element={<Feedback />} />
 
@@ -59,6 +64,8 @@ function App() {
         <Route path="/checkout/checkout" element={<Checkout />} />
         <Route path="/checkout/payment" element={<PaymentModal />} />
         <Route path="/paymentSuccess" element={<PaymentSuccess />} />
+
+        {/* User Profile */}
         <Route path="/ProfilePage" element={<ProfilePage />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/Notifications" element={<NotificationsPage />} />

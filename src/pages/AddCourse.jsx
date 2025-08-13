@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
 import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 export default function AddCourse() {
   const [title, setTilte] = useState("");
@@ -13,8 +13,14 @@ export default function AddCourse() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [instructor, setInstructor] = useState("");
   const [price, setPrice] = useState("");
+  const [audience, setAudience] = useState("");
   const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // الحقول الجديدة
+  const [traineesCount, setTraineesCount] = useState("");
+  const [certificate, setCertificate] = useState(""); // Yes / No
+  const [lecturesAvailability, setLecturesAvailability] = useState(""); // Yes / No
 
   // جلب الكاتيجوريز
   useEffect(() => {
@@ -30,7 +36,7 @@ export default function AddCourse() {
   const handleCategoryChange = (e) => {
     if (e.target.value === "add_new") {
       setShowNewCategoryInput(true);
-      setCategoryName(""); // فارغ عشان محدش يختارها بالغلط
+      setCategoryName("");
     } else {
       setShowNewCategoryInput(false);
       setCategoryName(e.target.value);
@@ -40,14 +46,16 @@ export default function AddCourse() {
   // حفظ الكاتيجوري الجديدة
   const handleAddNewCategory = () => {
     const trimmed = newCategoryName.trim();
-    if (!trimmed) return alert("Please enter category name");
-
-    if (categoriesOptions.includes(trimmed)) {
-      alert("Category already exists");
+    if (!trimmed) {
+      toast.error("Please enter category name");
       return;
     }
 
-    // اضفها للمصفوفة محليًا (عشان تظهر فورًا)
+    if (categoriesOptions.includes(trimmed)) {
+      toast.error("Category already exists");
+      return;
+    }
+
     setCategoriesOptions((prev) => [...prev, trimmed]);
     setCategoryName(trimmed);
     setNewCategoryName("");
@@ -61,18 +69,21 @@ export default function AddCourse() {
       !title.trim() ||
       !description.trim() ||
       !categoryName.trim() ||
+      !audience.trim() ||
       !instructor.trim() ||
       !price.trim() ||
-      !duration.trim()
+      !duration.trim() ||
+      !traineesCount.trim() ||
+      !certificate.trim() ||
+      !lecturesAvailability.trim()
     ) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
 
     setLoading(true);
 
     try {
-      // البحث عن id الخاص بالكاتيجوري
       const categoriesRef = collection(db, "Categories");
       const q = query(categoriesRef, where("name", "==", categoryName));
       const querySnapshot = await getDocs(q);
@@ -80,7 +91,6 @@ export default function AddCourse() {
       let categoryId;
 
       if (querySnapshot.empty) {
-        // لو الكاتيجوري مش موجودة اضفها للفايرستور
         const newCategoryDoc = await addDoc(categoriesRef, {
           name: categoryName,
         });
@@ -89,7 +99,6 @@ export default function AddCourse() {
         categoryId = querySnapshot.docs[0].id;
       }
 
-      // اضف الكورس
       await addDoc(collection(db, "Courses"), {
         title,
         description,
@@ -97,21 +106,27 @@ export default function AddCourse() {
         instructor,
         price,
         duration,
+        audience,
+        traineesCount,
+        certificate,
+        lecturesAvailability,
         image: "",
       });
 
-      // اعادة تعيين الحقول
       setTilte("");
       setDescription("");
       setCategoryName("");
       setInstructor("");
       setPrice("");
       setDuration("");
+      setTraineesCount("");
+      setCertificate("");
+      setLecturesAvailability("");
 
-      toast.success("Course and category saved successfully!");
+      toast.success("Course added successfully!");
     } catch (error) {
       console.error("Error adding course:", error);
-      alert("Error adding course");
+      toast.error("Error adding course");
     } finally {
       setLoading(false);
     }
@@ -153,6 +168,75 @@ export default function AddCourse() {
             />
           </div>
 
+          {/* Audience */}
+          <div>
+            <label className="block text-base font-semibold mb-1 text-[#071d49]">
+              Audience
+            </label>
+            <select
+              value={audience}
+              onChange={(e) => setAudience(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[#e2e8f0] text-[#071d49]"
+              required
+            >
+              <option value="" disabled>
+                Select audience
+              </option>
+              <option value="Kids">Kids</option>
+              <option value="Adults">Adults</option>
+            </select>
+          </div>
+
+          {/* Trainees Count */}
+          <div>
+            <label className="block text-base font-semibold mb-1 text-[#071d49]">
+              Trainees Count
+            </label>
+            <input
+              value={traineesCount}
+              onChange={(e) => setTraineesCount(e.target.value)}
+              type="number"
+              className="w-full p-3 rounded-lg bg-[#e2e8f0] text-[#071d49]"
+              placeholder="Number of trainees"
+            />
+          </div>
+
+          {/* Certificate */}
+          <div>
+            <label className="block text-base font-semibold mb-1 text-[#071d49]">
+              Certificate
+            </label>
+            <select
+              value={certificate}
+              onChange={(e) => setCertificate(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[#e2e8f0] text-[#071d49]"
+            >
+              <option value="" disabled>
+                Select
+              </option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          {/* Lectures Availability */}
+          <div>
+            <label className="block text-base font-semibold mb-1 text-[#071d49]">
+              Lectures Availability
+            </label>
+            <select
+              value={lecturesAvailability}
+              onChange={(e) => setLecturesAvailability(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[#e2e8f0] text-[#071d49]"
+            >
+              <option value="" disabled>
+                Select
+              </option>
+              <option value="Available">Available</option>
+              <option value="Not Available">Not Available</option>
+            </select>
+          </div>
+
           {/* Category */}
           <div>
             <label className="block text-base font-semibold mb-1 text-[#071d49]">
@@ -176,7 +260,6 @@ export default function AddCourse() {
               </option>
             </select>
 
-            {/* لو ضغطت على Add new category اظهر input جديد */}
             {showNewCategoryInput && (
               <div className="mt-2 flex gap-2">
                 <input
