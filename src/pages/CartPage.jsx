@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Trash2,
-  Search,
-  ShoppingCart,
-  User,
-  Star,
-  Lock,
-  ChevronDown,
-  ShoppingBag,
-} from "lucide-react";
+import { ShoppingBag, Star, Lock } from "lucide-react";
+import Navbar from "../components/Navbar/Navbar";
+import Footer from "../components/Footer/Footer";
 
 const CartPage = () => {
   const { cartItems, removeFromCart } = useCart();
@@ -37,44 +30,12 @@ const CartPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f9f9f9] text-[#071d49] font-inter">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white shadow px-4 lg:px-10 py-4 flex items-center justify-between">
-        <Link to="/Courses" className="text-xl font-bold text-[#071d49]">
-          E-Learn
-        </Link>
-
-        <div className="hidden lg:flex items-center gap-4 flex-1 max-w-2xl mx-4 relative">
-          <Search size={18} className="text-gray-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            placeholder="Search courses..."
-            className="w-full py-2 pl-10 pr-4 border border-gray-200 rounded-full focus:outline-none focus:ring-2 ring-[#ffd100]"
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          <Link to="/become-instructor" className="text-sm font-medium hover:text-[#ffd100]">
-            Become Instructor
-          </Link>
-          <Link to="/wishlist" className="relative hover:text-[#ffd100]">Wishlist</Link>
-          <Link to="/cart" className="relative">
-            <ShoppingCart className="text-[#071d49]" />
-            {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 text-xs bg-[#ffd100] text-[#071d49] px-1.5 py-0.5 rounded-full font-semibold">
-                {cartItems.length}
-              </span>
-            )}
-          </Link>
-          <div className="flex items-center gap-1 cursor-pointer hover:text-[#ffd100]">
-            <User />
-            <ChevronDown size={16} />
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#f9f9f9] text-[#071d49] font-inter flex flex-col">
+      {/* Navbar */}
+      <Navbar />
 
       {/* Main Content */}
-      <div className="px-4 lg:px-10 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="flex-grow px-4 lg:px-10 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-6">
           <h2 className="text-2xl font-semibold mb-4">Shopping Cart</h2>
@@ -213,6 +174,9 @@ const CartPage = () => {
           </div>
         </div>
       )}
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

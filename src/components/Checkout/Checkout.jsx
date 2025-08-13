@@ -4,6 +4,8 @@ import { FaMoneyBillWave, FaMobileAlt, FaWallet } from "react-icons/fa";
 import { MapPin } from "lucide-react";
 import PaymentModal from "./PaymentModal";
 import AddressForm from "./AddressForm";
+import Navbar from "../Navbar/Navbar";
+import Footer from "../Footer/Footer";
 
 const LS_KEY = "checkoutAddress";
 
@@ -83,13 +85,19 @@ const Checkout = () => {
   const grandTotal = total;
 
   return (
-    <div className="min-h-screen bg-[#f9f9f9]">
-      <div className="max-w-6xl mx-auto p-6 min-h-screen animate-fade-in">
+    <div className="min-h-screen bg-[#f9f9f9] flex flex-col">
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto p-6 flex-grow animate-fade-in w-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          {/* Left: Address & Payment */}
+          
+          {/* Left Column: Address & Payment */}
           <div className="md:col-span-2 flex flex-col gap-6">
+            
             {/* Billing Details */}
-            <div className="bg-white border border-[#071d49]/40 p-4 rounded-md shadow animate-slide-up">
+            <div className="bg-white border border-[#071d49]/40 p-4 rounded-md shadow animate-slide-up min-h-[280px] flex flex-col">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold flex items-center gap-1 text-[#071d49]">
                   <MapPin size={18} className="text-[#071d49]" /> Billing Details
@@ -112,26 +120,29 @@ const Checkout = () => {
                   </div>
                 )}
               </div>
-              {!address ? (
-                <AddressForm onSave={setAddress} />
-              ) : (
-                <div className="bg-[#f9f9f9] rounded-xl p-4 mb-4 shadow-sm border border-[#071d49]/20 transition duration-300 hover:border-[#ffd100] hover:shadow-md animate-fade-in">
-                  <h3 className="text-lg font-semibold text-[#071d49] mb-3">Billing Details</h3>
-                  <div className="space-y-1 text-sm text-[#071d49]">
-                    {address?.fullName && <p><span className="font-medium">Full Name:</span> {address.fullName}</p>}
-                    {address?.phone && <p><span className="font-medium">Phone:</span> {address.phone}</p>}
-                    {address?.city && <p><span className="font-medium">City:</span> {address.city}</p>}
-                    {address?.area && <p><span className="font-medium">Area:</span> {address.area}</p>}
-                    {address?.address && <p><span className="font-medium">Address:</span> {address.address}</p>}
-                    {address?.floor && <p><span className="font-medium">Floor:</span> {address.floor}</p>}
+
+              <div className="flex-grow">
+                {!address ? (
+                  <AddressForm onSave={setAddress} />
+                ) : (
+                  <div className="bg-[#f9f9f9] rounded-xl p-4 shadow-sm border border-[#071d49]/20 transition duration-300 hover:border-[#ffd100] hover:shadow-md animate-fade-in">
+                    <h3 className="text-lg font-semibold text-[#071d49] mb-3">Billing Details</h3>
+                    <div className="space-y-1 text-sm text-[#071d49]">
+                      {address?.fullName && <p><span className="font-medium">Full Name:</span> {address.fullName}</p>}
+                      {address?.phone && <p><span className="font-medium">Phone:</span> {address.phone}</p>}
+                      {address?.city && <p><span className="font-medium">City:</span> {address.city}</p>}
+                      {address?.area && <p><span className="font-medium">Area:</span> {address.area}</p>}
+                      {address?.address && <p><span className="font-medium">Address:</span> {address.address}</p>}
+                      {address?.floor && <p><span className="font-medium">Floor:</span> {address.floor}</p>}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Payment Method */}
             {address && (
-              <div className="bg-white border border-[#071d49]/40 p-4 rounded-md shadow animate-slide-up">
+              <div className="bg-white border border-[#071d49]/40 p-4 rounded-md shadow animate-slide-up min-h-[180px]">
                 <h2 className="text-lg font-semibold mb-4 text-[#071d49]">Select Payment Method</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <PaymentOption
@@ -157,8 +168,8 @@ const Checkout = () => {
             )}
           </div>
 
-          {/* Right: Order Summary */}
-          <div className="bg-white border border-[#071d49]/40 p-4 rounded-md shadow self-start h-fit animate-slide-up">
+          {/* Right Column: Order Summary */}
+          <div className="bg-white border border-[#071d49]/40 p-4 rounded-md shadow self-start h-fit md:sticky md:top-20 animate-slide-up min-w-[280px]">
             <h2 className="text-lg font-semibold mb-4 text-[#071d49]">Order Summary</h2>
             <div className="space-y-2 text-sm text-[#071d49]">
               {cartItems.map((item, i) => (
@@ -208,6 +219,9 @@ const Checkout = () => {
         />
       )}
 
+      {/* Footer */}
+      <Footer />
+
       {/* Animations */}
       <style>{`
         @keyframes fadeIn {
@@ -229,7 +243,7 @@ const Checkout = () => {
   );
 };
 
-// Reusable payment card
+// Reusable Payment Option Card
 const PaymentOption = ({ label, method, setMethod, icon }) => {
   const isSelected = method === label;
   return (
@@ -238,7 +252,7 @@ const PaymentOption = ({ label, method, setMethod, icon }) => {
       className={`flex items-center gap-2 p-3 rounded-md border cursor-pointer justify-center transition-all duration-300 transform hover:scale-105 ${
         isSelected
           ? "bg-[#ffd100]/10 border-[#ffd100]"
-          : "bg-gray-50 hover:bg-gray-100"
+          : "bg-gray-50 hover:bg-gray-100 border-gray-200"
       }`}
     >
       {icon}
