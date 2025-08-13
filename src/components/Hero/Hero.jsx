@@ -6,7 +6,7 @@ import Footer from '../Footer/Footer';
 
 import { FaChild, FaUserGraduate } from "react-icons/fa";
 import { FaDollarSign, FaAccessibleIcon, FaClock, FaUsers, FaChalkboardTeacher, FaGlobe, FaCheckCircle, FaHeadset, FaLaptop, FaUserFriends } from 'react-icons/fa'; // Import icons
-import StatsSection from '../StatsSection/StatsSection'; // Import the new section
+import StatsSection from '../StatsSection/StatsSection'; 
 import StudentFeedbackSlider from '../Feedback/Feedback';
 
 
@@ -62,17 +62,13 @@ const Hero = () => {
   return (
     <div className="hero-container">
       <Navbar />
-      <section
-  id="hero"
-  className="
-    relative w-full bg-[url('/src/assets/hero.jpg')] bg-cover bg-center
-    py-16 px-4 md:px-10
-  "
->
+      <section  id="hero" className=" relative w-full bg-[url('/src/assets/hero.jpg')] bg-cover bg-center
+        py-16 px-4 md:px-10"
+      >
   <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10">
     {/* Text Section */}
     <motion.div
-      className="md:w-1/2 text-center md:text-left bg-black/40 p-6 rounded-lg"
+      className="md:w-1/2 text-center md:text-left  p-6 rounded-lg"
       initial={{ x: -50, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.8 }}
