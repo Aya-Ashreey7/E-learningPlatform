@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const StatsSection = () => {
   return (
-    <section className="bg-[#071d49] py-8 px-4 md:px-6">
+    <section className="bg-[#071d49] py-6 px-4 md:px-6">
       <div className="max-w-7xl mx-auto grid gap-4 sm:grid-cols-2 lg:grid-cols-4 text-white">
         {/* Years in Operation */}
         <motion.div

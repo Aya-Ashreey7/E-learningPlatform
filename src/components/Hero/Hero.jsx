@@ -1,12 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import Navbar from '../Navbar/Navbar';
-import Footer from '../Footer/Footer';
-import './Hero.css'; // Import the CSS file
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import Navbar from "../Navbar/Navbar";
+import Footer from "../Footer/Footer";
+// import "./Hero.css"; // Import the CSS file
+
 import { FaChild, FaUserGraduate } from "react-icons/fa";
 import { FaDollarSign, FaAccessibleIcon, FaClock, FaUsers, FaChalkboardTeacher, FaGlobe, FaCheckCircle, FaHeadset, FaLaptop, FaUserFriends } from 'react-icons/fa'; // Import icons
-import StatsSection from '../StatsSection/StatsSection'; // Import the new section
+import StatsSection from '../StatsSection/StatsSection'; 
 import StudentFeedbackSlider from '../Feedback/Feedback';
 
 
@@ -28,32 +29,38 @@ const categories = [
 const features = [
   {
     title: "Live Interactive Classes",
-    description: "Our classes bring together technology, innovation, and a global perspective. Let's dive in, discuss, and experience real-world learning!",
+    description:
+      "Our classes bring together technology, innovation, and a global perspective. Let's dive in, discuss, and experience real-world learning!",
     icon: <FaUsers size={40} />,
   },
   {
     title: "Learn from the Best",
-    description: "We have distinguished international faculty educated in renowned universities and have decades of industry and academic experience.",
+    description:
+      "We have distinguished international faculty educated in renowned universities and have decades of industry and academic experience.",
     icon: <FaChalkboardTeacher size={40} />,
   },
   {
     title: "Personalised Support",
-    description: "We provide you with expertise and dedicated support throughout your program from our student engagement team and course administrators.",
+    description:
+      "We provide you with expertise and dedicated support throughout your program from our student engagement team and course administrators.",
     icon: <FaHeadset size={40} />,
   },
   {
     title: "Advanced LMS",
-    description: "Our cutting-edge Learning Management System makes learning more engaging and personalised, unlocking the power of data-driven insights.",
+    description:
+      "Our cutting-edge Learning Management System makes learning more engaging and personalised, unlocking the power of data-driven insights.",
     icon: <FaLaptop size={40} />,
   },
   {
     title: "Cutting-Edge Pedagogy",
-    description: "We use innovative teaching methods, digital tools, and experiential learning to offer an advanced pedagogy that fosters global competence.",
+    description:
+      "We use innovative teaching methods, digital tools, and experiential learning to offer an advanced pedagogy that fosters global competence.",
     icon: <FaChalkboardTeacher size={40} />,
   },
   {
     title: "Global Alumni",
-    description: "We shape a world of talent. Our intensive programs empower and foster some of the world's most talented individuals.",
+    description:
+      "We shape a world of talent. Our intensive programs empower and foster some of the world's most talented individuals.",
     icon: <FaUserFriends size={40} />,
   },
 ];
@@ -62,39 +69,43 @@ const Hero = () => {
   return (
     <div className="hero-container">
       <Navbar />
-      <section className="hero-section py-16 px-4 md:px-10" id='hero'>
-        <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10">
-          {/* Text Section */}
-          <motion.div
-            className="md:w-1/2 text-center md:text-left"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-bold text-[#071d49] mb-4">
-              Learn something new everyday.
-            </h1>
-            <p className="text-gray-700 text-lg md:text-xl mb-6">
-              Become professional and ready to join the world.
-            </p>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            >
-              <Link
-                to="/login"
-                className=" w-[40%] text-center inline-block bg-[#071d49] hover:bg-[#071d49] text-[#ffd100] px-6 py-3 rounded-b-xl text-lg transition"
-              >
-                Browse Courses
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+      <section  id="hero" className=" relative w-full bg-[url('/src/assets/hero.jpg')] bg-cover bg-center
+        py-16 px-4 md:px-10"
+      >
+  <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10">
+    {/* Text Section */}
+    <motion.div
+      className="md:w-1/2 text-center md:text-left  p-6 rounded-lg"
+      initial={{ x: -50, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
+      <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        Learn something new everyday.
+      </h1>
+      <p className="text-white text-lg md:text-xl mb-6">
+        Become professional and ready to join the world.
+      </p>
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+      >
+        <a
+          href="#categories"
+          className="w-[40%] text-center inline-block bg-[#071d49] text-[#ffd100] hover:bg-[#071d49] hover:text-white px-6 py-3 rounded-b-xl text-lg transition"
+        >
+            Browse Courses
+        </a>
+
+      </motion.div>
+    </motion.div>
+  </div>
+</section>
+
       <StatsSection /> {/* Add the new section here */}
       {/* Categories Section */}
-      <section className="bg-white py-16 px-4 md:px-10 mb-8">
+      <section id="categories" className="bg-white py-16 px-4 md:px-10 mb-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <motion.h2
@@ -122,7 +133,9 @@ const Hero = () => {
                 <div className="text-[#ffd100] mb-4 flex justify-center group-hover:scale-110 transition-transform duration-200">
                   {cat.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-[#071d49] mb-2">{cat.title}</h3>
+                <h3 className="text-xl font-semibold text-[#071d49] mb-2">
+                  {cat.title}
+                </h3>
                 <p className="text-gray-600 text-sm">{cat.description}</p>
               </motion.a>
             ))}
@@ -142,26 +155,41 @@ const Hero = () => {
           >
             Why Learn At Scientific Center?
           </motion.h2>
-           {/* Icon List */}
-           <div className="elementor-widget-container mb-8">
+          {/* Icon List */}
+          <div className="elementor-widget-container mb-8">
             <ul className="elementor-icon-list-items elementor-inline-items flex justify-center">
               <li className="elementor-icon-list-item elementor-inline-item mr-6 flex items-center">
                 <span className="elementor-icon-list-icon ml-2">
-                  <FaCheckCircle aria-hidden="true" className="text-[#071d49]" />
+                  <FaCheckCircle
+                    aria-hidden="true"
+                    className="text-[#071d49]"
+                  />
                 </span>
-                <span className="elementor-icon-list-text text-[#071d49]">Affordable</span>
+                <span className="elementor-icon-list-text text-[#071d49]">
+                  Affordable
+                </span>
               </li>
               <li className="elementor-icon-list-item elementor-inline-item mr-6 flex items-center">
                 <span className="elementor-icon-list-icon ml-2">
-                  <FaCheckCircle aria-hidden="true" className="text-[#071d49]" />
+                  <FaCheckCircle
+                    aria-hidden="true"
+                    className="text-[#071d49]"
+                  />
                 </span>
-                <span className="elementor-icon-list-text text-[#071d49]">Accessible</span>
+                <span className="elementor-icon-list-text text-[#071d49]">
+                  Accessible
+                </span>
               </li>
               <li className="elementor-icon-list-item elementor-inline-item mr-6 flex items-center">
                 <span className="elementor-icon-list-icon ml-2">
-                  <FaCheckCircle aria-hidden="true" className="text-[#071d49]" />
+                  <FaCheckCircle
+                    aria-hidden="true"
+                    className="text-[#071d49]"
+                  />
                 </span>
-                <span className="elementor-icon-list-text text-[#071d49]">Flexible</span>
+                <span className="elementor-icon-list-text text-[#071d49]">
+                  Flexible
+                </span>
               </li>
             </ul>
           </div>
@@ -180,15 +208,17 @@ const Hero = () => {
                 <div className="text-[#ffd100] mb-4 flex justify-center">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-[#071d49] mb-2">{feature.title}</h3>
+                <h3 className="text-xl font-semibold text-[#071d49] mb-2">
+                  {feature.title}
+                </h3>
                 <p className="text-gray-600 text-sm">{feature.description}</p>
               </motion.div>
             ))}
           </div>
-           {/* Button */}
-           <div className="text-center mt-8">
+          {/* Button */}
+          <div className="text-center mt-8">
             <Link
-              to="/about"
+              to="/aboutus"
               className="inline-block bg-[#071d49] text-[#ffd100] py-3 px-8 rounded-b-xl text-lg transition duration-300 hover:bg-[#071d49] hover:text-white"
             >
               Want to know more
