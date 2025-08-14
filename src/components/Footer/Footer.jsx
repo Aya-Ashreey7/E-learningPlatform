@@ -43,10 +43,10 @@ export default function Footer() {
         
         {/* Social Links */}
         <div className="flex space-x-4 text-lg mt-4 md:mt-0">
-          <Link to="/" aria-label="Facebook" className="hover:text-[#F5F5F1]/80 transition">
+          <Link to="https://www.facebook.com/share/1EdGMkGCss/?mibextid=wwXIfr" aria-label="Facebook" className="hover:text-[#F5F5F1]/80 transition">
             <FaFacebookF />
           </Link>
-          <Link to="/" aria-label="Instagram" className="hover:text-[#F5F5F1]/80 transition">
+          <Link to="https://www.instagram.com/scientific_center1?igsh=dHlvcXB6aXo1M3pm" aria-label="Instagram" className="hover:text-[#F5F5F1]/80 transition">
             <FaInstagram />
           </Link>
           <a href="#" aria-label="YouTube" className="hover:text-[#F5F5F1]/80 transition">

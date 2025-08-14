@@ -19,40 +19,111 @@ export default function ManageCourses() {
   const [showModal, setShowModal] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [editCourseId, setEditCourseId] = useState(null);
+
   const [editFormData, setEditFormData] = useState({
     title: "",
     category_id: "",
     instructor: "",
     price: "",
     duration: "",
+    audience: "",
+    trainees_count: "",
+    certificate: "", // <-- "true" | "false" | ""
+    lectures_availability: "", // <-- "Available" | "Unavailable" | ""
     description: "",
     image: "",
   });
+
   const [categories, setCategories] = useState([]);
 
-  // جلب الدورات والكورسات
+  // Helpers
+  const toBool = (v) => {
+    if (typeof v === "boolean") return v;
+    if (typeof v === "number") return v !== 0;
+    if (typeof v === "string") {
+      const s = v.trim().toLowerCase();
+      if (["true", "yes", "1", "y"].includes(s)) return true;
+      if (["false", "no", "0", "n"].includes(s)) return false;
+      return null;
+    }
+    return null;
+  };
+
+  const normalizeLectures = (v) => {
+    // يدعم: boolean أو string متنوعة
+    if (typeof v === "boolean") return v ? "Available" : "Unavailable";
+    if (typeof v === "string" && v.trim() !== "") return v;
+    return "";
+  };
+
+  const parseNumber = (v, fallback = 0) => {
+    if (typeof v === "number") return v;
+    const n = parseInt(v, 10);
+    return Number.isFinite(n) ? n : fallback;
+  };
+
+  // جلب الدورات
   useEffect(() => {
     async function fetchCourses() {
       setLoading(true);
       const querySnapshot = await getDocs(collection(db, "Courses"));
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const data = querySnapshot.docs.map((d) => {
+        const raw = d.data();
+
+        // دعم أسماء متعددة محتملة من قاعدة البيانات
+        const traineesRaw =
+          raw.trainees_count ??
+          raw.trainees ??
+          raw.training ??
+          raw.training_count ??
+          raw.traineesCount ??
+          raw.students ??
+          raw.enrolled ??
+          0;
+
+        const certRaw =
+          raw.certificate ??
+          raw.has_certificate ??
+          raw.includes_certificate ??
+          raw.certificate_included ??
+          raw.is_certified ??
+          raw.certified ??
+          null;
+
+        const lecturesRaw =
+          raw.lectures_availability ??
+          raw.lectures ??
+          raw.lecturesAvailability ??
+          raw.availability ??
+          raw.lectures_status ??
+          "";
+
+        const audienceRaw = raw.audience ?? "";
+
+        return {
+          id: d.id,
+          ...raw,
+          trainees_count: parseNumber(traineesRaw, 0),
+          certificate: toBool(certRaw), // true | false | null
+          lectures_availability: normalizeLectures(lecturesRaw), // string: Available/Unavailable/other
+          audience: audienceRaw,
+        };
+      });
+
       setCourses(data);
       setLoading(false);
     }
     fetchCourses();
   }, []);
 
-  // جلب الكاتيجوريز من الفايرستور
+  // جلب الكاتيجوريز
   useEffect(() => {
     async function fetchCategories() {
       setLoading(true);
       const querySnapshot = await getDocs(collection(db, "Categories"));
-      const cats = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().name,
+      const cats = querySnapshot.docs.map((docu) => ({
+        id: docu.id,
+        name: docu.data().name,
       }));
       setCategories(cats);
       setLoading(false);
@@ -83,32 +154,71 @@ export default function ManageCourses() {
   const handleEditClick = (course) => {
     setEditCourseId(course.id);
     setEditFormData({
-      title: course.title,
-      category_id: course.category_id || "", // تأكد من استخدام category_id هنا
-      instructor: course.instructor,
-      price: course.price,
-      duration: course.duration,
-      description: course.description,
+      title: course.title || "",
+      category_id: course.category_id || "",
+      instructor: course.instructor || "",
+      price: course.price ?? "",
+      duration: course.duration || "",
+      audience: course.audience || "",
+      trainees_count: String(course.trainees_count ?? "0"),
+      certificate:
+        course.certificate === true
+          ? "true"
+          : course.certificate === false
+          ? "false"
+          : "",
+      lectures_availability: course.lectures_availability || "",
+      description: course.description || "",
       image: course.image || "",
     });
   };
 
   const handleEditChange = (e) => {
-    setEditFormData({
-      ...editFormData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setEditFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSaveEdit = async () => {
     if (!editCourseId) return;
 
+    // نحفظ بالمفاتيح القياسية
+    const payload = {
+      title: editFormData.title,
+      category_id: editFormData.category_id,
+      instructor: editFormData.instructor,
+      price:
+        editFormData.price === "" || editFormData.price === null
+          ? 0
+          : Number(editFormData.price),
+      duration: editFormData.duration,
+      audience: editFormData.audience || "",
+      trainees_count:
+        editFormData.trainees_count === "" ||
+        editFormData.trainees_count === null
+          ? 0
+          : parseInt(editFormData.trainees_count, 10) || 0,
+      certificate:
+        editFormData.certificate === true ||
+        editFormData.certificate === "true",
+      lectures_availability: editFormData.lectures_availability || "",
+      description: editFormData.description,
+      image: editFormData.image,
+    };
+
     const docRef = doc(db, "Courses", editCourseId);
-    await updateDoc(docRef, editFormData);
+    await updateDoc(docRef, payload);
 
     setCourses((prev) =>
       prev.map((course) =>
-        course.id === editCourseId ? { ...course, ...editFormData } : course
+        course.id === editCourseId
+          ? {
+              ...course,
+              ...payload,
+            }
+          : course
       )
     );
 
@@ -116,11 +226,11 @@ export default function ManageCourses() {
     setEditCourseId(null);
   };
 
-  // دالة مساعدة للحصول على اسم الفئة من الـ id
   const getCategoryName = (catId) => {
     const category = categories.find((cat) => cat.id === catId);
     return category ? category.name : "Unknown Category";
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -130,13 +240,16 @@ export default function ManageCourses() {
       </DashboardLayout>
     );
   }
+
+  const LECTURE_OPTIONS = ["Available", "Unavailable"];
+
   return (
     <DashboardLayout>
       <div className="p-6 min-h-screen bg-[#fff]">
         <div className="flex justify-between items-center pb-4">
           <h2 className="text-2xl font-bold text-[#071d49] pb-4">
             Manage Courses
-          </h2>{" "}
+          </h2>
           <input
             type="text"
             placeholder="Search by any detail..."
@@ -158,26 +271,44 @@ export default function ManageCourses() {
                 <th className="p-3">Instructor</th>
                 <th className="p-3">Price</th>
                 <th className="p-3">Duration</th>
+                <th className="p-3">Audience</th>
+                <th className="p-3">Trainees</th>
+                <th className="p-3">Certificate</th>
+                <th className="p-3">Lectures</th>
                 <th className="p-3">Description</th>
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
+
             <tbody>
               {courses
                 .filter((course) => {
-                  const searchLower = search.toLowerCase();
+                  const s = search.toLowerCase();
+                  const certText =
+                    course.certificate === true
+                      ? "yes"
+                      : course.certificate === false
+                      ? "no"
+                      : "n/a";
                   return (
-                    course.title?.toLowerCase().includes(searchLower) ||
-                    course.instructor?.toLowerCase().includes(searchLower) ||
+                    course.title?.toLowerCase().includes(s) ||
+                    course.instructor?.toLowerCase().includes(s) ||
                     getCategoryName(course.category_id)
                       ?.toLowerCase()
-                      .includes(searchLower) ||
-                    course.price
-                      ?.toString()
+                      .includes(s) ||
+                    String(course.price ?? "")
                       .toLowerCase()
-                      .includes(searchLower) ||
-                    course.duration?.toLowerCase().includes(searchLower) ||
-                    course.description?.toLowerCase().includes(searchLower)
+                      .includes(s) ||
+                    course.duration?.toLowerCase().includes(s) ||
+                    course.description?.toLowerCase().includes(s) ||
+                    course.audience?.toLowerCase().includes(s) ||
+                    String(course.trainees_count ?? "")
+                      .toLowerCase()
+                      .includes(s) ||
+                    (course.lectures_availability || "")
+                      .toLowerCase()
+                      .includes(s) ||
+                    certText.includes(s)
                   );
                 })
                 .map((course) => (
@@ -200,8 +331,20 @@ export default function ManageCourses() {
                     <td className="p-3">{course.instructor}</td>
                     <td className="p-3">{course.price}</td>
                     <td className="p-3">{course.duration}</td>
+                    <td className="p-3">{course.audience || "N/A"}</td>
+                    <td className="p-3">{course.trainees_count ?? 0}</td>
+                    <td className="p-3">
+                      {course.certificate === true
+                        ? "Yes"
+                        : course.certificate === false
+                        ? "No"
+                        : "N/A"}
+                    </td>
+                    <td className="p-3">
+                      {course.lectures_availability || "N/A"}
+                    </td>
                     <td className="p-3 max-w-xs group relative">
-                      {course.description.length > 100 ? (
+                      {course.description && course.description.length > 100 ? (
                         <>
                           <span className="truncate block">
                             {course.description.slice(0, 100)}...
@@ -218,7 +361,7 @@ export default function ManageCourses() {
                           </div>
                         </>
                       ) : (
-                        course.description
+                        course.description || "—"
                       )}
                     </td>
                     <td>
@@ -242,6 +385,7 @@ export default function ManageCourses() {
             </tbody>
           </table>
         </div>
+
         {/* Description Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -261,6 +405,7 @@ export default function ManageCourses() {
             </div>
           </div>
         )}
+
         {/* Confirm Delete Modal */}
         {confirmDeleteId && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -286,6 +431,7 @@ export default function ManageCourses() {
             </div>
           </div>
         )}
+
         {/* Edit Modal */}
         {editCourseId && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -299,6 +445,7 @@ export default function ManageCourses() {
                   className="border p-2 rounded"
                   placeholder="Title"
                 />
+
                 <select
                   name="category_id"
                   value={editFormData.category_id}
@@ -332,13 +479,16 @@ export default function ManageCourses() {
                   className="border p-2 rounded"
                   placeholder="Instructor"
                 />
+
                 <input
+                  type="number"
                   name="price"
                   value={editFormData.price}
                   onChange={handleEditChange}
                   className="border p-2 rounded"
                   placeholder="Price"
                 />
+
                 <input
                   name="duration"
                   value={editFormData.duration}
@@ -346,6 +496,67 @@ export default function ManageCourses() {
                   className="border p-2 rounded"
                   placeholder="Duration"
                 />
+
+                <select
+                  name="audience"
+                  value={editFormData.audience || ""}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded w-full bg-[#e2e8f0] text-[#071d49]"
+                >
+                  <option value="" disabled>
+                    Select audience
+                  </option>
+                  <option value="Kids">Kids</option>
+                  <option value="Adults">Adults</option>
+                </select>
+
+                <input
+                  type="number"
+                  min="0"
+                  name="trainees_count"
+                  value={editFormData.trainees_count}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded"
+                  placeholder="Number of trainees"
+                />
+
+                {/* شهادة */}
+                <select
+                  name="certificate"
+                  value={editFormData.certificate}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded w-full bg-[#e2e8f0] text-[#071d49]"
+                >
+                  <option value="" disabled>
+                    Includes certificate?
+                  </option>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+
+                {/* توفر المحاضرات */}
+                <select
+                  name="lectures_availability"
+                  value={editFormData.lectures_availability}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded w-full bg-[#e2e8f0] text-[#071d49]"
+                >
+                  <option value="" disabled>
+                    Lectures availability
+                  </option>
+                  {/* لو القيمة الحالية مختلفة (مثلاً Recorded/Live) هنظهرها عشان متختفيش */}
+                  {!LECTURE_OPTIONS.includes(
+                    editFormData.lectures_availability
+                  ) &&
+                    editFormData.lectures_availability && (
+                      <option value={editFormData.lectures_availability}>
+                        {editFormData.lectures_availability}
+                      </option>
+                    )}
+                  <option value="Available">Available</option>
+                  <option value="Unavailable">Unavailable</option>
+                </select>
+
                 <textarea
                   name="description"
                   value={editFormData.description}
@@ -354,6 +565,7 @@ export default function ManageCourses() {
                   placeholder="Description"
                 />
               </div>
+
               <div className="flex justify-end gap-2 mt-4">
                 <button
                   onClick={handleSaveEdit}
@@ -371,6 +583,7 @@ export default function ManageCourses() {
             </div>
           </div>
         )}
+
         <ToastContainer />
       </div>
     </DashboardLayout>

@@ -32,7 +32,7 @@ const NotificationsPage = () => {
 
     try {
       const q = query(
-        collection(db, "notifications"),
+        collection(db, "Notifications"),
         where("userId", "==", user.uid)
       );
 
