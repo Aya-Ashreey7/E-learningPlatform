@@ -31,6 +31,7 @@ import PaymentSuccess from "./components/Checkout/PaymentSuccess";
 import ProfilePage from './pages/ProfilePage';
 import EditProfile from './pages/EditProfile';
 import NotificationsPage from './pages/NotificationsPage';
+import KidsCourseDetails from "./pages/KidsDetails";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/verified-redirect" element={<VerifiedRedirect />} />
         <Route path="/forgot-password" element={<ResetPassword />} />
+        <Route path="/courses/kids/:id" element={<KidsCourseDetails />} />
 
         {/* Dashboard */}
         <Route path="/dashboard/overview" element={<Overview />} />
@@ -61,7 +63,7 @@ function App() {
         <Route path="/paymentSuccess" element={<PaymentSuccess />} />
         <Route path="/ProfilePage" element={<ProfilePage />} />
         <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/Notifications" element={<NotificationsPage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
       </Routes>
 
       <Toaster position="top-center" reverseOrder={false} />

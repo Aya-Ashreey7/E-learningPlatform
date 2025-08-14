@@ -15,7 +15,7 @@ export default function VerifyEmail() {
         clearInterval(interval);
         navigate("/login");
       }
-    }, 3000); 
+    }, 3000);
 
     return () => clearInterval(interval);
   }, []);
@@ -27,6 +27,11 @@ export default function VerifyEmail() {
         <p className="mt-2 text-gray-600">
           Please verify your email address to continue.
         </p>
+
+        <div className="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-md font-medium">
+          ⚠️ If you don't see the email, check your <strong>Spam</strong>
+        </div>
+
         <p className="mt-4 text-sm text-gray-500">
           This page will automatically redirect once verified.
         </p>
