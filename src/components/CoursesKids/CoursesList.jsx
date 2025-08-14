@@ -12,6 +12,7 @@ export default function CoursesList({ courses, categoryMap }) {
       {courses.map((course) => (
         <CourseCard
           key={course.id}
+          id={course.id}
           image={course.image || "/default-image.jpg"}
           title={course.title}
           category={categoryMap[course.category_id] || "Unknown"} // هنا نستخدم الاسم بدل id

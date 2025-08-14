@@ -6,7 +6,6 @@ import { Toaster } from "react-hot-toast";
 // Pages & Components
 import Hero from "./components/Hero/Hero";
 import AboutUs from "./pages/AboutUs";
-import Home from "./pages/Home";
 import CoursesPage from "./pages/CoursesPage";
 import CartPage from "./pages/CartPage";
 import ContactPage from "./pages/ContactPage";
@@ -25,7 +24,6 @@ import Feedback from "./pages/Feedback";
 import ProfilePage from "./pages/ProfilePage";
 import EditProfile from "./pages/EditProfile";
 import NotificationsPage from "./pages/NotificationsPage";
-import CourseKids from "./pages/CourseKids";
 
 // Checkout
 import { CartProvider } from "./context/CartContext";
@@ -33,6 +31,8 @@ import AddressForm from "./components/Checkout/AddressForm";
 import Checkout from "./components/Checkout/Checkout";
 import PaymentModal from "./components/Checkout/PaymentModal";
 import PaymentSuccess from "./components/Checkout/PaymentSuccess";
+import KidsCourseDetails from "./pages/KidsCourseDetails";
+import CourseKids from "./pages/CourseKids";
 
 function App() {
   return (
