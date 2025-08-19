@@ -6,7 +6,6 @@ import { Toaster } from "react-hot-toast";
 // Pages & Components
 import Hero from "./components/Hero/Hero";
 import AboutUs from "./pages/AboutUs";
-import Home from "./pages/Home";
 import CoursesPage from "./pages/CoursesPage";
 import CartPage from "./pages/CartPage";
 import ContactPage from "./pages/ContactPage";
@@ -34,6 +33,8 @@ import AddressForm from "./components/Checkout/AddressForm";
 import Checkout from "./components/Checkout/Checkout";
 import PaymentModal from "./components/Checkout/PaymentModal";
 import PaymentSuccess from "./components/Checkout/PaymentSuccess";
+import KidsCourseDetails from "./pages/KidsCourseDetails";
+import CourseKids from "./pages/CourseKids";
 import Wishlist from "./pages/Wishlist";
 import CourseDetails from "./pages/CourseDetails";
 
@@ -57,6 +58,7 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/verified-redirect" element={<VerifiedRedirect />} />
         <Route path="/forgot-password" element={<ResetPassword />} />
+        <Route path="/courses/kids/:id" element={<KidsCourseDetails />} />
 
         {/* Dashboard */}
         <Route path="/dashboard/overview" element={<Overview />} />
@@ -75,7 +77,7 @@ function App() {
         {/* User Profile */}
         <Route path="/ProfilePage" element={<ProfilePage />} />
         <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/Notifications" element={<NotificationsPage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
       </Routes>
 
       <Toaster position="top-center" reverseOrder={false} />

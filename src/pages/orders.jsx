@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
 import { Eye, Check, X, MapPin, Phone, User, CreditCard, Package, Search, ChevronDown, Calendar, } from "lucide-react";
 import { db } from "../firebase";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, addDoc, serverTimestamp, } from "firebase/firestore";
 import toast from "react-hot-toast";
 import BeatLoader from "react-spinners/BeatLoader";
 
@@ -76,24 +76,34 @@ export default function Orders() {
         setFilteredOrders(filtered);
     }, [orders, searchTerm, statusFilter]);
 
-    // ----------------------------
-    // 3) Update order status in Firestore (Approve / Reject)
-    // ----------------------------
+
     const handleStatusChange = async (orderId, newStatus) => {
         try {
-            // update the document in Firestore
             const ref = doc(db, "Orders", orderId);
             await updateDoc(ref, { status: newStatus });
 
-            // optimistic toast - UI will refresh via onSnapshot automatically
-            toast.success(`Order ${orderId} set to ${newStatus}.`);
+            const order = orders.find((o) => o.id === orderId);
+            if (!order) throw new Error("Order not found");
+            await addDoc(collection(db, "Notifications"), {
+                userId: order.userId,
+                orderId,
+                status: newStatus,
+                message:
+                    newStatus === "approved"
+                        ? `Your order  has been approved ✅`
+                        : `Your order  has been rejected ❌`,
+                createdAt: serverTimestamp(),
+                read: false,
+            });
+            toast.success(`Order set to ${newStatus} and notification sent.`);
+            // await updateDoc(ref, { status: newStatus });
+            // toast.success(`Order ${orderId} set to ${newStatus}.`);
         } catch (err) {
             console.error("Failed to update order status:", err);
             toast.error("Failed to update order status. Please try again.");
         }
     };
 
-    // same color helper as before
     const getStatusColor = (status) => {
         switch (status) {
             case "pending":
@@ -107,7 +117,6 @@ export default function Orders() {
         }
     };
 
-    // date formatting helper
     const formatDate = (date) => {
         if (!date) return "—";
         return new Intl.DateTimeFormat("en-US", {
@@ -119,7 +128,8 @@ export default function Orders() {
         }).format(date);
     };
 
-    // Modal component (kept mostly same; uses live order object)
+
+
     const OrderDetailsModal = ({ order, onClose }) => {
         if (!order) return null;
 
@@ -295,9 +305,6 @@ export default function Orders() {
         );
     };
 
-    // ----------------------------
-    // Render: header, filters, table, modal
-    // ----------------------------
     return (
         <DashboardLayout>
             <div className="space-y-6">

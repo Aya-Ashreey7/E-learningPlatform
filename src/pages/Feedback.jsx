@@ -20,7 +20,7 @@ const mockFeedbacks = [
         status: "pending", // pending, approved, rejected
         isPublic: false,
         helpfulVotes: 0,
-        category: "Adult courses",
+        category: "Adult",
     },
     {
         id: "feedback_002",
@@ -38,7 +38,7 @@ const mockFeedbacks = [
         status: "approved",
         isPublic: true,
         helpfulVotes: 12,
-        category: "Adult courses",
+        category: "Adult",
     },
     {
         id: "feedback_003",
@@ -56,7 +56,7 @@ const mockFeedbacks = [
         status: "approved",
         isPublic: true,
         helpfulVotes: 5,
-        category: "Kids courses",
+        category: "Kids",
     },
     {
         id: "feedback_004",
@@ -74,7 +74,7 @@ const mockFeedbacks = [
         status: "rejected",
         isPublic: false,
         helpfulVotes: 0,
-        category: "Adult courses",
+        category: "Adult",
     },
     {
         id: "feedback_005",
@@ -92,7 +92,7 @@ const mockFeedbacks = [
         status: "pending",
         isPublic: false,
         helpfulVotes: 0,
-        category: "Adult courses",
+        category: "Adult",
     },
 ]
 
@@ -413,8 +413,8 @@ export default function Feedback() {
                                     className="appearance-none bg-gray-50 border-2 border-gray-200 rounded-lg px-4 py-3 pr-10 text-[#071d49] focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/20 transition-all font-medium"
                                 >
                                     <option value="all">All Categories</option>
-                                    <option value="course">Adult Courses</option>
-                                    <option value="website">Kids Courses</option>
+                                    <option value="course">Adult</option>
+                                    <option value="website">Kids</option>
                                 </select>
                                 <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
                             </div>
