@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Menu, X, User, ChevronDown } from 'lucide-react'; // Added ChevronDown icon
+import { Menu, X, User, ChevronDown } from 'lucide-react';
+import { FaShoppingCart, FaHeart } from 'react-icons/fa'; // ✅ Cart & Wishlist icons
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [coursesMenuOpen, setCoursesMenuOpen] = useState(false); // New for courses dropdown
+  const [coursesMenuOpen, setCoursesMenuOpen] = useState(false);
   const customColor = '#ffd100';
 
   const links = [
     { name: 'Blog', to: '/blog' },
     { name: 'About us', to: '/aboutus' },
-    { name: 'LearnPress Add-On', to: '/learnpress' },
-    { name: 'Premium Theme', to: '/premiumtheme' },
+    { name: 'Contact us', to: '/contactus' },
+    
   ];
 
   return (
@@ -60,7 +61,7 @@ const Navbar = () => {
                     Kids Courses
                   </NavLink>
                   <NavLink
-                    to="/courses/adult"
+                    to="/courses/adults"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                     onClick={() => setCoursesMenuOpen(false)}
                   >
@@ -74,11 +75,25 @@ const Navbar = () => {
           {/* Other links */}
           {links.map((link) => (
             <li key={link.name}>
-              <Link to={link.to} className="text-white hover:text-gray-300">
+              <Link to={link.to} className="text-white  hover:text-[#ffd100]">
                 {link.name}
               </Link>
             </li>
           ))}
+
+          {/* Wishlist Icon */}
+          <li>
+            <NavLink to="/wishlist" className="text-white hover:text-[#ffd100]">
+              <FaHeart size={22} />
+            </NavLink>
+          </li>
+
+          {/* Cart Icon */}
+          <li>
+            <NavLink to="/cart" className="text-white hover:text-[#ffd100]">
+              <FaShoppingCart size={22} />
+            </NavLink>
+          </li>
 
           {/* User dropdown */}
           <li className="relative">
@@ -170,8 +185,26 @@ const Navbar = () => {
                 </NavLink>
               ))}
 
+              {/* Wishlist + Cart in mobile */}
+              <div className="flex space-x-6 mt-2">
+                <NavLink
+                  to="/wishlist"
+                  className="text-white hover:text-[#ffd100]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <FaHeart size={22} />
+                </NavLink>
+                <NavLink
+                  to="/cart"
+                  className="text-white hover:text-[#ffd100]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <FaShoppingCart size={22} />
+                </NavLink>
+              </div>
+
               {/* Mobile User Menu */}
-              <div className="flex flex-col items-center space-y-1">
+              <div className="flex flex-col items-center space-y-1 mt-2">
                 <NavLink
                   to="/login"
                   className="text-white hover:text-[#ffd100] block"

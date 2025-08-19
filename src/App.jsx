@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import {  Routes, Route } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import { Toaster } from "react-hot-toast";
@@ -26,6 +26,7 @@ import ProfilePage from "./pages/ProfilePage";
 import EditProfile from "./pages/EditProfile";
 import NotificationsPage from "./pages/NotificationsPage";
 import CourseKids from "./pages/CourseKids";
+import CourseAdults from "./pages/Courseadults";
 
 // Checkout
 import { CartProvider } from "./context/CartContext";
@@ -33,6 +34,9 @@ import AddressForm from "./components/Checkout/AddressForm";
 import Checkout from "./components/Checkout/Checkout";
 import PaymentModal from "./components/Checkout/PaymentModal";
 import PaymentSuccess from "./components/Checkout/PaymentSuccess";
+import Wishlist from "./pages/Wishlist";
+import CourseDetails from "./pages/CourseDetails";
+
 
 function App() {
   return (
@@ -40,9 +44,12 @@ function App() {
       <Routes>
         {/* Public Pages */}
         <Route path="/" element={<Hero />} />
+        <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/kids" element={<CourseKids />} />
+        <Route path="/courses/adults" element={<CourseAdults />} />
+        <Route path="/course/:id" element={<CourseDetails />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginForm />} />

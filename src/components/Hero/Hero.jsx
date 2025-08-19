@@ -104,6 +104,7 @@ const Hero = () => {
 </section>
 
       <StatsSection /> {/* Add the new section here */}
+      
       {/* Categories Section */}
       <section id="categories" className="bg-white py-16 px-4 md:px-10 mb-8">
         <div className="max-w-7xl mx-auto">
@@ -121,15 +122,12 @@ const Hero = () => {
           {/* Cards Grid */}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
             {categories.map((cat, index) => (
-              <motion.a
-                href={cat.link}
-                key={index}
-                className="bg-[#f9f9f9] p-6 rounded-lg shadow-md text-center hover:shadow-xl transition duration-300 cursor-pointer group"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-                viewport={{ once: true }}
-              >
+              <Link
+               to={cat.link}
+               key={index}
+               className="bg-[#f9f9f9] p-6 rounded-lg shadow-md text-center hover:shadow-xl transition duration-300 cursor-pointer group"
+               >
+
                 <div className="text-[#ffd100] mb-4 flex justify-center group-hover:scale-110 transition-transform duration-200">
                   {cat.icon}
                 </div>
@@ -137,7 +135,7 @@ const Hero = () => {
                   {cat.title}
                 </h3>
                 <p className="text-gray-600 text-sm">{cat.description}</p>
-              </motion.a>
+              </Link>
             ))}
           </div>
         </div>
