@@ -24,8 +24,6 @@ import Feedback from "./pages/Feedback";
 import ProfilePage from "./pages/ProfilePage";
 import EditProfile from "./pages/EditProfile";
 import NotificationsPage from "./pages/NotificationsPage";
-import CourseKids from "./pages/CourseKids";
-import CourseAdults from "./pages/Courseadults";
 
 // Checkout
 import { CartProvider } from "./context/CartContext";
@@ -36,6 +34,7 @@ import PaymentSuccess from "./components/Checkout/PaymentSuccess";
 import KidsCourseDetails from "./pages/KidsCourseDetails";
 import CourseKids from "./pages/CourseKids";
 import Wishlist from "./pages/Wishlist";
+import CourseAdults from "./pages/Courseadults";
 import CourseDetails from "./pages/CourseDetails";
 
 
