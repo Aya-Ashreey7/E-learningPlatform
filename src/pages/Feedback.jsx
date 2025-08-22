@@ -413,8 +413,8 @@ export default function Feedback() {
                                     className="appearance-none bg-gray-50 border-2 border-gray-200 rounded-lg px-4 py-3 pr-10 text-[#071d49] focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/20 transition-all font-medium"
                                 >
                                     <option value="all">All Categories</option>
-                                    <option value="course">Adult</option>
-                                    <option value="website">Kids</option>
+                                    <option value="Adult">Adult Courses</option>
+                                    <option value="Kids">Kids Courses</option>
                                 </select>
                                 <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
                             </div>
