@@ -33,27 +33,40 @@ export default function LoginForm() {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
       const user = userCredential.user;
 
-      if (!user.emailVerified) {
-        toast.error("Please verify your email before logging in.");
+      // --- Check if admin ---
+      const adminRef = doc(db, "admins", user.uid);
+      const adminSnap = await getDoc(adminRef);
+
+      if (adminSnap.exists()) {
+        toast.success(`Welcome back Admin !`);
+        navigate("/dashboard/overview");
         return;
       }
+
+      // --- If not admin, check if normal user ---
       const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
       const firstName = localStorage.getItem("firstName") || "";
       const lastName = localStorage.getItem("lastName") || "";
-
-      if (!userSnap.exists()) {
-        await setDoc(userRef, {
-          email: user.email,
-          firstName,
-          lastName,
-        });
-        toast.success(`Welcome ${firstName || "User"}! Your profile is now saved.`);
-      } else {
-        toast.success(`Login successful, welcome back ${firstName || "User"}!`);
+      // Users must verify email
+      if (!user.emailVerified) {
+        toast.error("Please verify your email before logging in.");
+        return;
       }
 
-      navigate("/");
+      if (userSnap.exists()) {
+        toast.success(`Welcome back ${firstName || "User"}!`);
+        navigate("/");
+        return;
+
+      } else {
+        await setDoc(userRef, { email: user.email, firstName, lastName });
+        toast.success(`Welcome ${firstName || "User"}! Your profile is now saved.`);
+        navigate("/");
+        return;
+      }
+
+
     } catch (error) {
       console.error("Login failed:", error);
       const errorMessages = {
