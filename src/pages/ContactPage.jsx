@@ -76,14 +76,17 @@ const ContactPage = () => {
               Contact us via phone or email. We’re happy to help with any questions.
             </p>
 
+            {/* Phones */}
             <div className="flex items-start gap-4">
               <Phone className="text-[#ffd100] mt-1" />
               <div>
                 <p className="text-sm font-medium">Phone</p>
-                <p className="text-sm text-gray-600">(234) 456 78903</p>
+                <p className="text-sm text-gray-600">01000745165</p>
+                <p className="text-sm text-gray-600">01010959839</p>
               </div>
             </div>
 
+            {/* Email */}
             <div className="flex items-start gap-4">
               <Mail className="text-[#ffd100] mt-1" />
               <div>
@@ -93,14 +96,17 @@ const ContactPage = () => {
             </div>
           </div>
 
+          {/* Google Maps */}
           <div className="rounded-2xl overflow-hidden shadow-md w-full h-64 md:h-auto border">
             <iframe
-              title="Beni Suef Location"
-              src="https://www.google.com/maps?q=beni+suef,+egypt&output=embed"
+              title="Our Location"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3476.3958733028443!2d31.097!3d29.066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145a2468b8db3f8d%3A0x0!2z2KfZhNmF2YjZhNiq2KfZitip!5e0!3m2!1sen!2seg!4vXXXXXXXXXXXX"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
           </div>
         </div>
@@ -123,7 +129,9 @@ const ContactPage = () => {
                     errors.name ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+                {errors.name && (
+                  <p className="text-red-500 text-sm">{errors.name.message}</p>
+                )}
               </div>
               <div>
                 <input
@@ -134,7 +142,9 @@ const ContactPage = () => {
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email.message}</p>
+                )}
               </div>
             </div>
 
