@@ -161,11 +161,11 @@ const PaymentModal = ({
               <p>
                 {isVodafone ? (
                   <>
-                    Wallet Number: <strong>01012345678</strong>
+                    Wallet Number: <strong>01097350978</strong>
                   </>
                 ) : (
                   <>
-                    Bank Account: <strong>EG123456789</strong>
+                    InstaPay Account: <strong>01097350978</strong>
                     <br />
                     <span>You can also scan the QR code to pay.</span>
                   </>
