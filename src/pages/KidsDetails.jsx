@@ -87,12 +87,12 @@ const courseData = {
 
 export default function KidsCourseDetails() {
     const [activeTab, setActiveTab] = useState("overview")
-    const [isEnrolled, setIsEnrolled] = useState(false)
+    // const [isEnrolled, setIsEnrolled] = useState(false)
     const [isFavorited, setIsFavorited] = useState(false)
 
-    const handleEnroll = () => {
-        setIsEnrolled(true)
-    }
+    // const handleEnroll = () => {
+    //     setIsEnrolled(true)
+    // }
 
     const toggleFavorite = () => {
         setIsFavorited(!isFavorited)
@@ -130,9 +130,9 @@ export default function KidsCourseDetails() {
                                     <span className="bg-[#ffd100] text-[#071d49] px-3 py-1 rounded-full text-sm font-bold">
                                         👶 {courseData.audience}
                                     </span>
-                                    <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm font-medium">
+                                    {/* <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm font-medium">
                                         {courseData.level}
-                                    </span>
+                                    </span> */}
                                 </div>
 
                                 <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">{courseData.title}</h1>
@@ -188,9 +188,9 @@ export default function KidsCourseDetails() {
                                         className="w-full h-64 object-cover"
                                     />
                                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                        <button className="bg-[#ffd100] text-[#071d49] p-4 rounded-full shadow-lg hover:scale-110 transition-transform">
+                                        {/* <button className="bg-[#ffd100] text-[#071d49] p-4 rounded-full shadow-lg hover:scale-110 transition-transform">
                                             <Play size={32} className="ml-1" />
-                                        </button>
+                                        </button> */}
                                     </div>
                                     <div className="absolute top-4 right-4">
                                         <button
@@ -215,24 +215,23 @@ export default function KidsCourseDetails() {
                                     </div>
 
                                     <button
-                                        onClick={handleEnroll}
-                                        disabled={isEnrolled}
-                                        className={`w-full py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-105 ${isEnrolled
-                                            ? "bg-green-500 text-white cursor-not-allowed"
-                                            : "bg-[#ffd100] text-[#071d49] hover:bg-[#ffd100]/90 shadow-lg"
+                                        // onClick={handleEnroll}
+                                        // disabled={isEnrolled}
+                                        className={`w-full py-4 rounded-xl font-bold text-lg transition-all transform hover:scale-105 
+                                             bg-[#ffd100] text-[#071d49] hover:bg-[#ffd100]/90 shadow-lg
                                             }`}
                                     >
-                                        {isEnrolled ? (
+                                        {/* {isEnrolled ? (
                                             <span className="flex items-center justify-center gap-2">
                                                 <CheckCircle size={20} />
                                                 Enrolled! 🎉
                                             </span>
                                         ) : (
                                             "Start Learning Now! 🚀"
-                                        )}
+                                        )} */}
                                     </button>
 
-                                    <div className="flex gap-2">
+                                    {/* <div className="flex gap-2">
                                         <button className="flex-1 bg-gray-100 text-[#071d49] py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
                                             <Share2 size={18} />
                                             Share
@@ -241,7 +240,7 @@ export default function KidsCourseDetails() {
                                             <Download size={18} />
                                             Download
                                         </button>
-                                    </div>
+                                    </div> */}
 
                                     {/* Course Includes Preview */}
                                     <div className="border-t pt-4 space-y-2">
@@ -373,7 +372,7 @@ export default function KidsCourseDetails() {
                                 </div>
                             )}
 
-                            {activeTab === "curriculum" && (
+                            {/* {activeTab === "curriculum" && (
                                 <div className="space-y-6">
                                     <h3 className="text-2xl font-bold text-[#071d49] mb-6 flex items-center gap-2">
                                         <BookOpen className="text-[#ffd100]" />
@@ -408,7 +407,7 @@ export default function KidsCourseDetails() {
                                         ))}
                                     </div>
                                 </div>
-                            )}
+                            )} */}
 
                             {activeTab === "instructor" && (
                                 <div className="space-y-6">
@@ -576,7 +575,9 @@ export default function KidsCourseDetails() {
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <span className="text-gray-600">Age Range:</span>
-                                    <span className="font-medium text-[#071d49]">{courseData.ageRange}</span>
+                                    {/* <span className="font-medium text-[#071d49]">{courseData.ageRange}</span> */}
+                                    <span className="font-medium text-[#071d49]"> 10 : 18</span>
+
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <span className="text-gray-600">Duration:</span>
@@ -602,7 +603,7 @@ export default function KidsCourseDetails() {
                         </div>
 
                         {/* Related Courses */}
-                        <div className="bg-white rounded-2xl border-2 border-gray-100 p-6">
+                        {/* <div className="bg-white rounded-2xl border-2 border-gray-100 p-6">
                             <h4 className="font-bold text-[#071d49] mb-4">More Kids Courses</h4>
                             <div className="space-y-4">
                                 {[
@@ -634,7 +635,7 @@ export default function KidsCourseDetails() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
