@@ -47,7 +47,7 @@ const Navbar = () => {
   const links = [
     { name: "Blog", to: "/blog" },
     { name: "About us", to: "/aboutus" },
-    { name: "Contact us", to: "/contactus" },
+    { name: "Contact us", to: "/contact" },
   ];
 
   return (
