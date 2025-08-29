@@ -1,3 +1,5 @@
+import { collection, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -7,18 +9,53 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { db } from "../../firebase";
 
 // Sample data showing number of bookings per month
-const data = [
-  { name: "January", bookings: 20 },
-  { name: "February", bookings: 35 },
-  { name: "March", bookings: 28 },
-  { name: "April", bookings: 50 },
-  { name: "May", bookings: 45 },
-  { name: "June", bookings: 60 },
-];
 
 export default function BarChartComponent() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "Orders"), (snapshot) => {
+      const orders = snapshot.docs.map((doc) => doc.data());
+
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      const monthlyBookings = new Array(12).fill(0);
+
+      orders.forEach((order) => {
+        if (order.createdAt) {
+          const date = order.createdAt.toDate();
+          const monthIndex = date.getMonth();
+          monthlyBookings[monthIndex]++;
+        }
+      });
+
+      const chartData = months.map((name, index) => ({
+        name,
+        bookings: monthlyBookings[index],
+      }));
+
+      setData(chartData);
+    });
+
+    return () => unsubscribe(); // دي بتنظف الـ listener لما الكومبوننت يتشال
+  }, []);
+
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data}>

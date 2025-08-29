@@ -2,10 +2,9 @@ import { useState, useEffect, memo } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import { FaStar, FaBook, FaGraduationCap, FaLaptop } from "react-icons/fa";
 import CoursesList from "../components/CoursesKids/CoursesList";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
-// SearchBar مفصول ومستقل مع React.memo
 const SearchBar = memo(function SearchBar({
   search,
   setSearch,
@@ -63,13 +62,13 @@ export default function CourseKids() {
     {
       id: 1,
       icon: <FaStar size={40} className="text-gray-400" />,
-      top: "5%", // رفعتها من 10% لـ 5%
+      top: "5%",
       left: "2%",
     },
     {
       id: 2,
       icon: <FaBook size={40} className="text-gray-400" />,
-      top: "15%", // رفعتها من 30% لـ 15%
+      top: "15%",
       left: "2%",
     },
     {
@@ -94,7 +93,6 @@ export default function CourseKids() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // حالات البحث والفلترة
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
@@ -110,15 +108,17 @@ export default function CourseKids() {
     async function fetchData() {
       setLoading(true);
       try {
-        // جلب الكورسات
-        const coursesCol = collection(db, "Courses");
+        const coursesCol = query(
+          collection(db, "Courses"),
+          where("audience", "==", "Kids")
+        );
+
         const coursesSnapshot = await getDocs(coursesCol);
         const coursesList = coursesSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
-        // جلب التصنيفات
         const categoriesCol = collection(db, "Categories");
         const categoriesSnapshot = await getDocs(categoriesCol);
         const categoriesList = categoriesSnapshot.docs.map((doc) => ({
@@ -136,13 +136,11 @@ export default function CourseKids() {
     fetchData();
   }, []);
 
-  // بناء خريطة من category_id -> category name
   const categoryMap = categories.reduce((acc, cat) => {
     acc[cat.id] = cat.name;
     return acc;
   }, {});
 
-  // فلترة الكورسات حسب البحث والفلتر
   const filteredCourses = courses.filter((course) => {
     const courseCategoryName = categoryMap[course.category_id] || "";
 

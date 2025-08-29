@@ -19,6 +19,7 @@ export default function ManageCourses() {
   const [showModal, setShowModal] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [editCourseId, setEditCourseId] = useState(null);
+  const [editImageFile, setEditImageFile] = useState(null);
 
   const [editFormData, setEditFormData] = useState({
     title: "",
@@ -28,15 +29,14 @@ export default function ManageCourses() {
     duration: "",
     audience: "",
     trainees_count: "",
-    certificate: "", // <-- "true" | "false" | ""
-    lectures_availability: "", // <-- "Available" | "Unavailable" | ""
+    certificate: "",
+    lectures_availability: "",
     description: "",
     image: "",
   });
 
   const [categories, setCategories] = useState([]);
 
-  // Helpers
   const toBool = (v) => {
     if (typeof v === "boolean") return v;
     if (typeof v === "number") return v !== 0;
@@ -50,7 +50,6 @@ export default function ManageCourses() {
   };
 
   const normalizeLectures = (v) => {
-    // يدعم: boolean أو string متنوعة
     if (typeof v === "boolean") return v ? "Available" : "Unavailable";
     if (typeof v === "string" && v.trim() !== "") return v;
     return "";
@@ -62,7 +61,6 @@ export default function ManageCourses() {
     return Number.isFinite(n) ? n : fallback;
   };
 
-  // جلب الدورات
   useEffect(() => {
     async function fetchCourses() {
       setLoading(true);
@@ -70,7 +68,6 @@ export default function ManageCourses() {
       const data = querySnapshot.docs.map((d) => {
         const raw = d.data();
 
-        // دعم أسماء متعددة محتملة من قاعدة البيانات
         const traineesRaw =
           raw.trainees_count ??
           raw.trainees ??
@@ -104,8 +101,8 @@ export default function ManageCourses() {
           id: d.id,
           ...raw,
           trainees_count: parseNumber(traineesRaw, 0),
-          certificate: toBool(certRaw), // true | false | null
-          lectures_availability: normalizeLectures(lecturesRaw), // string: Available/Unavailable/other
+          certificate: toBool(certRaw),
+          lectures_availability: normalizeLectures(lecturesRaw),
           audience: audienceRaw,
         };
       });
@@ -116,7 +113,6 @@ export default function ManageCourses() {
     fetchCourses();
   }, []);
 
-  // جلب الكاتيجوريز
   useEffect(() => {
     async function fetchCategories() {
       setLoading(true);
@@ -184,6 +180,13 @@ export default function ManageCourses() {
   const handleSaveEdit = async () => {
     if (!editCourseId) return;
 
+    let imageUrl = editFormData.image;
+
+    if (editImageFile) {
+      toast.info("Uploading image...");
+      imageUrl = await uploadImageCloudinary(editImageFile);
+      toast.dismiss();
+    }
     // نحفظ بالمفاتيح القياسية
     const payload = {
       title: editFormData.title,
@@ -205,7 +208,7 @@ export default function ManageCourses() {
         editFormData.certificate === "true",
       lectures_availability: editFormData.lectures_availability || "",
       description: editFormData.description,
-      image: editFormData.image,
+      image: imageUrl,
     };
 
     const docRef = doc(db, "Courses", editCourseId);
@@ -224,6 +227,7 @@ export default function ManageCourses() {
 
     toast.success("Course updated successfully");
     setEditCourseId(null);
+    setEditImageFile(null);
   };
 
   const getCategoryName = (catId) => {
@@ -243,26 +247,41 @@ export default function ManageCourses() {
 
   const LECTURE_OPTIONS = ["Available", "Unavailable"];
 
+  const uploadImageCloudinary = async (file) => {
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "admin_courses");
+    data.append("cloud_name", "dciqod9kj");
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dciqod9kj/image/upload",
+      {
+        method: "post",
+        body: data,
+      }
+    );
+    const json = await res.json();
+    return json.secure_url;
+  };
+
   return (
     <DashboardLayout>
-      <div className="p-6 min-h-screen bg-[#fff]">
-        <div className="flex justify-between items-center pb-4">
-          <h2 className="text-2xl font-bold text-[#071d49] pb-4">
-            Manage Courses
-          </h2>
+      <div className="p-1 min-h-screen bg-[#fff]">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 pb-4">
+          <h2 className="text-2xl font-bold text-[#071d49]">Manage Courses</h2>
           <input
             type="text"
             placeholder="Search by any detail..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="border-2 border-[#071d49] focus:border-[#fad947]  
-             p-2 rounded-lg w-full md:w-1/3 
-             text-[#071d49] placeholder-gray-400 outline-none transition"
+       p-2 rounded-lg w-full md:w-1/3 
+       text-[#071d49] placeholder-gray-400 outline-none transition"
           />
         </div>
 
-        <div>
-          <table className="min-w-[1200px] bg-white border border-gray-300 rounded-lg shadow-md text-center">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1000px] bg-white border border-gray-300 rounded-lg shadow-md text-center">
             <thead className="bg-[#ffd100] text-[#071d49]">
               <tr>
                 <th className="p-3">Image</th>
@@ -313,7 +332,7 @@ export default function ManageCourses() {
                 })
                 .map((course) => (
                   <tr key={course.id} className="border-t border-gray-200">
-                    <td className="p-6">
+                    <td className="p-3">
                       {course.image ? (
                         <img
                           src={course.image}
@@ -435,7 +454,7 @@ export default function ManageCourses() {
         {/* Edit Modal */}
         {editCourseId && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-lg w-full shadow-lg">
+            <div className="bg-white rounded-lg p-6 max-w-lg w-full shadow-lg overflow-y-auto max-h-[90vh]">
               <h3 className="text-xl font-bold mb-4">Edit Course</h3>
               <div className="flex flex-col gap-3">
                 <input
@@ -563,6 +582,22 @@ export default function ManageCourses() {
                   onChange={handleEditChange}
                   className="border p-2 rounded"
                   placeholder="Description"
+                />
+
+                <label className="block font-semibold text-[#071d49]">
+                  Course Image
+                </label>
+                {editFormData.image && (
+                  <img
+                    src={editFormData.image}
+                    alt="Course"
+                    className="w-24 h-24 object-cover rounded my-2"
+                  />
+                )}
+                <input
+                  type="file"
+                  onChange={(e) => setEditImageFile(e.target.files[0])}
+                  className="border p-2 rounded w-full bg-[#e2e8f0] text-[#071d49]"
                 />
               </div>
 
