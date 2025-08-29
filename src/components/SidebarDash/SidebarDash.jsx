@@ -5,6 +5,7 @@ import {
   FiEdit2,
   FiUsers,
   FiMessageCircle,
+  FiEdit,
 } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 
@@ -21,10 +22,9 @@ export default function SidebarDash() {
               <NavLink
                 to="/dashboard/overview"
                 className={({ isActive }) =>
-                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
-                      : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
+                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${isActive
+                    ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
+                    : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
                   }`
                 }
               >
@@ -37,10 +37,9 @@ export default function SidebarDash() {
               <NavLink
                 to="/dashboard/orders"
                 className={({ isActive }) =>
-                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
-                      : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
+                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${isActive
+                    ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
+                    : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
                   }`
                 }
               >
@@ -53,10 +52,9 @@ export default function SidebarDash() {
               <NavLink
                 to="/dashboard/add-course"
                 className={({ isActive }) =>
-                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
-                      : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
+                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${isActive
+                    ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
+                    : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
                   }`
                 }
               >
@@ -69,10 +67,9 @@ export default function SidebarDash() {
               <NavLink
                 to="/dashboard/manage-courses"
                 className={({ isActive }) =>
-                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
-                      : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
+                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${isActive
+                    ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
+                    : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
                   }`
                 }
               >
@@ -85,10 +82,9 @@ export default function SidebarDash() {
               <NavLink
                 to="/dashboard/users"
                 className={({ isActive }) =>
-                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
-                      : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
+                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${isActive
+                    ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
+                    : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
                   }`
                 }
               >
@@ -101,15 +97,29 @@ export default function SidebarDash() {
               <NavLink
                 to="/dashboard/feedback"
                 className={({ isActive }) =>
-                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
-                      : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
+                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${isActive
+                    ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
+                    : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
                   }`
                 }
               >
                 <FiMessageCircle className="w-5 h-5 mr-3" />
                 Feedback
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                to="/dashboard/addblog"
+                className={({ isActive }) =>
+                  `flex items-center p-3 rounded-lg font-medium transition-colors cursor-pointer ${isActive
+                    ? "bg-[#ffd100] text-[#071d49] shadow font-bold"
+                    : "text-white hover:bg-yellow-300 hover:text-[#071d49]"
+                  }`
+                }
+              >
+                <FiEdit className="w-5 h-5 mr-3" />
+                Add Blog
               </NavLink>
             </li>
           </ul>

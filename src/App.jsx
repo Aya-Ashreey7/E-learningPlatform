@@ -1,4 +1,4 @@
-import {  Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import { Toaster } from "react-hot-toast";
@@ -36,6 +36,8 @@ import CourseKids from "./pages/CourseKids";
 import Wishlist from "./pages/Wishlist";
 import CourseAdults from "./pages/Courseadults";
 import CourseDetails from "./pages/CourseDetails";
+import BlogDashboard from "./pages/blogDashboard";
+import BlogPage from "./pages/blogUser";
 
 
 function App() {
@@ -58,6 +60,8 @@ function App() {
         <Route path="/verified-redirect" element={<VerifiedRedirect />} />
         <Route path="/forgot-password" element={<ResetPassword />} />
         <Route path="/courses/kids/:id" element={<KidsCourseDetails />} />
+        <Route path="/blog" element={<BlogPage />} />
+
 
         {/* Dashboard */}
         <Route path="/dashboard/overview" element={<Overview />} />
@@ -66,6 +70,7 @@ function App() {
         <Route path="/dashboard/users" element={<Users />} />
         <Route path="/dashboard/orders" element={<Orders />} />
         <Route path="/dashboard/feedback" element={<Feedback />} />
+        <Route path="/dashboard/addblog" element={<BlogDashboard />} />
 
         {/* Checkout */}
         <Route path="/checkout/address" element={<AddressForm />} />
