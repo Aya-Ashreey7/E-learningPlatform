@@ -1,19 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import { FaClock, FaUsers, FaHeart, FaShoppingCart } from "react-icons/fa";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
+import { useAuth } from "../components/AuthContext/AuthContext";
 
 export default function CourseAdults() {
   const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]); // ✅ هنا بنخزن كل الكاتيجوريز
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [jobFunctionFilter, setJobFunctionFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const coursesPerPage = 3;
+  const coursesPerPage = 6;
 
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // ✅ نجيب الكاتيجوريز
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "Categories"), (snapshot) => {
+      const cats = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCategories(cats);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // ✅ نجيب الكورسات + نضيف معاها اسم الكاتيجوري
   useEffect(() => {
     const q = query(
       collection(db, "Courses"),
@@ -21,19 +40,30 @@ export default function CourseAdults() {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const courseData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      console.log("Fetched Courses (Adults):", courseData);
+      const courseData = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        // نلاقي الكاتيجوري اللي ليه نفس الـ id
+        const category = categories.find((cat) => cat.id === data.category_id);
+        return {
+          id: doc.id,
+          ...data,
+          categoryName: category ? category.name : "Unknown",
+        };
+      });
       setCourses(courseData);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [categories]); // 👈 مهم عشان لما الكاتيجوريز تتجاب الأول
 
-  // ✅ دالة الإضافة للـ Wishlist
+  // ✅ Wishlist
   const handleAddToWishlist = (course) => {
+    if (!user) {
+      alert("Please login first to add to wishlist.");
+      navigate("/login");
+      return;
+    }
+
     let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     const exists = wishlist.find((item) => item.id === course.id);
 
@@ -46,21 +76,40 @@ export default function CourseAdults() {
     }
   };
 
-  // filters values
-  const categories = [...new Set(courses.map((c) => c.category).filter(Boolean))];
+  // ✅ Cart
+  const handleAddToCart = (course) => {
+    if (!user) {
+      alert("Please login first to add to cart.");
+      navigate("/login");
+      return;
+    }
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const exists = cart.find((item) => item.id === course.id);
+
+    if (!exists) {
+      cart.push(course);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert("Added to Cart 🛒");
+    } else {
+      alert("This course is already in Cart!");
+    }
+  };
+
+  // ✅ Filters values
   const jobFunctions = [...new Set(courses.map((c) => c.jobFunction).filter(Boolean))];
 
-  // filter logic
+  // ✅ Filter logic
   const filteredCourses = courses.filter((course) => {
-    const name = course?.name || "";
+    const title = course?.title || "";
     return (
-      name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (categoryFilter ? course.category === categoryFilter : true) &&
+      title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (categoryFilter ? course.categoryName === categoryFilter : true) &&
       (jobFunctionFilter ? course.jobFunction === jobFunctionFilter : true)
     );
   });
 
-  // pagination
+  // ✅ Pagination
   const indexOfLastCourse = currentPage * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
   const currentCourses = filteredCourses.slice(
@@ -95,9 +144,9 @@ export default function CourseAdults() {
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
             <option value="">All Categories</option>
-            {categories.map((cat, i) => (
-              <option key={i} value={cat}>
-                {cat}
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.name}>
+                {cat.name}
               </option>
             ))}
           </select>
@@ -116,63 +165,63 @@ export default function CourseAdults() {
           </select>
         </div>
 
-       {/* Courses Grid */}
-<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-  {currentCourses.map((course) => (
-    <div
-      key={course.id}
-      className="bg-[#fff] rounded-lg shadow-md hover:shadow-xl transition duration-300 border border-gray-200"
-    >
-      {/* 🔗 الكارد كله clickable */}
-      <Link to={`/course/${course.id}`} className="block">
-        <img
-          src={course.image}
-          alt={course.title}
-          className="w-full h-48 object-cover rounded-t-lg"
-        />
-        <div className="p-6">
-          <h2 className="text-2xl font-semibold text-[#071d49] mb-2">
-            {course.title}
-          </h2>
-          <p className="text-gray-600 text-sm mb-4">{course.description}</p>
+        {/* Courses Grid */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+          {currentCourses.map((course) => (
+            <div
+              key={course.id}
+              className="bg-[#fff] rounded-lg shadow-md hover:shadow-xl transition duration-300 border border-gray-200"
+            >
+              <Link to={`/course/${course.id}`} className="block">
+                <img
+                  src={course.image}
+                  alt={course.title}
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
+                <div className="p-6">
+                  <h2 className="text-2xl font-semibold text-[#071d49] mb-2">
+                    {course.title}
+                  </h2>
+                  <p className="text-gray-600 text-sm mb-4">{course.description}</p>
 
-          <div className="flex items-center text-sm text-gray-500 mb-2">
-            <FaClock className="mr-2 text-[#ffd100]" /> {course.duration}
-          </div>
-          <div className="flex items-center text-sm text-gray-500 mb-4">
-            <FaUsers className="mr-2 text-[#ffd100]" /> {course.students} enrolled
-          </div>
+                  <div className="flex items-center text-sm text-gray-500 mb-2">
+                    <FaClock className="mr-2 text-[#ffd100]" /> {course.duration} hours
+                  </div>
+                  <div className="flex items-center text-sm text-gray-500 mb-4">
+                    <FaUsers className="mr-2 text-[#ffd100]" /> {course.traineesCount} enrolled
+                  </div>
 
-          <p className="text-xl font-bold text-[#071d49] mb-4">${course.price}</p>
+                  <p className="text-xl font-bold text-[#071d49] mb-2">${course.price}</p>
+                  <p className="text-sm text-gray-500">Category: {course.categoryName}</p>
+                </div>
+              </Link>
+
+              <div className="flex justify-between px-6 pb-6">
+                <button
+                  onClick={() => handleAddToCart(course)}
+                  className="flex items-center bg-[#071d49] text-[#ffd100] px-4 py-2 rounded-lg hover:bg-[#ffd100] hover:text-[#071d49] transition"
+                >
+                  <FaShoppingCart className="mr-2" /> Add to Cart
+                </button>
+
+                <button
+                  onClick={() => handleAddToWishlist(course)}
+                  className="flex items-center bg-gray-100 text-[#071d49] px-4 py-2 rounded-lg hover:bg-[#ffd100] hover:text-[#071d49] transition"
+                >
+                  <FaHeart className="mr-2" /> Wishlist
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {filteredCourses.length === 0 && (
+            <p className="text-center text-gray-500 col-span-full">
+              No courses found.
+            </p>
+          )}
         </div>
-      </Link>
 
-      {/* ✅ الأزرار خارج الـ Link */}
-      <div className="flex justify-between px-6 pb-6">
-        <button className="flex items-center bg-[#071d49] text-[#ffd100] px-4 py-2 rounded-lg hover:bg-[#ffd100] hover:text-[#071d49] transition">
-          <FaShoppingCart className="mr-2" /> Add to Cart
-        </button>
-
-        <button
-          onClick={() => handleAddToWishlist(course)}
-          className="flex items-center bg-gray-100 text-[#071d49] px-4 py-2 rounded-lg hover:bg-[#ffd100] hover:text-[#071d49] transition"
-        >
-          <FaHeart className="mr-2" /> Wishlist
-        </button>
-      </div>
-    </div>
-  ))}
-
-  {filteredCourses.length === 0 && (
-    <p className="text-center text-gray-500 col-span-full">
-      No courses found.
-    </p>
-  )}
-</div>
-
-
-
-        {/* Pagination Buttons */}
+        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center mt-8 space-x-2">
             {Array.from({ length: totalPages }, (_, index) => (
