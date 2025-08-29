@@ -184,7 +184,9 @@ export default function CourseKids() {
         />
 
         {loading ? (
-          <p className="text-center mt-6 text-gray-500">Loading courses...</p>
+          <div className="flex justify-center items-center mt-35">
+            <div className="w-16 h-16 border-4 border-gray-300 border-t-[#071d49] border-r-transparent rounded-full animate-spin"></div>
+          </div>
         ) : (
           <CoursesList courses={filteredCourses} categoryMap={categoryMap} />
         )}
