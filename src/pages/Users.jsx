@@ -48,22 +48,21 @@ export default function Users() {
   }
   return (
     <DashboardLayout>
-      <div className="p-6 min-h-screen  bg-[#fff]">
-        <div className="flex justify-between items-center pb-4">
-          <h2 className="text-2xl font-bold text-[#071d49] pb-2">Users</h2>
+      <div className="p-6 min-h-screen bg-[#fff]">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 pb-4">
+          <h2 className="text-2xl font-bold text-[#071d49]">Users</h2>
           <input
             type="text"
             placeholder="Search by any detail..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="border-2 border-[#071d49] focus:border-[#fad947]  
-             p-2 rounded-lg w-full md:w-1/3 
-             text-[#071d49] placeholder-gray-400 outline-none transition"
+       p-2 rounded-lg w-full md:w-1/3 
+       text-[#071d49] placeholder-gray-400 outline-none transition"
           />
         </div>
-
-        <div>
-          <table className="min-w-[1200px] bg-white border border-gray-300 rounded-lg shadow-md text-center">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px] bg-white border border-gray-300 rounded-lg shadow-md text-center">
             <thead className="bg-[#ffd100] text-[#071d49]">
               <tr>
                 <th className="p-3">#</th>

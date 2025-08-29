@@ -4,7 +4,7 @@ export default function NavbarDash() {
   return (
     <>
       <div className="bg-[#071d49] w-full flex justify-between items-center p-4 shadow-md">
-        <p className="text-white text-lg font-semibold">SCCD Admin</p>
+        <p className="text-white text-lg font-semibold">Scientific Center</p>
         <div className="text-white text-lg flex items-center gap-4">
           {/* اغيرها بي اسم الشخص الي بالاكونت  */}
           <p>Welcome Admin</p>
