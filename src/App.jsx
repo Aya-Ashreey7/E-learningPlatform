@@ -37,6 +37,7 @@ import CourseAdults from "./pages/Courseadults";
 import CourseDetails from "./pages/CourseDetails";
 import BlogDashboard from "./pages/blogDashboard";
 import BlogPage from "./pages/blogUser";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 function App() {
@@ -64,7 +65,7 @@ function App() {
 
         {/* Dashboard protected*/}
         <Route path="/dashboard/overview" element={<ProtectedRoute adminOnly={true}> <Overview /> </ProtectedRoute>} />
-        <Route path="/dashboard/overview" element={<ProtectedRoute adminOnly={true}> <Overview /> </ProtectedRoute>} />
+        {/* <Route path="/dashboard/overview" element={<Overview />} /> */}
         <Route path="/dashboard/add-course" element={<ProtectedRoute adminOnly={true}> <AddCourse /> </ProtectedRoute>} />
         <Route path="/dashboard/manage-courses" element={<ProtectedRoute adminOnly={true}> <ManageCourses /> </ProtectedRoute>} />
         <Route path="/dashboard/users" element={<ProtectedRoute adminOnly={true}> <Users /> </ProtectedRoute>} />

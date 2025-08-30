@@ -1,197 +1,79 @@
 import { useState, useEffect } from "react"
 import {
+    Search,
     Calendar,
-    Clock,
-    Eye,
+    User,
     Heart,
     MessageCircle,
+    Eye,
     Share2,
-    Search,
-    ChevronRight,
-    MapPin,
-    Star,
     BookOpen,
+    Filter,
+    X,
+    ChevronLeft,
+    ChevronRight,
+    ImageIcon,
+    Mail,
     ArrowRight,
+    Clock,
+    MapPin,
     Tag,
+    TrendingUp,
+    Star,
+    Users,
+    Award,
+    Target,
+    Zap,
+    Globe,
+    Plus,
 } from "lucide-react"
-import Navbar from "../components/Navbar/Navbar"
+import { getPublishedBlogs, updateBlogStats } from "../blogService"
 
-// Mock blog posts data (same as admin dashboard)
-const mockBlogPosts = [
-    {
-        id: "blog_001",
-        title: "New Programming Course for Kids Launched!",
-        slug: "new-programming-course-kids-launched",
-        content: `
-      <p>We're excited to announce the launch of our brand new programming course designed specifically for children aged 8-14!</p>
-      <p>This comprehensive course covers:</p>
-      <ul>
-        <li>Basic programming concepts</li>
-        <li>Interactive game development</li>
-        <li>Creative coding projects</li>
-        <li>Problem-solving skills</li>
-      </ul>
-      <p>Join us on this amazing coding adventure!</p>
-    `,
-        excerpt:
-            "We're excited to announce the launch of our brand new programming course designed specifically for children aged 8-14!",
-        featuredImage: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&h=400&fit=crop",
-        author: "Sarah Johnson",
-        authorAvatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-        category: "Announcements",
-        tags: ["programming", "kids", "education", "courses"],
-        status: "published",
-        publishDate: new Date("2025-08-15T10:00:00Z"),
-        views: 1250,
-        likes: 89,
-        comments: 23,
-        featured: true,
-        eventDate: new Date("2025-09-01T09:00:00Z"),
-        eventLocation: "Online",
-        eventType: "course_launch",
-        readTime: "5 min read",
-    },
-    {
-        id: "blog_002",
-        title: "Tips for Parents: Supporting Your Child's Coding Journey",
-        slug: "tips-parents-supporting-child-coding-journey",
-        content: `
-      <p>As a parent, you play a crucial role in your child's learning journey. Here are some practical tips to support your young coder:</p>
-      <h3>1. Create a Dedicated Learning Space</h3>
-      <p>Set up a quiet, comfortable area where your child can focus on coding without distractions.</p>
-      <h3>2. Celebrate Small Wins</h3>
-      <p>Acknowledge every milestone, no matter how small. This builds confidence and motivation.</p>
-    `,
-        excerpt:
-            "As a parent, you play a crucial role in your child's learning journey. Here are some practical tips to support your young coder.",
-        featuredImage: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=400&fit=crop",
-        author: "Michael Chen",
-        authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-        category: "Parenting",
-        tags: ["parenting", "coding", "tips", "support"],
-        status: "published",
-        publishDate: new Date("2025-08-12T08:00:00Z"),
-        views: 890,
-        likes: 67,
-        comments: 15,
-        featured: false,
-        eventDate: null,
-        eventLocation: null,
-        eventType: "article",
-        readTime: "8 min read",
-    },
-    {
-        id: "blog_003",
-        title: "Upcoming Coding Workshop: Build Your First Game",
-        slug: "upcoming-coding-workshop-build-first-game",
-        content: `
-      <p>Join us for an exciting hands-on workshop where kids will learn to build their very first video game!</p>
-      <p><strong>What you'll learn:</strong></p>
-      <ul>
-        <li>Game design basics</li>
-        <li>Character creation</li>
-        <li>Level design</li>
-        <li>Sound effects and music</li>
-      </ul>
-      <p>Limited spots available - register now!</p>
-    `,
-        excerpt: "Join us for an exciting hands-on workshop where kids will learn to build their very first video game!",
-        featuredImage: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=400&fit=crop",
-        author: "Emma Wilson",
-        authorAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-        category: "Events",
-        tags: ["workshop", "game development", "kids", "event"],
-        status: "published",
-        publishDate: new Date("2025-08-10T12:00:00Z"),
-        views: 456,
-        likes: 34,
-        comments: 8,
-        featured: true,
-        eventDate: new Date("2025-09-15T14:00:00Z"),
-        eventLocation: "Virtual Classroom",
-        eventType: "workshop",
-        readTime: "3 min read",
-    },
-    {
-        id: "blog_004",
-        title: "Success Story: 12-Year-Old Creates Amazing Mobile App",
-        slug: "success-story-12-year-old-creates-mobile-app",
-        content: `
-      <p>Meet Alex, one of our amazing students who just completed our mobile app development course and created something incredible!</p>
-      <p>Alex's app "Study Buddy" helps kids organize their homework and track their progress. The app features:</p>
-      <ul>
-        <li>Task management system</li>
-        <li>Progress tracking</li>
-        <li>Reward system</li>
-        <li>Parent notifications</li>
-      </ul>
-      <p>We're so proud of Alex's achievement and can't wait to see what our students create next!</p>
-    `,
-        excerpt:
-            "Meet Alex, one of our amazing students who just completed our mobile app development course and created something incredible!",
-        featuredImage: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&h=400&fit=crop",
-        author: "Lisa Rodriguez",
-        authorAvatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-        category: "Success Stories",
-        tags: ["success story", "mobile app", "student achievement", "inspiration"],
-        status: "published",
-        publishDate: new Date("2025-08-08T15:30:00Z"),
-        views: 2100,
-        likes: 156,
-        comments: 42,
-        featured: false,
-        eventDate: null,
-        eventLocation: null,
-        eventType: "article",
-        readTime: "6 min read",
-    },
-    {
-        id: "blog_005",
-        title: "Free Coding Bootcamp for Beginners - Register Now!",
-        slug: "free-coding-bootcamp-beginners-register-now",
-        content: `
-      <p>We're excited to offer a completely FREE 3-day coding bootcamp for absolute beginners!</p>
-      <p>This intensive bootcamp will cover:</p>
-      <ul>
-        <li>Introduction to programming</li>
-        <li>HTML & CSS basics</li>
-        <li>JavaScript fundamentals</li>
-        <li>Building your first website</li>
-      </ul>
-      <p>Perfect for kids aged 10-16 who want to get started with coding. No experience required!</p>
-    `,
-        excerpt:
-            "We're excited to offer a completely FREE 3-day coding bootcamp for absolute beginners! Perfect for kids aged 10-16.",
-        featuredImage: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=400&fit=crop",
-        author: "David Kim",
-        authorAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-        category: "Events",
-        tags: ["bootcamp", "free", "beginners", "web development"],
-        status: "published",
-        publishDate: new Date("2025-08-05T09:00:00Z"),
-        views: 3200,
-        likes: 245,
-        comments: 67,
-        featured: true,
-        eventDate: new Date("2025-08-25T10:00:00Z"),
-        eventLocation: "EduLearn Campus & Online",
-        eventType: "bootcamp",
-        readTime: "4 min read",
-    },
+const categories = [
+    { name: "All", icon: Globe, color: "bg-blue-500" },
+    { name: "Announcements", icon: TrendingUp, color: "bg-green-500" },
+    { name: "Events", icon: Calendar, color: "bg-purple-500" },
+    { name: "Tutorials", icon: BookOpen, color: "bg-orange-500" },
+    { name: "Success Stories", icon: Award, color: "bg-yellow-500" },
+    { name: "News", icon: Zap, color: "bg-red-500" },
 ]
-
-const categories = ["All", "Announcements", "Parenting", "Events", "Tutorials", "Success Stories", "News"]
-
 export default function BlogPage() {
-    const [blogPosts] = useState(mockBlogPosts.filter((post) => post.status === "published"))
-    const [filteredPosts, setFilteredPosts] = useState(mockBlogPosts.filter((post) => post.status === "published"))
-    const [selectedPost, setSelectedPost] = useState(null)
+    const [blogPosts, setBlogPosts] = useState([])
+    const [filteredPosts, setFilteredPosts] = useState([])
+    const [featuredPosts, setFeaturedPosts] = useState([])
     const [searchTerm, setSearchTerm] = useState("")
-    const [categoryFilter, setCategoryFilter] = useState("All")
-    const [showFullPost, setShowFullPost] = useState(false)
-    const [likedPosts, setLikedPosts] = useState(new Set())
+    const [selectedCategory, setSelectedCategory] = useState("All")
+    const [showFilters, setShowFilters] = useState(false)
+    const [selectedPost, setSelectedPost] = useState(null)
+    const [showGallery, setShowGallery] = useState(false)
+    const [currentImageIndex, setCurrentImageIndex] = useState(0)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [email, setEmail] = useState("")
+    const [subscribed, setSubscribed] = useState(false)
 
-    // Filter posts
+    // Load published blog posts from Firestore
+    useEffect(() => {
+        const loadBlogPosts = async () => {
+            try {
+                setLoading(true)
+                setError(null)
+                const posts = await getPublishedBlogs()
+                setBlogPosts(posts)
+                setFilteredPosts(posts)
+                setFeaturedPosts(posts.filter((post) => post.featured).slice(0, 3))
+            } catch (err) {
+                console.error("Error loading blog posts:", err)
+                setError("Failed to load blog posts. Please try again later.")
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadBlogPosts()
+    }, [])
+
+    // Filter posts based on search and category
     useEffect(() => {
         let filtered = blogPosts
 
@@ -200,22 +82,73 @@ export default function BlogPage() {
             filtered = filtered.filter(
                 (post) =>
                     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    post.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     post.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())),
             )
         }
 
         // Category filter
-        if (categoryFilter !== "All") {
-            filtered = filtered.filter((post) => post.category === categoryFilter)
+        if (selectedCategory !== "All") {
+            filtered = filtered.filter((post) => post.category === selectedCategory)
         }
 
         setFilteredPosts(filtered)
-    }, [searchTerm, categoryFilter, blogPosts])
+    }, [searchTerm, selectedCategory, blogPosts])
 
-    const featuredPosts = filteredPosts.filter((post) => post.featured)
-    const regularPosts = filteredPosts.filter((post) => !post.featured)
+    const handlePostClick = async (post) => {
+        setSelectedPost(post)
+        try {
+            await updateBlogStats(post.id, { views: post.views + 1 })
+            setBlogPosts((prev) => prev.map((p) => (p.id === post.id ? { ...p, views: p.views + 1 } : p)))
+        } catch (err) {
+            console.error("Error updating view count:", err)
+        }
+    }
+
+    const handleLike = async (postId) => {
+        try {
+            const post = blogPosts.find((p) => p.id === postId)
+            if (post) {
+                await updateBlogStats(postId, { likes: post.likes + 1 })
+                setBlogPosts((prev) => prev.map((p) => (p.id === postId ? { ...p, likes: p.likes + 1 } : p)))
+            }
+        } catch (err) {
+            console.error("Error updating like count:", err)
+        }
+    }
+
+    const openGallery = (post, imageIndex = 0) => {
+        setSelectedPost(post)
+        setCurrentImageIndex(imageIndex)
+        setShowGallery(true)
+    }
+
+    const closeGallery = () => {
+        setShowGallery(false)
+        setSelectedPost(null)
+        setCurrentImageIndex(0)
+    }
+
+    const nextImage = () => {
+        if (selectedPost && selectedPost.galleryImages) {
+            setCurrentImageIndex((prev) => (prev + 1) % selectedPost.galleryImages.length)
+        }
+    }
+
+    const prevImage = () => {
+        if (selectedPost && selectedPost.galleryImages) {
+            setCurrentImageIndex((prev) => (prev - 1 + selectedPost.galleryImages.length) % selectedPost.galleryImages.length)
+        }
+    }
+
+    const handleNewsletterSubmit = (e) => {
+        e.preventDefault()
+        if (email) {
+            setSubscribed(true)
+            setEmail("")
+            setTimeout(() => setSubscribed(false), 3000)
+        }
+    }
 
     const formatDate = (date) => {
         return new Intl.DateTimeFormat("en-US", {
@@ -225,483 +158,259 @@ export default function BlogPage() {
         }).format(date)
     }
 
-    const formatEventDate = (date) => {
-        return new Intl.DateTimeFormat("en-US", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        }).format(date)
+    const stripHtml = (html) => {
+        const tmp = document.createElement("div")
+        tmp.innerHTML = html
+        return tmp.textContent || tmp.innerText || ""
     }
 
-    const handleLike = (postId) => {
-        setLikedPosts((prev) => {
-            const newLiked = new Set(prev)
-            if (newLiked.has(postId)) {
-                newLiked.delete(postId)
-            } else {
-                newLiked.add(postId)
-            }
-            return newLiked
-        })
-    }
-
-    const handleReadMore = (post) => {
-        setSelectedPost(post)
-        setShowFullPost(true)
-    }
-
-    const getCategoryIcon = (category) => {
-        switch (category) {
-            case "Announcements":
-                return "📢"
-            case "Parenting":
-                return "👨‍👩‍👧‍👦"
-            case "Events":
-                return "🎉"
-            case "Tutorials":
-                return "📚"
-            case "Success Stories":
-                return "🏆"
-            case "News":
-                return "📰"
-            default:
-                return "📝"
-        }
-    }
-
-    const getEventTypeIcon = (eventType) => {
-        switch (eventType) {
-            case "course_launch":
-                return "🚀"
-            case "workshop":
-                return "🛠️"
-            case "bootcamp":
-                return "⚡"
-            case "webinar":
-                return "💻"
-            case "competition":
-                return "🏆"
-            default:
-                return "📅"
-        }
-    }
-
-    // Full Post Modal
-    const FullPostModal = ({ post, onClose }) => {
-        if (!post) return null
-
+    if (loading) {
         return (
-
-
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                <div className="bg-white rounded-xl max-w-4xl w-full max-h-[95vh] overflow-y-auto shadow-2xl">
-                    {/* Header */}
-                    <div className="relative">
-                        <img
-                            src={post.featuredImage || "/placeholder.svg"}
-                            alt={post.title}
-                            className="w-full h-64 object-cover rounded-t-xl"
-                        />
-                        <button
-                            onClick={onClose}
-                            className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
-                        >
-                            ✕
-                        </button>
-                        <div className="absolute bottom-4 left-4">
-                            <span className="bg-[#071d49] text-white px-3 py-1 rounded-full text-sm font-medium">
-                                {getCategoryIcon(post.category)} {post.category}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-8">
-                        {/* Title and Meta */}
-                        <div className="mb-6">
-                            <h1 className="text-3xl font-bold text-[#071d49] mb-4 leading-tight">{post.title}</h1>
-
-                            <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
-                                <div className="flex items-center gap-2">
-                                    <img
-                                        src={post.authorAvatar || "/placeholder.svg"}
-                                        alt={post.author}
-                                        className="w-8 h-8 rounded-full border-2 border-[#ffd100]"
-                                    />
-                                    <span className="font-medium">{post.author}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <Calendar size={16} />
-                                    <span>{formatDate(post.publishDate)}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <Clock size={16} />
-                                    <span>{post.readTime}</span>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <span className="flex items-center gap-1">
-                                        <Eye size={16} />
-                                        {post.views}
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        <Heart size={16} />
-                                        {post.likes}
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        <MessageCircle size={16} />
-                                        {post.comments}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Event Info */}
-                            {post.eventDate && (
-                                <div className="bg-gradient-to-r from-[#ffd100]/20 to-transparent p-4 rounded-lg border-l-4 border-[#ffd100] mb-6">
-                                    <div className="flex items-center gap-2 text-[#071d49] font-bold mb-2">
-                                        {getEventTypeIcon(post.eventType)}
-                                        <span>Upcoming Event</span>
-                                    </div>
-                                    <div className="text-gray-700">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <Calendar size={16} />
-                                            <span>{formatEventDate(post.eventDate)}</span>
-                                        </div>
-                                        {post.eventLocation && (
-                                            <div className="flex items-center gap-2">
-                                                <MapPin size={16} />
-                                                <span>{post.eventLocation}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Tags */}
-                            <div className="flex flex-wrap gap-2 mb-6">
-                                {post.tags.map((tag, index) => (
-                                    <span
-                                        key={index}
-                                        className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm flex items-center gap-1"
-                                    >
-                                        <Tag size={12} />
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Article Content */}
-                        <div
-                            className="prose prose-lg max-w-none text-gray-700 leading-relaxed"
-                            dangerouslySetInnerHTML={{ __html: post.content }}
-                        />
-
-                        {/* Actions */}
-                        <div className="flex items-center justify-between pt-8 border-t border-gray-200 mt-8">
-                            <div className="flex items-center gap-4">
-                                <button
-                                    onClick={() => handleLike(post.id)}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${likedPosts.has(post.id)
-                                        ? "bg-red-100 text-red-600 border border-red-200"
-                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200"
-                                        }`}
-                                >
-                                    <Heart size={18} className={likedPosts.has(post.id) ? "fill-current" : ""} />
-                                    <span>{post.likes + (likedPosts.has(post.id) ? 1 : 0)}</span>
-                                </button>
-                                <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors border border-gray-200">
-                                    <MessageCircle size={18} />
-                                    <span>Comment</span>
-                                </button>
-                                <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors border border-gray-200">
-                                    <Share2 size={18} />
-                                    <span>Share</span>
-                                </button>
-                            </div>
-
-                            {post.eventDate && (
-                                <button className="bg-[#ffd100] text-[#071d49] px-6 py-3 rounded-lg font-bold hover:bg-[#ffd100]/90 transition-colors shadow-lg">
-                                    Register for Event
-                                </button>
-                            )}
-                        </div>
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50">
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#071d49] mx-auto mb-4"></div>
+                        <h3 className="text-xl font-bold text-[#071d49] mb-2">Loading Blog Posts...</h3>
+                        <p className="text-gray-600">Please wait while we fetch the latest content</p>
                     </div>
                 </div>
             </div>
+        )
+    }
 
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50">
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="text-center">
+                        <div className="text-red-500 mb-4">
+                            <X size={48} className="mx-auto" />
+                        </div>
+                        <h3 className="text-xl font-bold text-[#071d49] mb-2">Error Loading Content</h3>
+                        <p className="text-gray-600 mb-4">{error}</p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="bg-[#ffd100] text-[#071d49] px-6 py-3 rounded-lg font-bold hover:bg-[#ffd100]/90 transition-colors"
+                        >
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
         )
     }
 
     return (
         <>
-
-            <Navbar />
-            <div className="min-h-screen bg-white">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50">
                 {/* Hero Section */}
-                <div className="relative bg-gradient-to-br from-[#071d49] via-[#0a2555] to-[#071d49] overflow-hidden">
-                    {/* Decorative Background */}
-                    <div className="absolute inset-0">
-                        <div className="absolute top-20 left-20 w-32 h-32 bg-[#ffd100]/10 rounded-full animate-pulse"></div>
-                        <div className="absolute bottom-20 right-20 w-24 h-24 bg-[#ffd100]/15 rounded-full animate-bounce"></div>
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#ffd100]/5 rounded-full blur-3xl"></div>
-                    </div>
+                <div className="relative bg-gradient-to-r from-[#071d49] to-[#0a2557] text-white py-20 overflow-hidden">
+                    <div className="absolute inset-0 bg-black/20"></div>
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-[#ffd100]/10 rounded-full -translate-y-48 translate-x-48"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#ffd100]/10 rounded-full translate-y-32 -translate-x-32"></div>
 
-                    <div className="relative z-10 container mx-auto px-4 py-16">
-                        <div className="text-center max-w-4xl mx-auto">
-                            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                                Our Learning
-                                <span className="text-[#ffd100]"> Blog</span>
-                            </h1>
-                            <p className="text-xl text-white/90 mb-8 leading-relaxed">
-                                Discover the latest updates, educational tips, success stories, and upcoming events from our learning
-                                community. Stay informed and inspired on your coding journey!
-                            </p>
+                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-[#ffd100] bg-clip-text text-transparent">
+                            Our Blog & Events
+                        </h1>
+                        <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+                            Stay updated with the latest news, educational tips, and exciting events from our learning community
+                        </p>
 
-                            {/* Search Bar */}
-                            <div className="max-w-2xl mx-auto relative">
-                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                                <input
-                                    type="text"
-                                    placeholder="Search articles, events, and more..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-4 bg-white/95 backdrop-blur-sm border-2 border-white/20 rounded-xl text-[#071d49] placeholder-gray-500 focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/20 transition-all shadow-lg"
-                                />
-                            </div>
+                        {/* Search Bar */}
+                        <div className="max-w-2xl mx-auto relative">
+                            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                            <input
+                                type="text"
+                                placeholder="Search articles, events, and tips..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full pl-12 pr-4 py-4 bg-white/95 backdrop-blur-sm border-0 rounded-2xl text-[#071d49] placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-[#ffd100]/30 shadow-xl text-lg"
+                            />
                         </div>
                     </div>
                 </div>
 
-                {/* Main Content */}
-                <div className="container mx-auto px-4 py-12">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     {/* Category Filter */}
-                    <div className="flex flex-wrap justify-center gap-3 mb-12">
-                        {categories.map((category) => (
+                    <div className="mb-12">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-2xl font-bold text-[#071d49]">Browse by Category</h2>
                             <button
-                                key={category}
-                                onClick={() => setCategoryFilter(category)}
-                                className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${categoryFilter === category
-                                    ? "bg-[#071d49] text-white shadow-lg"
-                                    : "bg-white text-gray-600 hover:bg-gray-50 border-2 border-gray-200 hover:border-[#ffd100]"
-                                    }`}
+                                onClick={() => setShowFilters(!showFilters)}
+                                className="lg:hidden flex items-center gap-2 bg-white border-2 border-gray-200 rounded-lg px-4 py-2 text-[#071d49] hover:border-[#ffd100] transition-colors"
                             >
-                                <span>{getCategoryIcon(category)}</span>
-                                {category}
+                                <Filter size={16} />
+                                Filters
                             </button>
-                        ))}
+                        </div>
+
+                        <div className={`${showFilters ? "block" : "hidden lg:block"}`}>
+                            <div className="flex flex-wrap gap-3">
+                                {categories.map((category) => {
+                                    const Icon = category.icon
+                                    const isSelected = selectedCategory === category.name
+                                    return (
+                                        <button
+                                            key={category.name}
+                                            onClick={() => setSelectedCategory(category.name)}
+                                            className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-200 ${isSelected
+                                                ? "bg-[#071d49] text-white shadow-lg scale-105"
+                                                : "bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200 hover:border-[#ffd100] hover:scale-105"
+                                                }`}
+                                        >
+                                            <Icon size={16} />
+                                            {category.name}
+                                            {category.name !== "All" && (
+                                                <span
+                                                    className={`ml-1 px-2 py-1 rounded-full text-xs ${isSelected ? "bg-white/20" : "bg-gray-100"}`}
+                                                >
+                                                    {blogPosts.filter((post) => post.category === category.name).length}
+                                                </span>
+                                            )}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
                     </div>
 
                     {/* Featured Posts */}
-                    {featuredPosts.length > 0 && (
+                    {featuredPosts.length > 0 && selectedCategory === "All" && (
                         <div className="mb-16">
-                            <div className="flex items-center gap-3 mb-8">
+                            <div className="flex items-center gap-2 mb-8">
                                 <Star className="text-[#ffd100]" size={24} />
                                 <h2 className="text-3xl font-bold text-[#071d49]">Featured Posts</h2>
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                {featuredPosts.slice(0, 2).map((post) => (
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                {featuredPosts.map((post, index) => (
                                     <div
                                         key={post.id}
-                                        className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 group"
+                                        className={`group cursor-pointer ${index === 0 ? "lg:col-span-2 lg:row-span-2" : ""
+                                            } bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-transparent hover:border-[#ffd100]`}
+                                        onClick={() => handlePostClick(post)}
                                     >
-                                        {/* Image */}
-                                        <div className="relative h-64 overflow-hidden">
-                                            <img
-                                                src={post.featuredImage || "/placeholder.svg"}
-                                                alt={post.title}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                            />
-                                            <div className="absolute top-4 left-4">
-                                                <span className="bg-[#071d49] text-white px-3 py-1 rounded-full text-sm font-medium">
-                                                    {getCategoryIcon(post.category)} {post.category}
-                                                </span>
-                                            </div>
-                                            {post.featured && (
-                                                <div className="absolute top-4 right-4">
-                                                    <span className="bg-[#ffd100] text-[#071d49] px-3 py-1 rounded-full text-sm font-bold">
-                                                        ⭐ Featured
-                                                    </span>
+                                        <div className={`relative ${index === 0 ? "h-80" : "h-48"} overflow-hidden`}>
+                                            {post.featuredImage ? (
+                                                <img
+                                                    src={post.featuredImage || "/placeholder.svg"}
+                                                    alt={post.title}
+                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gradient-to-br from-[#071d49] to-[#0a2557] flex items-center justify-center">
+                                                    <BookOpen size={48} className="text-white/50" />
                                                 </div>
                                             )}
+
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                                            {/* Featured Badge */}
+                                            <div className="absolute top-4 left-4">
+                                                <span className="bg-[#ffd100] text-[#071d49] px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                                                    <Star size={14} />
+                                                    Featured
+                                                </span>
+                                            </div>
+
+                                            {/* Gallery Indicator */}
+                                            {post.galleryImages && post.galleryImages.length > 0 && (
+                                                <div className="absolute top-4 right-4">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            openGallery(post, 0)
+                                                        }}
+                                                        className="bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 hover:bg-black/90 transition-colors"
+                                                    >
+                                                        <ImageIcon size={14} />
+                                                        {post.galleryImages.length}
+                                                    </button>
+                                                </div>
+                                            )}
+
+                                            {/* Category */}
+                                            <div className="absolute bottom-4 left-4">
+                                                <span className="bg-white/90 text-[#071d49] px-3 py-1 rounded-full text-sm font-medium">
+                                                    {post.category}
+                                                </span>
+                                            </div>
                                         </div>
 
-                                        {/* Content */}
-                                        <div className="p-6 space-y-4">
+                                        <div className={`p-6 ${index === 0 ? "lg:p-8" : ""}`}>
+                                            <h3
+                                                className={`font-bold text-[#071d49] mb-3 group-hover:text-[#ffd100] transition-colors ${index === 0 ? "text-2xl lg:text-3xl" : "text-xl"
+                                                    } line-clamp-2`}
+                                            >
+                                                {post.title}
+                                            </h3>
+
+                                            <p
+                                                className={`text-gray-600 mb-4 leading-relaxed ${index === 0 ? "text-lg line-clamp-3" : "text-sm line-clamp-2"
+                                                    }`}
+                                            >
+                                                {stripHtml(post.excerpt)}
+                                            </p>
+
                                             {/* Event Info */}
                                             {post.eventDate && (
-                                                <div className="bg-gradient-to-r from-[#ffd100]/20 to-transparent p-3 rounded-lg border-l-4 border-[#ffd100]">
-                                                    <div className="flex items-center gap-2 text-[#071d49] font-bold text-sm">
-                                                        {getEventTypeIcon(post.eventType)}
-                                                        <span>Event: {formatEventDate(post.eventDate)}</span>
+                                                <div className="bg-blue-50 rounded-lg p-3 mb-4 border border-blue-200">
+                                                    <div className="flex items-center gap-2 text-sm text-blue-700">
+                                                        <Calendar size={14} />
+                                                        <span className="font-medium">Event: {formatDate(post.eventDate)}</span>
                                                     </div>
                                                     {post.eventLocation && (
-                                                        <div className="flex items-center gap-1 text-gray-600 text-sm mt-1">
-                                                            <MapPin size={14} />
-                                                            <span>{post.eventLocation}</span>
+                                                        <div className="flex items-center gap-2 text-xs text-blue-600 mt-1">
+                                                            <MapPin size={12} />
+                                                            {post.eventLocation}
                                                         </div>
                                                     )}
                                                 </div>
                                             )}
 
-                                            {/* Title */}
-                                            <h3 className="text-xl font-bold text-[#071d49] leading-tight group-hover:text-[#ffd100] transition-colors">
-                                                {post.title}
-                                            </h3>
-
-                                            {/* Excerpt */}
-                                            <p className="text-gray-600 leading-relaxed">{post.excerpt}</p>
-
-                                            {/* Meta Info */}
-                                            <div className="flex items-center justify-between text-sm text-gray-500">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="flex items-center gap-2">
-                                                        <img
-                                                            src={post.authorAvatar || "/placeholder.svg"}
-                                                            alt={post.author}
-                                                            className="w-6 h-6 rounded-full border border-[#ffd100]"
-                                                        />
-                                                        <span>{post.author}</span>
-                                                    </div>
-                                                    <span>{formatDate(post.publishDate)}</span>
-                                                    <span>{post.readTime}</span>
-                                                </div>
-                                            </div>
-
                                             {/* Tags */}
-                                            <div className="flex flex-wrap gap-2">
-                                                {post.tags.slice(0, 3).map((tag, index) => (
-                                                    <span key={index} className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
-                                                        #{tag}
+                                            <div className="flex flex-wrap gap-2 mb-4">
+                                                {post.tags.slice(0, 3).map((tag, tagIndex) => (
+                                                    <span
+                                                        key={tagIndex}
+                                                        className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs flex items-center gap-1"
+                                                    >
+                                                        <Tag size={10} />
+                                                        {tag}
                                                     </span>
                                                 ))}
+                                                {post.tags.length > 3 && (
+                                                    <span className="text-gray-400 text-xs">+{post.tags.length - 3} more</span>
+                                                )}
                                             </div>
 
-                                            {/* Actions */}
-                                            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                                                <div className="flex items-center gap-4 text-sm text-gray-500">
-                                                    <button
-                                                        onClick={() => handleLike(post.id)}
-                                                        className={`flex items-center gap-1 hover:text-red-500 transition-colors ${likedPosts.has(post.id) ? "text-red-500" : ""
-                                                            }`}
-                                                    >
-                                                        <Heart size={16} className={likedPosts.has(post.id) ? "fill-current" : ""} />
-                                                        {post.likes + (likedPosts.has(post.id) ? 1 : 0)}
-                                                    </button>
-                                                    <span className="flex items-center gap-1">
-                                                        <Eye size={16} />
-                                                        {post.views}
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <MessageCircle size={16} />
-                                                        {post.comments}
-                                                    </span>
-                                                </div>
-
-                                                <button
-                                                    onClick={() => handleReadMore(post)}
-                                                    className="flex items-center gap-2 text-[#071d49] hover:text-[#ffd100] font-medium transition-colors"
-                                                >
-                                                    Read More
-                                                    <ArrowRight size={16} />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Regular Posts */}
-                    {regularPosts.length > 0 && (
-                        <div>
-                            <div className="flex items-center gap-3 mb-8">
-                                <BookOpen className="text-[#071d49]" size={24} />
-                                <h2 className="text-3xl font-bold text-[#071d49]">Latest Articles</h2>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {regularPosts.map((post) => (
-                                    <div
-                                        key={post.id}
-                                        className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 group"
-                                    >
-                                        {/* Image */}
-                                        <div className="relative h-48 overflow-hidden">
-                                            <img
-                                                src={post.featuredImage || "/placeholder.svg"}
-                                                alt={post.title}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                            />
-                                            <div className="absolute top-3 left-3">
-                                                <span className="bg-[#071d49] text-white px-2 py-1 rounded-full text-xs font-medium">
-                                                    {getCategoryIcon(post.category)} {post.category}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Content */}
-                                        <div className="p-5 space-y-3">
-                                            {/* Event Info */}
-                                            {post.eventDate && (
-                                                <div className="bg-blue-50 p-2 rounded-lg border border-blue-200">
-                                                    <div className="flex items-center gap-1 text-blue-700 font-medium text-xs">
-                                                        {getEventTypeIcon(post.eventType)}
-                                                        <span>{formatDate(post.eventDate)}</span>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* Title */}
-                                            <h3 className="text-lg font-bold text-[#071d49] leading-tight group-hover:text-[#ffd100] transition-colors line-clamp-2">
-                                                {post.title}
-                                            </h3>
-
-                                            {/* Excerpt */}
-                                            <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">{post.excerpt}</p>
-
-                                            {/* Meta */}
-                                            <div className="flex items-center gap-3 text-xs text-gray-500">
-                                                <div className="flex items-center gap-1">
-                                                    <img
-                                                        src={post.authorAvatar || "/placeholder.svg"}
-                                                        alt={post.author}
-                                                        className="w-5 h-5 rounded-full border border-[#ffd100]"
-                                                    />
-                                                    <span>{post.author}</span>
-                                                </div>
-                                                <span>{formatDate(post.publishDate)}</span>
-                                                <span>{post.readTime}</span>
-                                            </div>
-
-                                            {/* Actions */}
-                                            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                                                <div className="flex items-center gap-3 text-xs text-gray-500">
-                                                    <button
-                                                        onClick={() => handleLike(post.id)}
-                                                        className={`flex items-center gap-1 hover:text-red-500 transition-colors ${likedPosts.has(post.id) ? "text-red-500" : ""
-                                                            }`}
-                                                    >
-                                                        <Heart size={14} className={likedPosts.has(post.id) ? "fill-current" : ""} />
-                                                        {post.likes + (likedPosts.has(post.id) ? 1 : 0)}
-                                                    </button>
+                                            {/* Meta Info */}
+                                            <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
+                                                <div className="flex items-center gap-4">
                                                     <span className="flex items-center gap-1">
                                                         <Eye size={14} />
                                                         {post.views}
                                                     </span>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            handleLike(post.id)
+                                                        }}
+                                                        className="flex items-center gap-1 hover:text-red-500 transition-colors"
+                                                    >
+                                                        <Heart size={14} />
+                                                        {post.likes}
+                                                    </button>
+                                                    <span className="flex items-center gap-1">
+                                                        <MessageCircle size={14} />
+                                                        {post.comments}
+                                                    </span>
                                                 </div>
-
-                                                <button
-                                                    onClick={() => handleReadMore(post)}
-                                                    className="text-[#071d49] hover:text-[#ffd100] font-medium text-sm transition-colors flex items-center gap-1"
-                                                >
-                                                    Read More
-                                                    <ChevronRight size={14} />
-                                                </button>
+                                                <div className="flex items-center gap-2">
+                                                    <User size={14} />
+                                                    <span>{post.author}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -710,49 +419,474 @@ export default function BlogPage() {
                         </div>
                     )}
 
-                    {/* Empty State */}
-                    {filteredPosts.length === 0 && (
-                        <div className="text-center py-16">
-                            <div className="max-w-md mx-auto">
-                                <div className="text-6xl mb-4">📝</div>
-                                <h3 className="text-2xl font-bold text-[#071d49] mb-4">No posts found</h3>
+                    {/* Regular Posts Grid */}
+                    <div className="mb-16">
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-3xl font-bold text-[#071d49]">
+                                {selectedCategory === "All" ? "Latest Posts" : `${selectedCategory} Posts`}
+                            </h2>
+                            <div className="text-sm text-gray-500">
+                                {filteredPosts.length} {filteredPosts.length === 1 ? "post" : "posts"} found
+                            </div>
+                        </div>
+
+                        {filteredPosts.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {filteredPosts
+                                    .filter((post) => selectedCategory === "All" || !post.featured)
+                                    .map((post) => (
+                                        <article
+                                            key={post.id}
+                                            className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-[#ffd100]"
+                                            onClick={() => handlePostClick(post)}
+                                        >
+                                            {/* Featured Image */}
+                                            <div className="relative h-48 overflow-hidden">
+                                                {post.featuredImage ? (
+                                                    <img
+                                                        src={post.featuredImage || "/placeholder.svg"}
+                                                        alt={post.title}
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                                                        <BookOpen size={32} className="text-gray-400" />
+                                                    </div>
+                                                )}
+
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+
+                                                {/* Gallery Indicator */}
+                                                {post.galleryImages && post.galleryImages.length > 0 && (
+                                                    <div className="absolute top-3 right-3">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                openGallery(post, 0)
+                                                            }}
+                                                            className="bg-black/70 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 hover:bg-black/90 transition-colors"
+                                                        >
+                                                            <ImageIcon size={12} />
+                                                            {post.galleryImages.length}
+                                                        </button>
+                                                    </div>
+                                                )}
+
+                                                {/* Category Badge */}
+                                                <div className="absolute bottom-3 left-3">
+                                                    <span className="bg-white/90 text-[#071d49] px-2 py-1 rounded-full text-xs font-medium">
+                                                        {post.category}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Content */}
+                                            <div className="p-6">
+                                                {/* Date */}
+                                                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                                                    <Clock size={14} />
+                                                    {formatDate(post.publishDate)}
+                                                </div>
+
+                                                {/* Title */}
+                                                <h3 className="text-xl font-bold text-[#071d49] mb-3 line-clamp-2 group-hover:text-[#ffd100] transition-colors">
+                                                    {post.title}
+                                                </h3>
+
+                                                {/* Excerpt */}
+                                                <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
+                                                    {stripHtml(post.excerpt)}
+                                                </p>
+
+                                                {/* Event Info */}
+                                                {post.eventDate && (
+                                                    <div className="bg-blue-50 rounded-lg p-3 mb-4 border border-blue-200">
+                                                        <div className="flex items-center gap-2 text-sm text-blue-700">
+                                                            <Calendar size={14} />
+                                                            <span className="font-medium">Event: {formatDate(post.eventDate)}</span>
+                                                        </div>
+                                                        {post.eventLocation && (
+                                                            <div className="flex items-center gap-2 text-xs text-blue-600 mt-1">
+                                                                <MapPin size={12} />
+                                                                {post.eventLocation}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {/* Tags */}
+                                                <div className="flex flex-wrap gap-1 mb-4">
+                                                    {post.tags.slice(0, 3).map((tag, index) => (
+                                                        <span key={index} className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
+                                                            #{tag}
+                                                        </span>
+                                                    ))}
+                                                    {post.tags.length > 3 && (
+                                                        <span className="text-gray-400 text-xs">+{post.tags.length - 3} more</span>
+                                                    )}
+                                                </div>
+
+                                                {/* Meta Info */}
+                                                <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="flex items-center gap-1">
+                                                            <Eye size={14} />
+                                                            {post.views}
+                                                        </span>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                handleLike(post.id)
+                                                            }}
+                                                            className="flex items-center gap-1 hover:text-red-500 transition-colors"
+                                                        >
+                                                            <Heart size={14} />
+                                                            {post.likes}
+                                                        </button>
+                                                        <span className="flex items-center gap-1">
+                                                            <MessageCircle size={14} />
+                                                            {post.comments}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1">
+                                                        <User size={14} />
+                                                        <span className="truncate max-w-20">{post.author}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200">
+                                <Search className="mx-auto text-gray-300 mb-4" size={48} />
+                                <h3 className="text-xl font-bold text-[#071d49] mb-2">No posts found</h3>
                                 <p className="text-gray-600 mb-6">
-                                    We couldn't find any posts matching your search criteria. Try adjusting your filters or search terms.
+                                    {searchTerm
+                                        ? `No posts match "${searchTerm}" in ${selectedCategory === "All" ? "any category" : selectedCategory}`
+                                        : `No posts available in ${selectedCategory}`}
                                 </p>
                                 <button
                                     onClick={() => {
                                         setSearchTerm("")
-                                        setCategoryFilter("All")
+                                        setSelectedCategory("All")
                                     }}
                                     className="bg-[#ffd100] text-[#071d49] px-6 py-3 rounded-lg font-bold hover:bg-[#ffd100]/90 transition-colors"
                                 >
-                                    Show All Posts
+                                    Clear Filters
                                 </button>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
+
                     {/* Newsletter Signup */}
-                    <div className="mt-20 bg-gradient-to-r from-[#071d49] to-[#0a2555] rounded-2xl p-8 text-center text-white">
-                        <h3 className="text-2xl font-bold mb-4">Stay Updated!</h3>
-                        <p className="text-white/90 mb-6 max-w-2xl mx-auto">
-                            Subscribe to our newsletter to get the latest blog posts, event announcements, and educational tips
-                            delivered straight to your inbox.
-                        </p>
-                        {/* <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                        <input
-                            type="email"
-                            placeholder="Enter your email"
-                            className="flex-1 px-4 py-3 rounded-lg text-[#071d49] focus:outline-none focus:ring-2 focus:ring-[#ffd100]"
-                        />
-                        <button className="bg-[#ffd100] text-[#071d49] px-6 py-3 rounded-lg font-bold hover:bg-[#ffd100]/90 transition-colors">
-                            Subscribe
-                        </button>
-                    </div> */}
+                    <div className="bg-gradient-to-r from-[#071d49] to-[#0a2557] rounded-3xl p-8 md:p-12 text-white relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#ffd100]/10 rounded-full -translate-y-32 translate-x-32"></div>
+                        <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#ffd100]/10 rounded-full translate-y-24 -translate-x-24"></div>
+
+                        <div className="relative max-w-4xl mx-auto text-center">
+                            <div className="flex items-center justify-center gap-2 mb-6">
+                                <Mail className="text-[#ffd100]" size={32} />
+                                <h2 className="text-3xl md:text-4xl font-bold">Stay Updated!</h2>
+                            </div>
+
+                            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+                                Subscribe to our newsletter and never miss the latest educational content, events, and special
+                                announcements.
+                            </p>
+
+                            {!subscribed ? (
+                                <form onSubmit={handleNewsletterSubmit} className="max-w-md mx-auto flex gap-4">
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Enter your email address"
+                                        className="flex-1 px-6 py-4 bg-white/95 backdrop-blur-sm border-0 rounded-xl text-[#071d49] placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-[#ffd100]/30"
+                                        required
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="bg-[#ffd100] text-[#071d49] px-8 py-4 rounded-xl font-bold hover:bg-[#ffd100]/90 transition-colors flex items-center gap-2 whitespace-nowrap"
+                                    >
+                                        Subscribe
+                                        <ArrowRight size={16} />
+                                    </button>
+                                </form>
+                            ) : (
+                                <div className="max-w-md mx-auto bg-green-500/20 border border-green-400/30 rounded-xl p-6">
+                                    <div className="flex items-center justify-center gap-2 text-green-300">
+                                        <Users size={20} />
+                                        <span className="font-bold">Thank you for subscribing!</span>
+                                    </div>
+                                    <p className="text-green-200 mt-2">You'll receive our latest updates soon.</p>
+                                </div>
+                            )}
+
+                            <div className="flex items-center justify-center gap-8 mt-8 text-blue-200">
+                                <div className="flex items-center gap-2">
+                                    <Target size={16} />
+                                    <span className="text-sm">Weekly Updates</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Zap size={16} />
+                                    <span className="text-sm">Exclusive Content</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Award size={16} />
+                                    <span className="text-sm">Event Invites</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 {/* Full Post Modal */}
-                {showFullPost && <FullPostModal post={selectedPost} onClose={() => setShowFullPost(false)} />}
+                {selectedPost && !showGallery && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                        <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+                            {/* Header */}
+                            <div className="relative">
+                                {selectedPost.featuredImage && (
+                                    <div className="h-64 md:h-80 overflow-hidden rounded-t-2xl">
+                                        <img
+                                            src={selectedPost.featuredImage || "/placeholder.svg"}
+                                            alt={selectedPost.title}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                                    </div>
+                                )}
+
+                                <button
+                                    onClick={() => setSelectedPost(null)}
+                                    className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+
+                                {selectedPost.featuredImage && (
+                                    <div className="absolute bottom-4 left-4 right-4">
+                                        <span className="bg-white/90 text-[#071d49] px-3 py-1 rounded-full text-sm font-medium">
+                                            {selectedPost.category}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-6 md:p-8">
+                                {!selectedPost.featuredImage && (
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <span className="bg-[#071d49]/10 text-[#071d49] px-3 py-1 rounded-full text-sm font-medium">
+                                            {selectedPost.category}
+                                        </span>
+                                    </div>
+                                )}
+
+                                <h1 className="text-3xl md:text-4xl font-bold text-[#071d49] mb-4">{selectedPost.title}</h1>
+
+                                <div className="flex items-center gap-6 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
+                                    <div className="flex items-center gap-2">
+                                        <User size={16} />
+                                        <span>{selectedPost.author}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Calendar size={16} />
+                                        <span>{formatDate(selectedPost.publishDate)}</span>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <span className="flex items-center gap-1">
+                                            <Eye size={16} />
+                                            {selectedPost.views}
+                                        </span>
+                                        <button
+                                            onClick={() => handleLike(selectedPost.id)}
+                                            className="flex items-center gap-1 hover:text-red-500 transition-colors"
+                                        >
+                                            <Heart size={16} />
+                                            {selectedPost.likes}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Event Info */}
+                                {selectedPost.eventDate && (
+                                    <div className="bg-blue-50 rounded-xl p-6 mb-6 border border-blue-200">
+                                        <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                                            <Calendar size={20} />
+                                            Event Information
+                                        </h3>
+                                        <div className="space-y-2 text-blue-700">
+                                            <div className="flex items-center gap-2">
+                                                <Clock size={16} />
+                                                <span className="font-medium">{formatDate(selectedPost.eventDate)}</span>
+                                            </div>
+                                            {selectedPost.eventLocation && (
+                                                <div className="flex items-center gap-2">
+                                                    <MapPin size={16} />
+                                                    <span>{selectedPost.eventLocation}</span>
+                                                </div>
+                                            )}
+                                            <div className="flex items-center gap-2">
+                                                <Tag size={16} />
+                                                <span className="capitalize">{selectedPost.eventType.replace("_", " ")}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Gallery Images */}
+                                {selectedPost.galleryImages && selectedPost.galleryImages.length > 0 && (
+                                    <div className="mb-8">
+                                        <h3 className="font-bold text-[#071d49] mb-4 flex items-center gap-2">
+                                            <ImageIcon size={20} />
+                                            Gallery ({selectedPost.galleryImages.length} images)
+                                        </h3>
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                            {selectedPost.galleryImages.slice(0, 6).map((image, index) => (
+                                                <div
+                                                    key={image.id}
+                                                    className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden cursor-pointer group"
+                                                    onClick={() => openGallery(selectedPost, index)}
+                                                >
+                                                    <img
+                                                        src={image.url || "/placeholder.svg"}
+                                                        alt={image.alt || `Gallery image ${index + 1}`}
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                                        <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={24} />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {selectedPost.galleryImages.length > 6 && (
+                                                <div
+                                                    className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden cursor-pointer flex items-center justify-center"
+                                                    onClick={() => openGallery(selectedPost, 6)}
+                                                >
+                                                    <div className="text-white text-center">
+                                                        <Plus size={32} className="mx-auto mb-2" />
+                                                        <span className="text-sm font-medium">+{selectedPost.galleryImages.length - 6} more</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Content */}
+                                <div
+                                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed mb-8"
+                                    dangerouslySetInnerHTML={{ __html: selectedPost.content }}
+                                />
+
+                                {/* Tags */}
+                                <div className="flex flex-wrap gap-2 mb-8">
+                                    {selectedPost.tags.map((tag, index) => (
+                                        <span
+                                            key={index}
+                                            className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm flex items-center gap-1"
+                                        >
+                                            <Tag size={12} />
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                {/* Actions */}
+                                <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                                    <div className="flex items-center gap-4">
+                                        <button
+                                            onClick={() => handleLike(selectedPost.id)}
+                                            className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition-colors"
+                                        >
+                                            <Heart size={16} />
+                                            Like ({selectedPost.likes})
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Gallery Modal */}
+                {showGallery && selectedPost && selectedPost.galleryImages && (
+                    <div className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                        <div className="relative max-w-6xl w-full h-full flex items-center justify-center">
+                            {/* Close Button */}
+                            <button
+                                onClick={closeGallery}
+                                className="absolute top-4 right-4 bg-black/50 text-white p-3 rounded-full hover:bg-black/70 transition-colors z-10"
+                            >
+                                <X size={24} />
+                            </button>
+
+                            {/* Navigation Buttons */}
+                            {selectedPost.galleryImages.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={prevImage}
+                                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/70 transition-colors z-10"
+                                    >
+                                        <ChevronLeft size={24} />
+                                    </button>
+                                    <button
+                                        onClick={nextImage}
+                                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/70 transition-colors z-10"
+                                    >
+                                        <ChevronRight size={24} />
+                                    </button>
+                                </>
+                            )}
+
+                            {/* Image */}
+                            <div className="relative max-w-full max-h-full">
+                                <img
+                                    src={selectedPost.galleryImages[currentImageIndex]?.url || "/placeholder.svg"}
+                                    alt={selectedPost.galleryImages[currentImageIndex]?.alt || `Gallery image ${currentImageIndex + 1}`}
+                                    className="max-w-full max-h-full object-contain rounded-lg"
+                                />
+
+                                {/* Image Info */}
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
+                                    <div className="text-white">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-sm opacity-75">
+                                                {currentImageIndex + 1} of {selectedPost.galleryImages.length}
+                                            </span>
+                                        </div>
+                                        {selectedPost.galleryImages[currentImageIndex]?.caption && (
+                                            <p className="text-lg font-medium">{selectedPost.galleryImages[currentImageIndex].caption}</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Thumbnails */}
+                            {selectedPost.galleryImages.length > 1 && (
+                                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 bg-black/50 p-2 rounded-lg">
+                                    {selectedPost.galleryImages.map((image, index) => (
+                                        <button
+                                            key={image.id}
+                                            onClick={() => setCurrentImageIndex(index)}
+                                            className={`w-12 h-12 rounded overflow-hidden border-2 transition-all ${index === currentImageIndex ? "border-[#ffd100] scale-110" : "border-transparent opacity-70"
+                                                }`}
+                                        >
+                                            <img
+                                                src={image.url || "/placeholder.svg"}
+                                                alt={`Thumbnail ${index + 1}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     )
