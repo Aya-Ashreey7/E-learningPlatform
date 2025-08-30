@@ -27,11 +27,11 @@ const SearchBar = memo(function SearchBar({
         className="flex-grow p-2 rounded-xl border border-gray-300 shadow-md 
           focus:outline-none focus:ring-2 focus:ring-[#071d49] hover:border-[#071d49]"
       />
-      <div className="relative">
+      <div className="relative z-20 overflow-visible w-60 ">
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="appearance-none p-2 pl-8 pr-4 rounded-xl border border-gray-300 shadow-md cursor-pointer
+          className="appearance-none p-2 pl-8 pr-2  rounded-xl border border-gray-300 shadow-md cursor-pointer
           focus:outline-none focus:ring-2 focus:ring-[#071d49] hover:border-[#071d49]"
         >
           <option value="all">All</option>
@@ -113,17 +113,18 @@ export default function CourseKids() {
     async function fetchData() {
       setLoading(true);
       try {
+        // 1️⃣ هات الكورسات بتاعت الـ Kids
         const coursesCol = query(
           collection(db, "Courses"),
           where("audience", "==", "Kids")
         );
-
         const coursesSnapshot = await getDocs(coursesCol);
         const coursesList = coursesSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
+        // 2️⃣ هات الكاتيجوريز كلها
         const categoriesCol = collection(db, "Categories");
         const categoriesSnapshot = await getDocs(categoriesCol);
         const categoriesList = categoriesSnapshot.docs.map((doc) => ({
@@ -131,8 +132,16 @@ export default function CourseKids() {
           name: doc.data().name,
         }));
 
+        // 3️⃣ فلتر الكاتيجوريز بحيث يظهر بس اللي ليه كورسات Kids
+        const categoryIdsWithCourses = new Set(
+          coursesList.map((course) => course.category_id)
+        );
+        const filteredCategories = categoriesList.filter((cat) =>
+          categoryIdsWithCourses.has(cat.id)
+        );
+
         setCourses(coursesList);
-        setCategories(categoriesList);
+        setCategories(filteredCategories);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
