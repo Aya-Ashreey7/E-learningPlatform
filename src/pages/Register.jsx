@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { BookOpen, GraduationCap, Users, Award, Eye, EyeOff } from "lucide-react";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 const registerSchema = z
     .object({
@@ -41,14 +42,16 @@ export default function RegisterForm() {
 
     const onSubmit = async (data) => {
         try {
-            const userCredential = await createUserWithEmailAndPassword(
-                auth,
-                data.email,
-                data.password
-            );
+            const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password,);
             const user = userCredential.user;
             if (user) {
                 await sendEmailVerification(user);
+                await setDoc(doc(db, "users", user.uid), {
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    email: data.email,
+                    createdAt: serverTimestamp(),
+                });
                 localStorage.setItem("firstName", data.firstName);
                 localStorage.setItem("lastName", data.lastName);
 
