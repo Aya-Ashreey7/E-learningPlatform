@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
+import toast from "react-hot-toast";
 
 export default function CourseCard({
   id,
@@ -9,6 +11,7 @@ export default function CourseCard({
   price,
   duration,
 }) {
+  const { addToCart } = useCart();
   return (
     <Link to={`/courses/kids/${id}`} className="no-underline">
       <div
@@ -48,8 +51,22 @@ export default function CourseCard({
           </div>
 
           <button
-            className="bg-[#ffd100] text-[#071d49] font-extrabold py-3 rounded-2xl hover:bg-yellow-400 transition-colors duration-300 shadow-md"
+            className="bg-[#ffd100] text-[#071d49] font-extrabold py-3 rounded-2xl hover:bg-yellow-400
+             transition-colors duration-300 shadow-md cursor-pointer"
             type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              addToCart({
+                id,
+                image,
+                title,
+                category,
+                enrolled,
+                price,
+                duration,
+              });
+              toast.success("Course added to cart successfully");
+            }}
           >
             Add to Cart
           </button>

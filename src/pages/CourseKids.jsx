@@ -4,6 +4,7 @@ import { FaStar, FaBook, FaGraduationCap, FaLaptop } from "react-icons/fa";
 import CoursesList from "../components/CoursesKids/CoursesList";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
+import Footer from "../components/Footer/Footer";
 
 const SearchBar = memo(function SearchBar({
   search,
@@ -96,6 +97,10 @@ export default function CourseKids() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 8;
+
   useEffect(() => {
     const interval = setInterval(() => {
       const shuffled = [...iconsList].sort(() => 0.5 - Math.random());
@@ -155,6 +160,15 @@ export default function CourseKids() {
     return matchesSearch && matchesFilter;
   });
 
+  // Pagination calculations
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = filteredCourses.slice(
+    indexOfFirstCourse,
+    indexOfLastCourse
+  );
+  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+
   return (
     <>
       <Navbar />
@@ -188,7 +202,46 @@ export default function CourseKids() {
             <div className="w-16 h-16 border-4 border-gray-300 border-t-[#071d49] border-r-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
-          <CoursesList courses={filteredCourses} categoryMap={categoryMap} />
+          <>
+            <CoursesList courses={currentCourses} categoryMap={categoryMap} />
+
+            {/* Pagination buttons only if there are courses */}
+            {filteredCourses.length > 0 && (
+              <div className="flex justify-center mt-6  mb-6 gap-2 ">
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  className="px-3 py-1 rounded bg-gray-200 text-[#071d49] cursor-pointer"
+                >
+                  Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={`px-3 py-1 rounded ${
+                      currentPage === index + 1
+                        ? "bg-[#071d49] text-white cursor-pointer"
+                        : "bg-gray-200 text-[#071d49] cursor-pointer"
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  className="px-3 py-1 rounded bg-gray-200 text-[#071d49] cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -201,6 +254,7 @@ export default function CourseKids() {
             animation: fadeOpacity 3s ease-in-out infinite;
           }
         `}</style>
+      <Footer />
     </>
   );
 }
