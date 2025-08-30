@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 // App.jsx
 import { Routes, Route, BrowserRouter } from "react-router-dom";
+=======
+import { Routes, Route } from "react-router-dom";
+>>>>>>> origin/main
 import "./App.css";
 import "./index.css";
 import { Toaster } from "react-hot-toast";
@@ -37,10 +41,13 @@ import CourseKids from "./pages/CourseKids";
 import Wishlist from "./pages/Wishlist";
 import CourseAdults from "./pages/Courseadults";
 import CourseDetails from "./pages/CourseDetails";
+import BlogDashboard from "./pages/blogDashboard";
+import BlogPage from "./pages/blogUser";
 
 function App() {
   return (
     <CartProvider>
+<<<<<<< HEAD
       
         <Routes>
           {/* Public Pages */}
@@ -124,6 +131,36 @@ function App() {
               </ProtectedRoute>
             }
           />
+=======
+      <Routes>
+        {/* Public Pages */}
+        <Route path="/" element={<Hero />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/courses" element={<CoursesPage />} />
+        <Route path="/courses/kids" element={<CourseKids />} />
+        <Route path="/courses/adults" element={<CourseAdults />} />
+        <Route path="/course/:id" element={<CourseDetails />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/verified-redirect" element={<VerifiedRedirect />} />
+        <Route path="/forgot-password" element={<ResetPassword />} />
+        <Route path="/courses/kids/:id" element={<KidsCourseDetails />} />
+        <Route path="/blog" element={<BlogPage />} />
+
+
+        {/* Dashboard */}
+        <Route path="/dashboard/overview" element={<Overview />} />
+        <Route path="/dashboard/add-course" element={<AddCourse />} />
+        <Route path="/dashboard/manage-courses" element={<ManageCourses />} />
+        <Route path="/dashboard/users" element={<Users />} />
+        <Route path="/dashboard/orders" element={<Orders />} />
+        <Route path="/dashboard/feedback" element={<Feedback />} />
+        <Route path="/dashboard/addblog" element={<BlogDashboard />} />
+>>>>>>> origin/main
 
           {/* Admin Dashboard Pages */}
           <Route

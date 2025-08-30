@@ -29,17 +29,39 @@ export default function CourseDetails() {
       if (docSnap.exists()) {
         setCourse({ id: docSnap.id, ...docSnap.data() });
 
-        if (docSnap.data().category) {
-          const q = query(
-            collection(db, "Courses"),
-            where("category", "==", docSnap.data().category)
-          );
-          const querySnap = await getDocs(q);
-          const related = querySnap.docs
-            .map((d) => ({ id: d.id, ...d.data() }))
-            .filter((c) => c.id !== id);
-          setRelatedCourses(related);
-        }
+      const courseData = docSnap.data();
+setCourse({ id: docSnap.id, ...courseData });
+
+// لو الكورس Adult
+if (courseData.audience === "Adults" && courseData.category_id) {
+  const q = query(
+    collection(db, "Courses"),
+    where("category_id", "==", courseData.category_id),
+    where("audience", "==", "Adults")
+  );
+
+  const querySnap = await getDocs(q);
+  const related = querySnap.docs
+    .map((d) => ({ id: d.id, ...d.data() }))
+    .filter((c) => c.id !== id);
+
+  setRelatedCourses(related);
+} else if (courseData.category_id) {
+  
+  const q = query(
+    collection(db, "Courses"),
+    where("category_id", "==", courseData.category_id)
+  );
+
+  const querySnap = await getDocs(q);
+  const related = querySnap.docs
+    .map((d) => ({ id: d.id, ...d.data() }))
+    .filter((c) => c.id !== id);
+
+  setRelatedCourses(related);
+}
+
+
       }
     };
     fetchCourse();

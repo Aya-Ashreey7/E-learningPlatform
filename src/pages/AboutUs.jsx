@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar/Navbar"; // adjust path if needed
-import aboutImg from "../assets/about.jpg"; // ✅ import image from assets
+import aboutImg from "../assets/about4.jpg"; // ✅ import image from assets
 
 export default function AboutUs() {
   return (

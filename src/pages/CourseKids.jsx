@@ -2,10 +2,10 @@ import { useState, useEffect, memo } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import { FaStar, FaBook, FaGraduationCap, FaLaptop } from "react-icons/fa";
 import CoursesList from "../components/CoursesKids/CoursesList";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
+import Footer from "../components/Footer/Footer";
 
-// SearchBar مفصول ومستقل مع React.memo
 const SearchBar = memo(function SearchBar({
   search,
   setSearch,
@@ -63,13 +63,13 @@ export default function CourseKids() {
     {
       id: 1,
       icon: <FaStar size={40} className="text-gray-400" />,
-      top: "5%", // رفعتها من 10% لـ 5%
+      top: "5%",
       left: "2%",
     },
     {
       id: 2,
       icon: <FaBook size={40} className="text-gray-400" />,
-      top: "15%", // رفعتها من 30% لـ 15%
+      top: "15%",
       left: "2%",
     },
     {
@@ -94,9 +94,12 @@ export default function CourseKids() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // حالات البحث والفلترة
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 8;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -110,15 +113,17 @@ export default function CourseKids() {
     async function fetchData() {
       setLoading(true);
       try {
-        // جلب الكورسات
-        const coursesCol = collection(db, "Courses");
+        const coursesCol = query(
+          collection(db, "Courses"),
+          where("audience", "==", "Kids")
+        );
+
         const coursesSnapshot = await getDocs(coursesCol);
         const coursesList = coursesSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
-        // جلب التصنيفات
         const categoriesCol = collection(db, "Categories");
         const categoriesSnapshot = await getDocs(categoriesCol);
         const categoriesList = categoriesSnapshot.docs.map((doc) => ({
@@ -136,13 +141,11 @@ export default function CourseKids() {
     fetchData();
   }, []);
 
-  // بناء خريطة من category_id -> category name
   const categoryMap = categories.reduce((acc, cat) => {
     acc[cat.id] = cat.name;
     return acc;
   }, {});
 
-  // فلترة الكورسات حسب البحث والفلتر
   const filteredCourses = courses.filter((course) => {
     const courseCategoryName = categoryMap[course.category_id] || "";
 
@@ -156,6 +159,15 @@ export default function CourseKids() {
 
     return matchesSearch && matchesFilter;
   });
+
+  // Pagination calculations
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = filteredCourses.slice(
+    indexOfFirstCourse,
+    indexOfLastCourse
+  );
+  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
 
   return (
     <>
@@ -186,9 +198,50 @@ export default function CourseKids() {
         />
 
         {loading ? (
-          <p className="text-center mt-6 text-gray-500">Loading courses...</p>
+          <div className="flex justify-center items-center mt-35">
+            <div className="w-16 h-16 border-4 border-gray-300 border-t-[#071d49] border-r-transparent rounded-full animate-spin"></div>
+          </div>
         ) : (
-          <CoursesList courses={filteredCourses} categoryMap={categoryMap} />
+          <>
+            <CoursesList courses={currentCourses} categoryMap={categoryMap} />
+
+            {/* Pagination buttons only if there are courses */}
+            {filteredCourses.length > 0 && (
+              <div className="flex justify-center mt-6  mb-6 gap-2 ">
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  className="px-3 py-1 rounded bg-gray-200 text-[#071d49] cursor-pointer"
+                >
+                  Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={`px-3 py-1 rounded ${
+                      currentPage === index + 1
+                        ? "bg-[#071d49] text-white cursor-pointer"
+                        : "bg-gray-200 text-[#071d49] cursor-pointer"
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  className="px-3 py-1 rounded bg-gray-200 text-[#071d49] cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -201,6 +254,7 @@ export default function CourseKids() {
             animation: fadeOpacity 3s ease-in-out infinite;
           }
         `}</style>
+      <Footer />
     </>
   );
 }

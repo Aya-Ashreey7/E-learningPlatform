@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
-import { Eye, Check, X, MapPin, Phone, User, CreditCard, Package, Search, ChevronDown, Calendar, } from "lucide-react";
+import { Eye, Check, X, MapPin, Phone, User, CreditCard, Package, Search, ChevronDown, Calendar, Download, } from "lucide-react";
 import { db } from "../firebase";
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, addDoc, serverTimestamp, } from "firebase/firestore";
 import toast from "react-hot-toast";
 import BeatLoader from "react-spinners/BeatLoader";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 
 export default function Orders() {
@@ -127,6 +129,33 @@ export default function Orders() {
             minute: "2-digit",
         }).format(date);
     };
+    //   ============== Excel sheet saver ================
+    const exportToExcel = () => {
+        const exportData = filteredOrders.map((order, index) => ({
+            "#": index + 1,
+            Name: order?.address?.fullName || order.customerName || "N/A",
+            Phone: order?.address?.phone || "N/A",
+            Status: order?.status || "N/A",
+            Total: order?.total || 0,
+            Date: formatDate(order?.createdAt),
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+
+        const excelBuffer = XLSX.write(workbook, {
+            bookType: "xlsx",
+            type: "array",
+        });
+
+        const fileData = new Blob([excelBuffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+        });
+
+        saveAs(fileData, "Orders.xlsx");
+    };
+
 
 
 
@@ -368,6 +397,13 @@ export default function Orders() {
                             </select>
                             <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
                         </div>
+
+                        <button onClick={exportToExcel} variant="outlined"
+                            className="flex items-center gap-2 bg-[#ffd100] text-[#071d49] px-6 py-3 rounded-lg font-bold hover:bg-[#ffd100]/90 transition-colors shadow-lg">
+                            {<Download />}
+                            Export Data
+                        </button>
+
                     </div>
                 </div>
 

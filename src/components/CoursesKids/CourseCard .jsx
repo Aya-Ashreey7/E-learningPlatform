@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
+import toast from "react-hot-toast";
 
 export default function CourseCard({
   id,
@@ -9,10 +11,9 @@ export default function CourseCard({
   price,
   duration,
 }) {
+  const { addToCart } = useCart();
   return (
     <Link to={`/courses/kids/${id}`} className="no-underline">
-
-
       <div
         className="w-80 bg-white rounded-3xl shadow-lg
        hover:shadow-yellow-200 transition-shadow duration-300 p-6 cursor-pointer flex flex-col"
@@ -20,7 +21,7 @@ export default function CourseCard({
         <img
           src={image}
           alt={title}
-          className="w-full h-44 object-cover rounded-3xl mb-5 border-4 border-[#ffd100] shadow-md"
+          className="w-full h-65 object-cover rounded-3xl mb-5 border-4 border-[#ffd100] shadow-md"
         />
         <div className="px-3 flex-grow flex flex-col justify-between">
           <div>
@@ -38,9 +39,9 @@ export default function CourseCard({
               </p>
             </div>
 
-            <p className="text-[#071d49] text-lg font-semibold whitespace-nowrap mb-6 flex gap-17">
+            <p className="text-[#071d49] text-lg font-semibold whitespace-nowrap mb-6 flex gap-14">
               <span>
-                Price: <span className="text-[#ffd100]">${price}</span>
+                Price: <span className="text-[#ffd100]">{price} EGP</span>
               </span>
               <span>
                 Duration:{" "}
@@ -50,14 +51,27 @@ export default function CourseCard({
           </div>
 
           <button
-            className="bg-[#ffd100] text-[#071d49] font-extrabold py-3 rounded-2xl hover:bg-yellow-400 transition-colors duration-300 shadow-md"
+            className="bg-[#ffd100] text-[#071d49] font-extrabold py-3 rounded-2xl hover:bg-yellow-400
+             transition-colors duration-300 shadow-md cursor-pointer"
             type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              addToCart({
+                id,
+                image,
+                title,
+                category,
+                enrolled,
+                price,
+                duration,
+              });
+              toast.success("Course added to cart successfully");
+            }}
           >
             Add to Cart
           </button>
         </div>
       </div>
-
     </Link>
   );
 }

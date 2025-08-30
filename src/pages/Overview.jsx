@@ -13,8 +13,33 @@ import LineChartComponent from "../components/Charts/LineChartComponent";
 import BarChartComponent from "../components/Charts/BarChartComponent";
 import PieChartComponent from "../components/Charts/PieChartComponent";
 import PaymentChartComponent from "../components/Charts/PaymentChartComponent";
+import { useEffect, useState } from "react";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
 
 export default function Overview() {
+  const [totalCourses, setTotalCourses] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalBookings, setTotalBookings] = useState(0);
+
+  // firebase
+  useEffect(() => {
+    const totalCourseDoc = onSnapshot(collection(db, "Courses"), (snapshot) => {
+      setTotalCourses(snapshot.size);
+    });
+    const totalUsersDoc = onSnapshot(collection(db, "users"), (snapshot) => {
+      setTotalUsers(snapshot.size);
+    });
+    const totalBookingDoc = onSnapshot(collection(db, "Orders"), (snapshot) => {
+      setTotalBookings(snapshot.size);
+    });
+    return () => {
+      totalCourseDoc();
+      totalUsersDoc();
+      totalBookingDoc();
+    };
+  }, []);
+
   return (
     <DashboardLayout>
       {/* Top cards */}
@@ -25,7 +50,7 @@ export default function Overview() {
           </div>
           <div>
             <h3 className="text-lg font-semibold">Total Courses</h3>
-            <p className="text-2xl font-bold mt-1">50</p>
+            <p className="text-2xl font-bold mt-1">{totalCourses}</p>
           </div>
         </div>
 
@@ -35,7 +60,7 @@ export default function Overview() {
           </div>
           <div>
             <h3 className="text-lg font-semibold">Total Users</h3>
-            <p className="text-2xl font-bold mt-1">50</p>
+            <p className="text-2xl font-bold mt-1">{totalUsers}</p>
           </div>
         </div>
 
@@ -45,7 +70,7 @@ export default function Overview() {
           </div>
           <div>
             <h3 className="text-lg font-semibold">Total Bookings</h3>
-            <p className="text-2xl font-bold mt-1">50</p>
+            <p className="text-2xl font-bold mt-1">{totalBookings}</p>
           </div>
         </div>
       </div>

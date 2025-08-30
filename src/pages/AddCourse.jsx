@@ -16,6 +16,7 @@ export default function AddCourse() {
   const [audience, setAudience] = useState("");
   const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
 
   // الحقول الجديدة
   const [traineesCount, setTraineesCount] = useState("");
@@ -84,6 +85,12 @@ export default function AddCourse() {
     setLoading(true);
 
     try {
+      let imgUrl = "";
+      if (image) {
+        toast.loading("Uploading image...");
+        imgUrl = await imagUploadCloudinary(image);
+        toast.dismiss();
+      }
       const categoriesRef = collection(db, "Categories");
       const q = query(categoriesRef, where("name", "==", categoryName));
       const querySnapshot = await getDocs(q);
@@ -110,7 +117,7 @@ export default function AddCourse() {
         traineesCount,
         certificate,
         lecturesAvailability,
-        image: "",
+        image: imgUrl,
       });
 
       setTilte("");
@@ -130,6 +137,29 @@ export default function AddCourse() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // imageHandel
+  const handelImageCourse = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+  };
+
+  // imageUploadCloudinary
+  const imagUploadCloudinary = async (file) => {
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "admin_courses");
+    data.append("cloud_name", "dciqod9kj");
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dciqod9kj/image/upload",
+      {
+        method: "post",
+        body: data,
+      }
+    );
+    const json = await res.json();
+    return json.secure_url;
   };
 
   return (
@@ -337,8 +367,8 @@ export default function AddCourse() {
             </label>
             <input
               type="file"
-              className="w-full p-2 bg-[#e2e8f0] text-[#071d49] rounded-lg"
-              disabled
+              className="w-full p-2 bg-[#e2e8f0] text-[#071d49] rounded-lg cursor-pointer"
+              onChange={handelImageCourse}
             />
           </div>
 
