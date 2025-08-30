@@ -21,10 +21,15 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  
   const addToCart = (course) => {
     const existing = cartItems.find((item) => item.id === course.id);
-    if (!existing) {
+
+    if (existing) {
+      return false;  
+    } else {
       setCartItems([...cartItems, course]);
+      return true;  
     }
   };
 
