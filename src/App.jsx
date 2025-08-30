@@ -52,7 +52,7 @@ function App() {
         <Route path="/courses/kids" element={<CourseKids />} />
         <Route path="/courses/adults" element={<CourseAdults />} />
         <Route path="/course/:id" element={<CourseDetails />} />
-        <Route path="/cart" element={<CartPage />} />
+        <Route path="/Cart" element={<ProtectedRoute> <CartPage /> </ProtectedRoute>} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
@@ -63,25 +63,27 @@ function App() {
         <Route path="/blog" element={<BlogPage />} />
 
 
-        {/* Dashboard */}
-        <Route path="/dashboard/overview" element={<Overview />} />
-        <Route path="/dashboard/add-course" element={<AddCourse />} />
-        <Route path="/dashboard/manage-courses" element={<ManageCourses />} />
-        <Route path="/dashboard/users" element={<Users />} />
-        <Route path="/dashboard/orders" element={<Orders />} />
-        <Route path="/dashboard/feedback" element={<Feedback />} />
-        <Route path="/dashboard/addblog" element={<BlogDashboard />} />
+        {/* Dashboard protected*/}
+        <Route path="/dashboard/overview" element={<ProtectedRoute adminOnly={true}> <Overview /> </ProtectedRoute>} />
+        <Route path="/dashboard/overview" element={<ProtectedRoute adminOnly={true}> <Overview /> </ProtectedRoute>} />
+        <Route path="/dashboard/add-course" element={<ProtectedRoute adminOnly={true}> <AddCourse /> </ProtectedRoute>} />
+        <Route path="/dashboard/manage-courses" element={<ProtectedRoute adminOnly={true}> <ManageCourses /> </ProtectedRoute>} />
+        <Route path="/dashboard/users" element={<ProtectedRoute adminOnly={true}> <Users /> </ProtectedRoute>} />
+        <Route path="/dashboard/orders" element={<ProtectedRoute adminOnly={true}> <Orders /> </ProtectedRoute>} />
+        <Route path="/dashboard/feedback" element={<ProtectedRoute adminOnly={true}> <Feedback /> </ProtectedRoute>} />
+        <Route path="/dashboard/addblog" element={<ProtectedRoute adminOnly={true}> <BlogDashboard /> </ProtectedRoute>} />
 
-        {/* Checkout */}
-        <Route path="/checkout/address" element={<AddressForm />} />
-        <Route path="/checkout/checkout" element={<Checkout />} />
-        <Route path="/checkout/payment" element={<PaymentModal />} />
-        <Route path="/paymentSuccess" element={<PaymentSuccess />} />
 
-        {/* User Profile */}
-        <Route path="/ProfilePage" element={<ProfilePage />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/notifications" element={<NotificationsPage />} />
+        {/* Checkout protected*/}
+        <Route path="/checkout/address" element={<ProtectedRoute><AddressForm />  </ProtectedRoute>} />
+        <Route path="/checkout/checkout" element={<ProtectedRoute> <Checkout /> </ProtectedRoute>} />
+        <Route path="/checkout/payment" element={<ProtectedRoute> <PaymentModal /> </ProtectedRoute>} />
+        <Route path="/paymentSuccess" element={<ProtectedRoute> <PaymentSuccess /> </ProtectedRoute>} />
+
+        {/* User Profile protected*/}
+        <Route path="/Notifications" element={<ProtectedRoute><NotificationsPage /> </ProtectedRoute>} />
+        <Route path="/ProfilePage" element={<ProtectedRoute> <ProfilePage /></ProtectedRoute>} />
+        <Route path="/edit-profile" element={<ProtectedRoute> <EditProfile /> </ProtectedRoute>} />
       </Routes>
 
       <Toaster position="top-center" reverseOrder={false} />
