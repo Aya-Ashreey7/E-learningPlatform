@@ -1,8 +1,7 @@
-import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import { Toaster } from "react-hot-toast";
-
+import { Routes, Route } from "react-router-dom";
 // Pages & Components
 import Hero from "./components/Hero/Hero";
 import AboutUs from "./pages/AboutUs";
