@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { FaShoppingCart, FaHeart } from "react-icons/fa";
+import { FaShoppingCart, FaHeart, FaBell } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../AuthContext/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
+
+
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -139,15 +141,28 @@ const Navbar = () => {
               <FaShoppingCart size={20} />
             </button>
           </li>
+          {/* Notifications */}
+          <li>
+             <button
+              onClick={() => {
+              if (!user) navigate("/login");
+              else navigate("/notifications");
+              }}
+              className="text-white hover:text-[#ffd100] transition"
+            >
+            <FaBell size={20} />
+            </button>
+         </li>
 
           {/* User dropdown */}
           <li className="relative">
             <button
               onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-[#ffd100] text-[#071d49] font-bold shadow-md"
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-[#ffd100] text-[#071d49] font-bold shadow-md cursor-pointer hover:brightness-95 transition"
             >
               {getInitials()}
             </button>
+
             <AnimatePresence>
               {userMenuOpen && (
                 <motion.div
@@ -177,7 +192,7 @@ const Navbar = () => {
                   ) : (
                     <>
                       <NavLink
-                        to="/profile"
+                        to="/ProfilePage"
                         className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49]"
                         onClick={() => setUserMenuOpen(false)}
                       >
@@ -293,6 +308,17 @@ const Navbar = () => {
               >
                 Cart
               </button>
+              <button
+               onClick={() => {
+               if (!user) navigate("/login");
+               else navigate("/notifications");
+               setMenuOpen(false);
+               }}
+               className="text-[#071d49] font-medium hover:text-[#ffd100] text-left"
+              >
+               Notifications
+             </button>
+
 
               {/* Auth Links */}
               {!user ? (

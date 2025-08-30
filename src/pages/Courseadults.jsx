@@ -139,17 +139,19 @@ export default function CourseAdults() {
           />
 
           <select
-            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-[#071d49]"
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-          >
-            <option value="">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.name}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+  className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-[#071d49]"
+  value={categoryFilter}
+  onChange={(e) => setCategoryFilter(e.target.value)}
+>
+  <option value="">All Categories</option>
+  {Array.from(new Set(courses.map((c) => c.categoryName))).map((cat) => (
+    <option key={cat} value={cat}>
+      {cat}
+    </option>
+  ))}
+</select>
+
+
 
           <select
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-[#071d49]"
