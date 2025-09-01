@@ -1,8 +1,7 @@
-import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import { Toaster } from "react-hot-toast";
-
+import { Routes, Route } from "react-router-dom";
 // Pages & Components
 import Hero from "./components/Hero/Hero";
 import AboutUs from "./pages/AboutUs";
@@ -38,6 +37,7 @@ import CourseAdults from "./pages/Courseadults";
 import CourseDetails from "./pages/CourseDetails";
 import BlogDashboard from "./pages/blogDashboard";
 import BlogPage from "./pages/blogUser";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -79,15 +79,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/dashboard/overview"
-          element={
-            <ProtectedRoute adminOnly={true}>
-              {" "}
-              <Overview />{" "}
-            </ProtectedRoute>
-          }
-        />
+        {/* <Route path="/dashboard/overview" element={<Overview />} /> */}
         <Route
           path="/dashboard/add-course"
           element={

@@ -28,7 +28,7 @@ export default function CourseCard({
   const handleToggleWishlist = (e) => {
     e.preventDefault();
     if (!user) {
-      toast.error("Please login first to add to wishlist.");
+      toast.error("Please login first to add to wishlist");
       return;
     }
 
@@ -110,7 +110,7 @@ export default function CourseCard({
             type="button"
             onClick={(e) => {
               e.preventDefault();
-              addToCart({
+              const added = addToCart({
                 id,
                 image,
                 title,
@@ -119,7 +119,19 @@ export default function CourseCard({
                 price,
                 duration,
               });
-              toast.success("Course added to cart successfully");
+
+              // console.log("added value:", added);
+
+              if (!user) {
+                toast.error("Please login first to add to cart");
+                return;
+              }
+
+              if (!added) {
+                toast.error("Course already in cart");
+              } else {
+                toast.success("Course added to cart successfully");
+              }
             }}
           >
             Add to Cart
