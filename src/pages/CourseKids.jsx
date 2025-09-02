@@ -207,8 +207,8 @@ export default function CourseKids() {
         />
 
         {loading ? (
-          <div className="flex justify-center items-center mt-35">
-            <div className="w-16 h-16 border-4 border-gray-300 border-t-[#071d49] border-r-transparent rounded-full animate-spin"></div>
+          <div className="flex items-center justify-center min-h-screen -translate-y-24">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
           </div>
         ) : (
           <>

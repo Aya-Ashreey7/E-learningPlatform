@@ -14,13 +14,22 @@ import BarChartComponent from "../components/Charts/BarChartComponent";
 import PieChartComponent from "../components/Charts/PieChartComponent";
 import PaymentChartComponent from "../components/Charts/PaymentChartComponent";
 import { useEffect, useState } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 export default function Overview() {
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalBookings, setTotalBookings] = useState(0);
+  const [latestCourses, setLatestCourses] = useState([]);
+  const [latestUsers, setLatestUsers] = useState([]);
+  const [latestOrders, setLatestOrders] = useState([]);
 
   // firebase
   useEffect(() => {
@@ -33,10 +42,56 @@ export default function Overview() {
     const totalBookingDoc = onSnapshot(collection(db, "Orders"), (snapshot) => {
       setTotalBookings(snapshot.size);
     });
+
+    const latestCoursesQuery = query(
+      collection(db, "Courses"),
+      orderBy("createdAt", "desc"),
+      limit(3)
+    );
+
+    const unsubscribeLatest = onSnapshot(latestCoursesQuery, (snapshot) => {
+      const courses = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setLatestCourses(courses);
+    });
+
+    const latestUsersQuery = query(
+      collection(db, "users"),
+      orderBy("createdAt", "desc"),
+      limit(3)
+    );
+    const unsubscribeLatestUsers = onSnapshot(latestUsersQuery, (snapshot) => {
+      const users = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setLatestUsers(users);
+    });
+
+    const latestOrdersQuery = query(
+      collection(db, "Orders"),
+      orderBy("createdAt", "desc"),
+      limit(3)
+    );
+    const unsubscribeLatestOrders = onSnapshot(
+      latestOrdersQuery,
+      (snapshot) => {
+        const orders = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setLatestOrders(orders);
+      }
+    );
     return () => {
       totalCourseDoc();
       totalUsersDoc();
       totalBookingDoc();
+      unsubscribeLatest();
+      unsubscribeLatestUsers();
+      unsubscribeLatestOrders();
     };
   }, []);
 
@@ -110,9 +165,9 @@ export default function Overview() {
                 <FaBookOpen className="text-indigo-600" /> Latest Courses
               </h4>
               <ul className="space-y-1 text-sm text-gray-700">
-                <li>React for Beginners</li>
-                <li>Intro to Python</li>
-                <li>UI/UX Design Basics</li>
+                {latestCourses.map((course) => (
+                  <li key={course.id}>{course.title}</li>
+                ))}
               </ul>
             </div>
 
@@ -121,9 +176,9 @@ export default function Overview() {
                 <BsFillPersonPlusFill className="text-green-600" /> New Users
               </h4>
               <ul className="space-y-1 text-sm text-gray-700">
-                <li>Sarah Ali joined 5 mins ago</li>
-                <li>Ahmed Nabil joined 10 mins ago</li>
-                <li>Aya Gamal joined 1 hour ago</li>
+                {latestUsers.map((user) => (
+                  <li key={user.id}>{`${user.firstName} ${user.lastName} `}</li>
+                ))}
               </ul>
             </div>
 
@@ -131,9 +186,43 @@ export default function Overview() {
               <h4 className="font-semibold mb-2 flex items-center gap-2">
                 <FiCalendar className="text-yellow-600" /> Recent Bookings
               </h4>
-              <ul className="space-y-1 text-sm text-gray-700">
-                <li>Ahmed booked "React for Beginners"</li>
-                <li>Sarah booked "Python Intro"</li>
+              <ul className="space-y-2 text-sm text-gray-700">
+                {latestOrders.map((order) => {
+                  const createdAt = order.createdAt?.toDate
+                    ? order.createdAt.toDate()
+                    : null;
+                  return (
+                    <li
+                      key={order.id}
+                      className="border-b border-gray-200 pb-2"
+                    >
+                      <span className="font-semibold text-[#071d49]">
+                        {order?.address?.fullName ||
+                          order.customerName ||
+                          "Unknown"}
+                      </span>{" "}
+                      ordered:{" "}
+                      {order.cartItems && order.cartItems.length > 0
+                        ? order.cartItems
+                            .map((item) => `${item.title} (x${item.quantity})`)
+                            .join(", ")
+                        : "No courses"}{" "}
+                      —{" "}
+                      <span className="font-medium">
+                        Total: {order.total} EGP
+                      </span>
+                      {createdAt && (
+                        <div className="text-xs text-gray-500">
+                          {createdAt.toLocaleDateString()}{" "}
+                          {createdAt.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 

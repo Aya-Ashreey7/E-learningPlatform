@@ -33,6 +33,8 @@ export default function ManageCourses() {
     lectures_availability: "",
     description: "",
     image: "",
+    startDate: "",
+    endDate: "",
   });
 
   const [categories, setCategories] = useState([]);
@@ -166,6 +168,8 @@ export default function ManageCourses() {
       lectures_availability: course.lectures_availability || "",
       description: course.description || "",
       image: course.image || "",
+      startDate: course.startDate || "",
+      endDate: course.endDate || "",
     });
   };
 
@@ -209,6 +213,8 @@ export default function ManageCourses() {
       lectures_availability: editFormData.lectures_availability || "",
       description: editFormData.description,
       image: imageUrl,
+      startDate: editFormData.startDate || "",
+      endDate: editFormData.endDate || "",
     };
 
     const docRef = doc(db, "Courses", editCourseId);
@@ -294,6 +300,8 @@ export default function ManageCourses() {
                 <th className="p-3">Trainees</th>
                 <th className="p-3">Certificate</th>
                 <th className="p-3">Lectures</th>
+                <th className="p-3">Start Date</th>
+                <th className="p-3">End Date</th>
                 <th className="p-3">Description</th>
                 <th className="p-3">Actions</th>
               </tr>
@@ -362,6 +370,8 @@ export default function ManageCourses() {
                     <td className="p-3">
                       {course.lectures_availability || "N/A"}
                     </td>
+                    <td className="p-3">{course.startDate || "—"}</td>
+                    <td className="p-3">{course.endDate || "—"}</td>
                     <td className="p-3 max-w-xs group relative">
                       {course.description && course.description.length > 100 ? (
                         <>
@@ -575,6 +585,27 @@ export default function ManageCourses() {
                   <option value="Available">Available</option>
                   <option value="Unavailable">Unavailable</option>
                 </select>
+                <label className="block font-semibold text-[#071d49]">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={editFormData.startDate}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded"
+                />
+
+                <label className="block font-semibold text-[#071d49]">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={editFormData.endDate}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded"
+                />
 
                 <textarea
                   name="description"
