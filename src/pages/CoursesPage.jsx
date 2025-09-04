@@ -1,6 +1,6 @@
 // src/pages/CoursesPage.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import CourseCard from "../components/CourseCard";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
@@ -27,7 +27,7 @@ const CoursesPage = () => {
   const [instructors, setInstructors] = useState([]);
   const [levels, setLevels] = useState([]);
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -143,7 +143,9 @@ const CoursesPage = () => {
 
           {/* Grid */}
           {loading ? (
-            <p>Loading...</p>
+            <div className="flex items-center justify-center min-h-screen -translate-y-12">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredCourses.map((course) => (

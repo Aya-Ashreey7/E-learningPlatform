@@ -112,7 +112,7 @@ export default function KidsCourseDetails() {
 
                                     <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">{course.title}</h1>
 
-                                    <p className="text-white/90 text-lg leading-relaxed">{course.description}</p>
+                                    {/* <p className="text-white/90 text-lg leading-relaxed">{course.description}</p> */}
                                 </div>
 
                                 {/* Course Stats */}
@@ -131,11 +131,11 @@ export default function KidsCourseDetails() {
 
                                 {/* Instructor */}
                                 <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                    <img
+                                    {/* <img
                                         src={course.instructorAvatar || "/placeholder.svg"}
                                         alt={course.instructor}
                                         className="w-12 h-12 rounded-full border-2 border-[#ffd100]"
-                                    />
+                                    /> */}
                                     <div>
                                         <p className="text-white font-medium">Taught by</p>
                                         <p className="text-[#ffd100] font-bold">{course.instructor}</p>

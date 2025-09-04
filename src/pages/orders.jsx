@@ -412,7 +412,6 @@ export default function Orders() {
                     {loading ? (
                         <div className="p-2 text-center">
                             <BeatLoader size={12} color="#071d49" className=" d-flex mx-auto my-3" />
-
                         </div>
                     ) : (
                         <div className="overflow-x-auto">

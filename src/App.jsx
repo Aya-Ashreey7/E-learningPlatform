@@ -18,7 +18,6 @@ import ManageCourses from "./pages/ManageCourses";
 import Users from "./pages/Users";
 import Orders from "./pages/orders";
 import ResetPassword from "./pages/ResetPassword";
-import Feedback from "./pages/Feedback";
 
 import ProfilePage from "./pages/ProfilePage";
 import EditProfile from "./pages/EditProfile";
@@ -38,6 +37,7 @@ import CourseDetails from "./pages/CourseDetails";
 import BlogDashboard from "./pages/blogDashboard";
 import BlogPage from "./pages/blogUser";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Feedback from "./pages/FeedbackDashoard";
 
 function App() {
   return (

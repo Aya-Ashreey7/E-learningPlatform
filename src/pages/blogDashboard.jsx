@@ -221,28 +221,51 @@ export default function BlogDashboard() {
 
     const handleDelete = useCallback((postId) => {
         toast((t) => (
-            <span> Are you sure you want to delete this post?
-                <div className="mt-3 flex justify-end">
-                    <button className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+            <div className="p-4 bg-white rounded-lg shadow-lg border border-gray-200 w-80">
+                {/* Message */}
+                <p className="mt-2 text-sm text-gray-600">
+                    Are you sure you want to delete this post?
+                </p>
+
+                {/* Actions */}
+                <div className="mt-4 flex justify-end gap-2">
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-3 py-1.5 text-sm border border-gray-300 text-gray-600 rounded-md hover:bg-gray-100 transition"
+                    >
+                        Cancel
+                    </button>
+                    <button
                         onClick={async () => {
                             try {
                                 setError(null);
                                 await deleteBlog(postId);
                                 setBlogPosts((prev) => prev.filter((post) => post.id !== postId));
                                 toast.dismiss(t.id);
-                                toast.success("Post deleted successfully!");
+                                toast.success("✅ Post deleted successfully!", { duration: 3000 });
                             } catch (err) {
                                 console.error("Error deleting blog post:", err);
                                 setError("Failed to delete blog post. Please try again.");
                                 toast.dismiss(t.id);
+                                toast.error("❌ Failed to delete post");
                             }
-                        }} >  Yes</button>
-                    <button className="ml-2 px-2 py-1 border rounded" onClick={() => toast.dismiss(t.id)}> Cancel </button>
+                        }}
+                        className="px-3 py-1.5 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                    >
+                        Delete
+                    </button>
                 </div>
-
-            </span>
-        ));
+            </div>
+        ), {
+            duration: 6000,
+            style: {
+                background: "transparent",
+                boxShadow: "none",
+                padding: 0,
+            }
+        });
     }, []);
+
 
     const handleStatusChange = useCallback(
         async (postId, newStatus) => {
@@ -860,12 +883,8 @@ export default function BlogDashboard() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center min-h-[400px]">
-                    <div className="text-center">
-                        <Loader2 className="mx-auto text-[#071d49] mb-4 animate-spin" size={48} />
-                        <h3 className="text-xl font-bold text-[#071d49] mb-2">Loading Blog Posts...</h3>
-                        <p className="text-gray-600">Please wait while we fetch your content</p>
-                    </div>
+                <div className="flex items-center justify-center min-h-screen -translate-y-12">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
                 </div>
             </DashboardLayout>
         )
@@ -889,7 +908,7 @@ export default function BlogDashboard() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold text-[#071d49]">Blog Management</h1>
-                        <p className="text-gray-600 mt-1">Create and manage blog posts with Firestore integration</p>
+                        <p className="text-gray-600 mt-1">Create and manage blog posts </p>
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -926,7 +945,7 @@ export default function BlogDashboard() {
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                             <input
                                 type="text"
-                                placeholder="Search posts by title, content, author, or tags..."
+                                placeholder="Search posts by title, content, author..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-lg text-[#071d49] placeholder-gray-500 focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/20 transition-all"
