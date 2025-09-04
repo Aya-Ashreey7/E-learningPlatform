@@ -4,7 +4,7 @@ import { getAuth } from "firebase/auth";
 import { db } from "../firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar"; 
+import Navbar from "../components/Navbar/Navbar";
 
 const EditProfile = () => {
   const auth = getAuth();
@@ -106,9 +106,8 @@ const EditProfile = () => {
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#071d49]/5 rounded-full blur-3xl"></div>
 
           {/* Spinner */}
-          <div className="relative z-10 flex flex-col items-center">
-            <div className="w-12 h-12 border-4 border-[#071d49] border-t-[#ffd100] rounded-full animate-spin"></div>
-            <p className="mt-4 text-[#071d49] font-semibold">Loading profile...</p>
+          <div className="flex items-center justify-center min-h-screen -translate-y-12">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
           </div>
         </div>
       </div>
@@ -137,9 +136,8 @@ const EditProfile = () => {
                 placeholder="First Name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className={`w-full px-4 py-2 rounded-md bg-white/90 border border-[#071d49]/20 text-[#071d49] placeholder-[#071d49]/60 focus:bg-white focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/40 transition-all duration-200 ${
-                  errors.firstName ? "border-red-400" : ""
-                }`}
+                className={`w-full px-4 py-2 rounded-md bg-white/90 border border-[#071d49]/20 text-[#071d49] placeholder-[#071d49]/60 focus:bg-white focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/40 transition-all duration-200 ${errors.firstName ? "border-red-400" : ""
+                  }`}
               />
               {errors.firstName && (
                 <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
@@ -153,9 +151,8 @@ const EditProfile = () => {
                 placeholder="Last Name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className={`w-full px-4 py-2 rounded-md bg-white/90 border border-[#071d49]/20 text-[#071d49] placeholder-[#071d49]/60 focus:bg-white focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/40 transition-all duration-200 ${
-                  errors.lastName ? "border-red-400" : ""
-                }`}
+                className={`w-full px-4 py-2 rounded-md bg-white/90 border border-[#071d49]/20 text-[#071d49] placeholder-[#071d49]/60 focus:bg-white focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/40 transition-all duration-200 ${errors.lastName ? "border-red-400" : ""
+                  }`}
               />
               {errors.lastName && (
                 <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
@@ -169,9 +166,8 @@ const EditProfile = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 rows="3"
-                className={`w-full px-4 py-2 rounded-md bg-white/90 border border-[#071d49]/20 text-[#071d49] placeholder-[#071d49]/60 focus:bg-white focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/40 transition-all duration-200 ${
-                  errors.address ? "border-red-400" : ""
-                }`}
+                className={`w-full px-4 py-2 rounded-md bg-white/90 border border-[#071d49]/20 text-[#071d49] placeholder-[#071d49]/60 focus:bg-white focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/40 transition-all duration-200 ${errors.address ? "border-red-400" : ""
+                  }`}
               ></textarea>
               {errors.address && (
                 <p className="text-red-500 text-sm mt-1">{errors.address}</p>

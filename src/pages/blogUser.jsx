@@ -1,33 +1,10 @@
 import { useState, useEffect } from "react"
 import {
-    Search,
-    Calendar,
-    User,
-    Heart,
-    MessageCircle,
-    Eye,
-    Share2,
-    BookOpen,
-    Filter,
-    X,
-    ChevronLeft,
-    ChevronRight,
-    ImageIcon,
-    Mail,
-    ArrowRight,
-    Clock,
-    MapPin,
-    Tag,
-    TrendingUp,
-    Star,
-    Users,
-    Award,
-    Target,
-    Zap,
-    Globe,
-    Plus,
+    Search, Calendar, User, Heart, MessageCircle, Eye, Share2, BookOpen, Filter, X, ChevronLeft, ChevronRight, ImageIcon, Mail,
+    ArrowRight, Clock, MapPin, Tag, TrendingUp, Star, Users, Award, Target, Zap, Globe, Plus,
 } from "lucide-react"
 import { getPublishedBlogs, updateBlogStats } from "../blogService"
+import  Navbar  from "../components/Navbar/Navbar"
 
 const categories = [
     { name: "All", icon: Globe, color: "bg-blue-500" },
@@ -202,6 +179,7 @@ export default function BlogPage() {
 
     return (
         <>
+            <Navbar />
             <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50">
                 {/* Hero Section */}
                 <div className="relative bg-gradient-to-r from-[#071d49] to-[#0a2557] text-white py-20 overflow-hidden">
@@ -543,10 +521,10 @@ export default function BlogPage() {
                                                             <Heart size={14} />
                                                             {post.likes}
                                                         </button>
-                                                        <span className="flex items-center gap-1">
+                                                        {/* <span className="flex items-center gap-1">
                                                             <MessageCircle size={14} />
                                                             {post.comments}
-                                                        </span>
+                                                        </span> */}
                                                     </div>
                                                     <div className="flex items-center gap-1">
                                                         <User size={14} />
