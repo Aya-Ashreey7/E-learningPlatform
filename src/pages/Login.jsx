@@ -56,7 +56,7 @@ export default function LoginForm() {
       }
 
       if (userSnap.exists()) {
-        toast.success(`Welcome back ${firstName || "User"}!`);
+        toast.success(`Welcome  ${firstName}!`);
         localStorage.setItem("role", "user");
         navigate("/");
         return;
