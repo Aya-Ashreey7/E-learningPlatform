@@ -9,6 +9,7 @@ import {
     testFeedbackConnection,
     seedFeedbackData,
 } from "../feedbackService"
+import toast from "react-hot-toast"
 
 export default function Feedback() {
     const [feedbacks, setFeedbacks] = useState([])
@@ -109,21 +110,48 @@ export default function Feedback() {
         }
     }
 
-    const handleDeleteFeedback = async (feedbackId) => {
-        if (!window.confirm("Are you sure you want to delete this feedback?")) {
-            return
-        }
 
-        try {
-            await deleteFeedback(feedbackId)
+    const handleDeleteFeedback = (feedbackId) => {
+        toast((t) => (
+            <div className="p-3">
+                <p className="font-medium text-gray-800">Are you sure you want to delete this feedback?</p>
+                <div className="mt-3 flex justify-end space-x-2">
+                    <button
+                        onClick={async () => {
+                            try {
+                                await deleteFeedback(feedbackId);
+                                setFeedbacks((prev) => prev.filter((f) => f.id !== feedbackId));
+                                toast.dismiss(t.id);
+                                toast.success("Feedback deleted successfully!");
+                            } catch (err) {
+                                console.error("Error deleting feedback:", err);
+                                setError("Failed to delete feedback");
+                                toast.dismiss(t.id);
+                                toast.error("Failed to delete feedback");
+                            }
+                        }}
+                        className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 transition"
+                    >Delete</button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-100 transition"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        ), {
+            duration: 5000, // Toast disappears if no action in 5s
+            style: {
+                background: "#fff",
+                border: "1px solid #e5e7eb",
+                borderRadius: "8px",
+                padding: "12px",
+                color: "#111",
+            },
+        });
+    };
 
-            // Update local state
-            setFeedbacks((prevFeedbacks) => prevFeedbacks.filter((feedback) => feedback.id !== feedbackId))
-        } catch (err) {
-            console.error("Error deleting feedback:", err)
-            setError("Failed to delete feedback")
-        }
-    }
 
     const handleSeedData = async () => {
         if (!window.confirm("This will add sample feedback data. Continue?")) {
