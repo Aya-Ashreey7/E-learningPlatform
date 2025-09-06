@@ -4,7 +4,8 @@ import {
     ArrowRight, Clock, MapPin, Tag, TrendingUp, Star, Users, Award, Target, Zap, Globe, Plus,
 } from "lucide-react"
 import { getPublishedBlogs, updateBlogStats } from "../blogService"
-import  Navbar  from "../components/Navbar/Navbar"
+import Navbar from "../components/Navbar/Navbar"
+import Footer from "../components/Footer/Footer"
 
 const categories = [
     { name: "All", icon: Globe, color: "bg-blue-500" },
@@ -24,7 +25,6 @@ export default function BlogPage() {
     const [selectedPost, setSelectedPost] = useState(null)
     const [showGallery, setShowGallery] = useState(false)
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
-    const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [email, setEmail] = useState("")
     const [subscribed, setSubscribed] = useState(false)
@@ -33,7 +33,6 @@ export default function BlogPage() {
     useEffect(() => {
         const loadBlogPosts = async () => {
             try {
-                setLoading(true)
                 setError(null)
                 const posts = await getPublishedBlogs()
                 setBlogPosts(posts)
@@ -42,9 +41,8 @@ export default function BlogPage() {
             } catch (err) {
                 console.error("Error loading blog posts:", err)
                 setError("Failed to load blog posts. Please try again later.")
-            } finally {
-                setLoading(false)
             }
+          
         }
 
         loadBlogPosts()
@@ -139,20 +137,6 @@ export default function BlogPage() {
         const tmp = document.createElement("div")
         tmp.innerHTML = html
         return tmp.textContent || tmp.innerText || ""
-    }
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50">
-                <div className="flex items-center justify-center min-h-screen">
-                    <div className="text-center">
-                        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#071d49] mx-auto mb-4"></div>
-                        <h3 className="text-xl font-bold text-[#071d49] mb-2">Loading Blog Posts...</h3>
-                        <p className="text-gray-600">Please wait while we fetch the latest content</p>
-                    </div>
-                </div>
-            </div>
-        )
     }
 
     if (error) {
@@ -866,6 +850,8 @@ export default function BlogPage() {
                     </div>
                 )}
             </div>
+
+            <Footer />
         </>
     )
 }
