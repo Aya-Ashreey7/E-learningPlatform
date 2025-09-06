@@ -80,8 +80,8 @@ export default function StudentFeedbackSlider() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
             <MessageSquare className="mx-auto mb-4 text-white/50" size={48} />
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Student Testimonials</h2>
-            <p className="text-white/80 text-lg">No approved testimonials available at the moment.</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Student Feedbacks</h2>
+            <p className="text-white/80 text-lg">No approved Feedbacks available at the moment.</p>
           </div>
         </div>
       </section>

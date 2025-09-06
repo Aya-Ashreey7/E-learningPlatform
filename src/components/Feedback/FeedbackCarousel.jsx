@@ -128,7 +128,7 @@ export default function FeedbackCarousel({ feedbacks }) {
                         <button
                             key={index}
                             onClick={() => goToSlide(index)}
-                            className={`w-3 h-3 rounded-full transition-all duration-200 ${index === currentIndex ? "bg-[#ffd100] w-8" : "bg-white/50 hover:bg-white/70"
+                            className={`w-3 h-3 rounded-full transition-all duration-200 ${index === currentIndex ? "bg-[#ffd100] w-8" : "bg-amber-200 hover:bg-amber-300"
                                 }`}
                             aria-label={`Go to testimonial ${index + 1}`}
                         />
