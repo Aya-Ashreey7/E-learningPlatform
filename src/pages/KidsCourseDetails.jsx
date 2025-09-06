@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Play, Clock, Users, Award, Star, BookOpen, Heart, Share2, Download, CheckCircle, User, Trophy, Sparkles, Zap, Target, MessageSquare, } from "lucide-react"
+import { Clock, Users, Award, Star, BookOpen, Heart, CheckCircle, User, Trophy, Sparkles, MessageSquare, } from "lucide-react"
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate, useParams } from "react-router-dom";
@@ -280,6 +280,8 @@ export default function KidsCourseDetails() {
 
                             {/* Tab Content */}
                             <div className="bg-white rounded-2xl border-2 border-gray-100 p-8">
+
+
                                 {activeTab === "overview" && (
                                     <div className="space-y-8">
                                         {/* Course Description */}
@@ -380,20 +382,20 @@ export default function KidsCourseDetails() {
                         {/* Sidebar */}
                         <div className="space-y-6">
                             {/* Course Features */}
-                            <div className="bg-white rounded-2xl border-2 border-gray-100 p-6">
+                            {/* <div className="bg-white rounded-2xl border-2 border-gray-100 p-6">
                                 <h4 className="font-bold text-[#071d49] mb-4 flex items-center gap-2">
                                     <Trophy className="text-[#ffd100]" />
                                     Course Features
                                 </h4>
-                                {/* <div className="space-y-3">
+                               <div className="space-y-3">
                                 {course.courseIncludes.map((feature, index) => (
                                     <div key={index} className="flex items-start gap-3">
                                         <CheckCircle size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
                                         <span className="text-gray-700 text-sm">{feature}</span>
                                     </div>
                                 ))}
+                            </div> 
                             </div> */}
-                            </div>
 
                             {/* Course Info */}
                             <div className="bg-white rounded-2xl border-2 border-gray-100 p-6">
@@ -424,6 +426,14 @@ export default function KidsCourseDetails() {
                                     <div className="flex items-center justify-between">
                                         <span className="text-gray-600">Students:</span>
                                         <span className="font-medium text-[#071d49]">{course.traineesCount}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-gray-600">Start Date:</span>
+                                        <span className="font-medium text-[#071d49]">{course.startDate}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-gray-600">End Date:</span>
+                                        <span className="font-medium text-[#071d49]">{course.endDate}</span>
                                     </div>
                                 </div>
                             </div>

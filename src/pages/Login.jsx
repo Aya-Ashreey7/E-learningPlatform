@@ -56,6 +56,8 @@ export default function LoginForm() {
       }
 
       if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const firstName = userData.firstName || "User";
         toast.success(`Welcome  ${firstName}!`);
         localStorage.setItem("role", "user");
         navigate("/");

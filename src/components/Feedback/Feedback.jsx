@@ -89,7 +89,7 @@ export default function StudentFeedbackSlider() {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-br from-[#071d49] via-[#0a2558] to-[#071d49] relative overflow-hidden">
+    <section className="py-16 bg-gradient-to-br relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-32 h-32 bg-[#ffd100] rounded-full blur-3xl"></div>
@@ -97,7 +97,7 @@ export default function StudentFeedbackSlider() {
         <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-white rounded-full blur-2xl"></div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className=" relative z-10">
         {/* Header and Stats Component */}
         <FeedbackHeader feedbacks={feedbacks} />
 
