@@ -58,7 +58,7 @@ export default function FeedbackCarousel({ feedbacks }) {
     return (
         <>
             {/* Main Testimonial Carousel */}
-            <div className="relative max-w-4xl mx-auto">
+            <div className="relative max-w-4xl mx-auto mt-16">
                 <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 relative overflow-hidden">
                     {/* Quote Icon */}
                     <div className="absolute top-6 right-6 opacity-10">

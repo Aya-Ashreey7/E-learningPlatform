@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import {
-    Search, Calendar, User, Heart, MessageCircle, Eye, Share2, BookOpen, Filter, X, ChevronLeft, ChevronRight, ImageIcon, Mail,
+    Search, Calendar, User, Heart, MessageCircle, Eye, BookOpen, Filter, X, ChevronLeft, ChevronRight, ImageIcon, Mail,
     ArrowRight, Clock, MapPin, Tag, TrendingUp, Star, Users, Award, Target, Zap, Globe, Plus,
 } from "lucide-react"
 import { getPublishedBlogs, updateBlogStats } from "../blogService"
