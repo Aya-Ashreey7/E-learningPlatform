@@ -30,6 +30,7 @@ export default function Overview() {
   const [latestCourses, setLatestCourses] = useState([]);
   const [latestUsers, setLatestUsers] = useState([]);
   const [latestOrders, setLatestOrders] = useState([]);
+  const [lastFeedbacks, setLastFeedbacks] = useState([]);
 
   // firebase
   useEffect(() => {
@@ -85,6 +86,22 @@ export default function Overview() {
         setLatestOrders(orders);
       }
     );
+
+    const latestFeedbacksQuery = query(
+      collection(db, "feedbacks"),
+      orderBy("createdAt", "desc"),
+      limit(3)
+    );
+    const unsubscribeLatestFeedbacks = onSnapshot(
+      latestFeedbacksQuery,
+      (snapshot) => {
+        const feedbacks = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setLastFeedbacks(feedbacks);
+      }
+    );
     return () => {
       totalCourseDoc();
       totalUsersDoc();
@@ -92,6 +109,7 @@ export default function Overview() {
       unsubscribeLatest();
       unsubscribeLatestUsers();
       unsubscribeLatestOrders();
+      unsubscribeLatestFeedbacks();
     };
   }, []);
 
@@ -230,9 +248,33 @@ export default function Overview() {
               <h4 className="font-semibold mb-2 flex items-center gap-2">
                 <FiMessageSquare className="text-purple-600" /> Latest Reviews
               </h4>
-              <ul className="space-y-1 text-sm text-gray-700">
-                <li>“Great course!” - Omar</li>
-                <li>“Loved it!” - Salma</li>
+              <ul className="space-y-3 text-sm text-gray-700">
+                {lastFeedbacks.map((feedback) => {
+                  const createdAt = feedback.createdAt?.toDate
+                    ? feedback.createdAt.toDate()
+                    : null;
+
+                  return (
+                    <li
+                      key={feedback.id}
+                      className="p-3 border border-gray-200 rounded-lg bg-gray-50"
+                    >
+                      <p className="italic text-gray-800">
+                        “{feedback.message}”
+                      </p>
+                      <div className="flex justify-between items-center mt-2 text-xs text-gray-600">
+                        <span className="font-semibold text-[#071d49]">
+                          — {feedback.userName}
+                        </span>
+                        {createdAt && (
+                          <span className="text-gray-400">
+                            {createdAt.toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>

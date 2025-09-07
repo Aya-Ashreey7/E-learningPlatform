@@ -39,6 +39,9 @@ export default function ManageCourses() {
 
   const [categories, setCategories] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
   const toBool = (v) => {
     if (typeof v === "boolean") return v;
     if (typeof v === "number") return v !== 0;
@@ -241,6 +244,45 @@ export default function ManageCourses() {
     return category ? category.name : "Unknown Category";
   };
 
+  // ----------- Pagination + Search Logic -------------
+  const indexOfLastCourse = currentPage * itemsPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - itemsPerPage;
+
+  const filteredCourses = courses.filter((course) => {
+    const s = search.toLowerCase();
+    const certText =
+      course.certificate === true
+        ? "yes"
+        : course.certificate === false
+        ? "no"
+        : "n/a";
+    return (
+      course.title?.toLowerCase().includes(s) ||
+      course.instructor?.toLowerCase().includes(s) ||
+      getCategoryName(course.category_id)?.toLowerCase().includes(s) ||
+      String(course.price ?? "")
+        .toLowerCase()
+        .includes(s) ||
+      course.duration?.toLowerCase().includes(s) ||
+      course.description?.toLowerCase().includes(s) ||
+      course.audience?.toLowerCase().includes(s) ||
+      String(course.trainees_count ?? "")
+        .toLowerCase()
+        .includes(s) ||
+      (course.lectures_availability || "").toLowerCase().includes(s) ||
+      certText.includes(s)
+    );
+  });
+
+  const currentCourses = filteredCourses.slice(
+    indexOfFirstCourse,
+    indexOfLastCourse
+  );
+  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -308,7 +350,7 @@ export default function ManageCourses() {
             </thead>
 
             <tbody>
-              {courses
+              {currentCourses
                 .filter((course) => {
                   const s = search.toLowerCase();
                   const certText =
@@ -415,9 +457,50 @@ export default function ManageCourses() {
           </table>
         </div>
 
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="sticty bottom-0 right-4 bg-white py-2 flex justify-end items-center gap-2 mt-8">
+            {/* Previous Button */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50 text-[#071d49] cursor-pointer"
+            >
+              Prev
+            </button>
+
+            {/* Page Numbers */}
+            {[...Array(totalPages)].map((_, index) => {
+              const pageNum = index + 1;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`px-3 py-1 rounded ${
+                    currentPage === pageNum
+                      ? "bg-[#071d49] text-white cursor-pointer"
+                      : "bg-gray-200 text-[#071d49] hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            {/* Next Button */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50 text-[#071d49] cursor-pointer"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
         {/* Description Modal */}
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="sticky inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 max-w-lg w-full shadow-lg">
               <h3 className="text-xl font-bold text-[#071d49] mb-4">
                 Course Description
