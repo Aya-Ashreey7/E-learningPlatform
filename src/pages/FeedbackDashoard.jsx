@@ -428,26 +428,26 @@ export default function Feedback() {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-14">
                     <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
-                        <div className="text-[#ffd100] text-sm font-bold">Total Feedback</div>
-                        <div className="text-[#071d49] text-2xl font-bold">{feedbacks.length}</div>
+                        <div className="text-[#ffd100] text-sm font-bold text-center">Total Feedback</div>
+                        <div className="text-[#071d49] text-2xl font-bold text-center">{feedbacks.length}</div>
                     </div>
                     <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
-                        <div className="text-[#ffd100] text-sm font-bold">Pending</div>
-                        <div className="text-[#071d49] text-2xl font-bold">
+                        <div className="text-[#ffd100] text-sm font-bold text-center">Pending</div>
+                        <div className="text-[#071d49] text-2xl font-bold text-center">
                             {feedbacks.filter((f) => f.status === "pending").length}
                         </div>
                     </div>
                     <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
-                        <div className="text-[#ffd100] text-sm font-bold">Approved</div>
-                        <div className="text-[#071d49] text-2xl font-bold">
+                        <div className="text-[#ffd100] text-sm font-bold text-center">Approved</div>
+                        <div className="text-[#071d49] text-2xl font-bold text-center">
                             {feedbacks.filter((f) => f.status === "approved").length}
                         </div>
                     </div>
                     <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
-                        <div className="text-[#ffd100] text-sm font-bold">Rejected</div>
-                        <div className="text-[#071d49] text-2xl font-bold">
+                        <div className="text-[#ffd100] text-sm font-bold text-center">Rejected</div>
+                        <div className="text-[#071d49] text-2xl font-bold text-center">
                             {feedbacks.filter((f) => f.status === "rejected").length}
                         </div>
                     </div>

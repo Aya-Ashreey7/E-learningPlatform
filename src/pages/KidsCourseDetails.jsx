@@ -97,7 +97,7 @@ export default function KidsCourseDetails() {
     // Handle feedback submission
     const handleFeedbackSubmitted = (feedbackId) => {
         console.log("Feedback submitted with ID:", feedbackId)
-        toast.success("Thank you for your feedback! 🎉")
+        toast.success("Thank you for your feedback! ")
         // Optionally switch to reviews tab to show feedback was submitted
         setActiveTab("reviews")
     }
@@ -281,7 +281,6 @@ export default function KidsCourseDetails() {
                             {/* Tab Content */}
                             <div className="bg-white rounded-2xl border-2 border-gray-100 p-8">
 
-
                                 {activeTab === "overview" && (
                                     <div className="space-y-8">
                                         {/* Course Description */}
@@ -321,8 +320,6 @@ export default function KidsCourseDetails() {
                                         </div>
                                     </div>
                                 )}
-
-
 
                                 {activeTab === "instructor" && (
                                     <div className="space-y-6">
@@ -411,14 +408,6 @@ export default function KidsCourseDetails() {
                                         <span className="text-gray-600">Duration:</span>
                                         <span className="font-medium text-[#071d49]">{course.duration} hours</span>
                                     </div>
-                                    {/* <div className="flex items-center justify-between">
-                                    <span className="text-gray-600">Level:</span>
-                                    <span className="font-medium text-[#071d49]">{course.level}</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-gray-600">Language:</span>
-                                    <span className="font-medium text-[#071d49]">{course.language}</span>
-                                </div> */}
                                     <div className="flex items-center justify-between">
                                         <span className="text-gray-600">Certificate:</span>
                                         <span className="font-medium text-green-600">{course.certificate ? " Yes" : " No"}</span>
@@ -429,7 +418,7 @@ export default function KidsCourseDetails() {
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-gray-600">Start Date:</span>
-                                        <span className="font-medium text-[#071d49]">{course.startDate}</span>
+                                        <span className="font-medium text-[#071d49]">  {course.startDate}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-gray-600">End Date:</span>
@@ -438,7 +427,6 @@ export default function KidsCourseDetails() {
                                 </div>
                             </div>
 
-                            {/* Related Courses */}
 
                         </div>
                     </div>
