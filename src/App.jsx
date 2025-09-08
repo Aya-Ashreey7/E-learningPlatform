@@ -1,17 +1,12 @@
-<<<<<<< HEAD
-// App.jsx
-import { Routes, Route, BrowserRouter } from "react-router-dom";
-=======
 import { Routes, Route } from "react-router-dom";
->>>>>>> origin/main
 import "./App.css";
 import "./index.css";
 import { Toaster } from "react-hot-toast";
-import ProtectedRoute from "./components/ProtectedRoute";
+
 
 // Pages & Components
 import Hero from "./components/Hero/Hero";
-import AboutUs from "./pages/AboutUs";  
+import AboutUs from "./pages/AboutUs";
 import CoursesPage from "./pages/CoursesPage";
 import CartPage from "./pages/CartPage";
 import ContactPage from "./pages/ContactPage";
@@ -44,94 +39,10 @@ import CourseDetails from "./pages/CourseDetails";
 import BlogDashboard from "./pages/blogDashboard";
 import BlogPage from "./pages/blogUser";
 
+
 function App() {
   return (
     <CartProvider>
-<<<<<<< HEAD
-      
-        <Routes>
-          {/* Public Pages */}
-          <Route path="/" element={<Hero />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/aboutus" element={<AboutUs />} />
-          <Route path="/courses" element={<CoursesPage />} />
-          <Route path="/courses/kids" element={<CourseKids />} />
-          <Route path="/courses/adults" element={<CourseAdults />} />
-          <Route path="/course/:id" element={<CourseDetails />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/register" element={<RegisterForm />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/verified-redirect" element={<VerifiedRedirect />} />
-          <Route path="/forgot-password" element={<ResetPassword />} />
-          <Route path="/courses/kids/:id" element={<KidsCourseDetails />} />
-
-          {/* Protected Pages */}
-          <Route
-            path="/Cart"
-            element={
-              <ProtectedRoute>
-                <CartPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/Notifications"
-            element={
-              <ProtectedRoute>
-                <NotificationsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ProfilePage"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/edit-profile"
-            element={
-              <ProtectedRoute>
-                <EditProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/checkout/address"
-            element={
-              <ProtectedRoute>
-                <AddressForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/checkout/checkout"
-            element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/checkout/payment"
-            element={
-              <ProtectedRoute>
-                <PaymentModal />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/paymentSuccess"
-            element={
-              <ProtectedRoute>
-                <PaymentSuccess />
-              </ProtectedRoute>
-            }
-          />
-=======
       <Routes>
         {/* Public Pages */}
         <Route path="/" element={<Hero />} />
@@ -152,71 +63,6 @@ function App() {
         <Route path="/blog" element={<BlogPage />} />
 
 
-<<<<<<< HEAD
-        {/* Dashboard */}
-        <Route path="/dashboard/overview" element={<Overview />} />
-        <Route path="/dashboard/add-course" element={<AddCourse />} />
-        <Route path="/dashboard/manage-courses" element={<ManageCourses />} />
-        <Route path="/dashboard/users" element={<Users />} />
-        <Route path="/dashboard/orders" element={<Orders />} />
-        <Route path="/dashboard/feedback" element={<Feedback />} />
-        <Route path="/dashboard/addblog" element={<BlogDashboard />} />
->>>>>>> origin/main
-
-          {/* Admin Dashboard Pages */}
-          <Route
-            path="/dashboard/overview"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <Overview />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/add-course"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <AddCourse />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/manage-courses"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <ManageCourses />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/users"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <Users />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/orders"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <Orders />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/feedback"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <Feedback />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-
-        <Toaster position="top-center" reverseOrder={false} />
-     
-=======
         {/* Dashboard protected*/}
         <Route path="/dashboard/overview" element={<ProtectedRoute adminOnly={true}> <Overview /> </ProtectedRoute>} />
         <Route path="/dashboard/overview" element={<ProtectedRoute adminOnly={true}> <Overview /> </ProtectedRoute>} />
@@ -241,7 +87,6 @@ function App() {
       </Routes>
 
       <Toaster position="top-center" reverseOrder={false} />
->>>>>>> main
     </CartProvider>
   );
 }
