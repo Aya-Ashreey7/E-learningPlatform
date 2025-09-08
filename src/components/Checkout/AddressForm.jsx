@@ -4,12 +4,15 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 
-// Validation schema with restrictions
+
 const schema = yup.object().shape({
   fullName: yup
     .string()
     .required("Full Name is required")
-    .matches(/^[A-Za-z\s]+$/, "Full Name should not contain numbers or symbols"),
+    .matches(
+      /^[A-Za-z\u0600-\u06FF\s]+$/,
+      "Full Name should only contain letters"
+    ),
   phone: yup
     .string()
     .required("Phone Number is required")
@@ -17,16 +20,25 @@ const schema = yup.object().shape({
   city: yup
     .string()
     .required("City is required")
-    .matches(/^[A-Za-z\s]+$/, "City should only contain letters"),
+    .matches(
+      /^[A-Za-z\u0600-\u06FF\s]+$/,
+      "City should only contain letters"
+    ),
   area: yup
     .string()
     .required("Area is required")
-    .matches(/^[A-Za-z\s]+$/, "Area should only contain letters"),
+    .matches(
+      /^[A-Za-z\u0600-\u06FF\s]+$/,
+      "Area should only contain letters"
+    ),
   address: yup
     .string()
     .required("Address is required")
-    .matches(/^[A-Za-z\s,.-]+$/, "Address should not contain numbers"),
-  floor: yup.string(), // optional
+    .matches(
+      /^[A-Za-z\u0600-\u06FF0-9\s,.-]+$/,
+      "Address should only contain letters, numbers, spaces, and ,.-"
+    ),
+  floor: yup.string(), 
 });
 
 const AddressForm = ({ onSave }) => {
@@ -52,14 +64,14 @@ const AddressForm = ({ onSave }) => {
 
   return (
     <div className="min-h-screen bg-[#f9f9f9] flex items-center justify-center p-4 font-inter relative overflow-hidden">
-      {/* Decorative Background Effects */}
+    
       <div className="absolute inset-0 overflow-hidden z-0">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#ffd100]/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#ffd100]/10 rounded-full blur-3xl"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#071d49]/5 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Form Container */}
+      
       <div className="relative z-10 w-full max-w-md">
         <form
           onSubmit={handleSubmit(onSubmit)}
