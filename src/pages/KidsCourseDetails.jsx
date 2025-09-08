@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import FeedbackForm from "../components/FeedbackForm";
 import FeedbackCarousel from "../components/Feedback/FeedbackCarousel";
 import { getApprovedFeedbacks } from "../feedbackService";
+import { getCourseById } from "../courseService";
 
 
 
@@ -19,6 +20,8 @@ export default function KidsCourseDetails() {
     const [activeTab, setActiveTab] = useState("overview")
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [feedbacks, setFeedbacks] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const { user } = useAuth();
@@ -36,6 +39,7 @@ export default function KidsCourseDetails() {
         };
         fetchCourse();
     }, [id]);
+
     useEffect(() => {
         if (course) {
             let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
@@ -44,17 +48,57 @@ export default function KidsCourseDetails() {
         }
     }, [course, id]);
 
+    // useEffect(() => {
+    //     const loadFeedbacks = async () => {
+    //         try {
+    //             const approvedFeedbacks = await getApprovedFeedbacks()
+    //             setFeedbacks(approvedFeedbacks)
+    //         } catch (err) {
+    //             console.error("Error loading feedbacks:", err)
+    //         }
+    //     }
+    //     loadFeedbacks()
+    // }, [])
+
+    // Load course data and feedbacks
     useEffect(() => {
-        const loadFeedbacks = async () => {
+        const loadCourseData = async () => {
             try {
-                const approvedFeedbacks = await getApprovedFeedbacks()
-                setFeedbacks(approvedFeedbacks)
+                setLoading(true)
+                setError(null)
+
+                // Fetch course details
+                const courseData = await getCourseById(id)
+
+                // Check if course is for adults
+                if (courseData.audience !== "Kids") {
+                    throw new Error("This course is not available for Kids")
+                }
+
+                setCourse(courseData)
+
+                // Fetch all approved feedbacks and filter for this course
+                const allFeedbacks = await getApprovedFeedbacks()
+                console.log("All feedbacks:", allFeedbacks) // Debug log
+
+                const courseFeedbacks = allFeedbacks.filter(
+                    (feedback) => feedback.courseName === courseData.title || feedback.courseId === courseData.id,
+                )
+                console.log("Course feedbacks:", courseFeedbacks) // Debug log
+
+                setFeedbacks(courseFeedbacks)
             } catch (err) {
-                console.error("Error loading feedbacks:", err)
+                console.error("Error loading course:", err)
+                setError(err.message)
+            } finally {
+                setLoading(false)
             }
         }
-        loadFeedbacks()
-    }, [])
+
+        if (id) {
+            loadCourseData()
+        }
+    }, [id])
 
     // =========================================
     const handleToggleWishlist = (course) => {
@@ -81,7 +125,32 @@ export default function KidsCourseDetails() {
         }
     };
 
+    // Loading state
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen -translate-y-12">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
+            </div>
+        )
+    }
 
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center max-w-md mx-auto p-6">
+                    <AlertCircle className="mx-auto mb-4 text-red-500" size={48} />
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Not Found</h2>
+                    <p className="text-gray-600 mb-6">{error}</p>
+                    <button
+                        onClick={() => navigate("/courses")}
+                        className="bg-[#071d49] hover:bg-[#071d49]/90 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                    >
+                        Browse All Courses
+                    </button>
+                </div>
+            </div>
+        )
+    }
 
 
     if (!course) return <div className="flex items-center justify-center h-screen">
@@ -98,7 +167,6 @@ export default function KidsCourseDetails() {
     const handleFeedbackSubmitted = (feedbackId) => {
         console.log("Feedback submitted with ID:", feedbackId)
         toast.success("Thank you for your feedback! ")
-        // Optionally switch to reviews tab to show feedback was submitted
         setActiveTab("reviews")
     }
 
@@ -145,8 +213,6 @@ export default function KidsCourseDetails() {
                                     </div>
 
                                     <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">{course.title}</h1>
-
-                                    {/* <p className="text-white/90 text-lg leading-relaxed">{course.description}</p> */}
                                 </div>
 
                                 {/* Course Stats */}
@@ -364,7 +430,12 @@ export default function KidsCourseDetails() {
                                             <Star className="text-[#ffd100]" />
                                             Student Reviews
                                         </h3>
-                                        <FeedbackCarousel feedbacks={feedbacks} />
+                                        {/* <FeedbackCarousel feedbacks={feedbacks} /> */}
+                                        {feedbacks.length > 0 ? (
+                                            <FeedbackCarousel feedbacks={feedbacks} />
+                                        ) : (
+                                            <p className="text-gray-500">No reviews available for this course  yet .</p>
+                                        )}
                                     </div>
                                 )}
 

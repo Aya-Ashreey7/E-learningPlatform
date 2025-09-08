@@ -168,7 +168,7 @@ export default function FeedbackForm({ courseData, onFeedbackSubmitted }) {
                 <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
                     <CheckCircle className="text-green-500 flex-shrink-0" size={20} />
                     <div>
-                        <p className="text-green-800 font-medium">Feedback Submitted Successfully! 🎉</p>
+                        <p className="text-green-800 font-medium">Feedback Submitted Successfully! </p>
                         <p className="text-green-600 text-sm">
                             Thank you for your feedback! It will be reviewed and published soon.
                         </p>

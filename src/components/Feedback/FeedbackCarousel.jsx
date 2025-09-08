@@ -48,7 +48,7 @@ export default function FeedbackCarousel({ feedbacks }) {
     if (feedbacks.length === 0) {
         return (
             <div className="text-center text-white/80">
-                <p>No testimonials available at the moment.</p>
+                <p>No Feedbacks available at the moment.</p>
             </div>
         )
     }
