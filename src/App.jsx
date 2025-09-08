@@ -33,16 +33,17 @@ import KidsCourseDetails from "./pages/KidsCourseDetails";
 import CourseKids from "./pages/CourseKids";
 import Wishlist from "./pages/Wishlist";
 import CourseAdults from "./pages/Courseadults";
-import CourseDetails from "./pages/CourseDetails";
 import BlogDashboard from "./pages/blogDashboard";
 import BlogPage from "./pages/blogUser";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Feedback from "./pages/FeedbackDashoard";
+import AdultCourseDetails from "./pages/CourseDetails";
 
 function App() {
   return (
     <CartProvider>
       <Routes>
+        
         {/* Public Pages */}
         <Route path="/" element={<Hero />} />
         <Route path="/wishlist" element={<Wishlist />} />
@@ -50,7 +51,7 @@ function App() {
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/kids" element={<CourseKids />} />
         <Route path="/courses/adults" element={<CourseAdults />} />
-        <Route path="/course/:id" element={<CourseDetails />} />
+        <Route path="/course/:id" element={<AdultCourseDetails />} />
         <Route
           path="/Cart"
           element={
@@ -199,6 +200,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
       </Routes>
 
       <Toaster position="top-center" reverseOrder={false} />

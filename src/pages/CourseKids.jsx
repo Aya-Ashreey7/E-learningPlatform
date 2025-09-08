@@ -230,11 +230,10 @@ export default function CourseKids() {
                   <button
                     key={index + 1}
                     onClick={() => setCurrentPage(index + 1)}
-                    className={`px-3 py-1 rounded ${
-                      currentPage === index + 1
+                    className={`px-3 py-1 rounded ${currentPage === index + 1
                         ? "bg-[#071d49] text-white cursor-pointer"
                         : "bg-gray-200 text-[#071d49] cursor-pointer"
-                    }`}
+                      }`}
                   >
                     {index + 1}
                   </button>
