@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Navbar from "../components/Navbar/Navbar"; // adjust path if needed
 // import aboutImg from "../assets/about4.jpg"; // ✅ import image from assets
 import about1 from "../assets/about1.jpg";
+import Footer from "../components/Footer/Footer";
 
 export default function AboutUs() {
   return (
@@ -69,6 +70,7 @@ export default function AboutUs() {
           </div>
         </section>
       </div>
+      <Footer />
     </>
   );
 }

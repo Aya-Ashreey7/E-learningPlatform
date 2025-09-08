@@ -8,8 +8,6 @@ import { signOut } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 
-
-
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -56,14 +54,17 @@ const Navbar = () => {
     <nav className="bg-[#071d49] py-4 px-6 md:px-10 shadow-md">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="text-[#ffd100] text-2xl font-bold">
+        <Link
+          to="/"
+          className="text-[#ffd100] text-2xl font-bold cursor-pointer"
+        >
           Scientific Center
         </Link>
 
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-white"
+          className="md:hidden text-white cursor-pointer"
         >
           {menuOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
@@ -74,7 +75,7 @@ const Navbar = () => {
           <li className="relative">
             <button
               onClick={() => setCoursesMenuOpen(!coursesMenuOpen)}
-              className="flex items-center text-white hover:text-[#ffd100] transition"
+              className="flex items-center text-white hover:text-[#ffd100] transition cursor-pointer"
             >
               Courses <ChevronDown size={16} className="ml-1" />
             </button>
@@ -89,14 +90,14 @@ const Navbar = () => {
                 >
                   <NavLink
                     to="/courses/kids"
-                    className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] rounded-t-lg"
+                    className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] rounded-t-lg cursor-pointer"
                     onClick={() => setCoursesMenuOpen(false)}
                   >
                     Kids Courses
                   </NavLink>
                   <NavLink
                     to="/courses/adults"
-                    className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] rounded-b-lg"
+                    className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] rounded-b-lg cursor-pointer"
                     onClick={() => setCoursesMenuOpen(false)}
                   >
                     Adult Courses
@@ -111,48 +112,42 @@ const Navbar = () => {
             <li key={link.name}>
               <Link
                 to={link.to}
-                className="text-white hover:text-[#ffd100] transition"
+                className="text-white hover:text-[#ffd100] transition cursor-pointer"
               >
                 {link.name}
               </Link>
             </li>
           ))}
 
-          {/* Wishlist & Cart */}
+          {/* Icons */}
           <li>
             <button
-              onClick={() => {
-                if (!user) navigate("/login");
-                else navigate("/wishlist");
-              }}
-              className="text-white hover:text-[#ffd100] transition"
+              onClick={() =>
+                user ? navigate("/wishlist") : navigate("/login")
+              }
+              className="text-white hover:text-[#ffd100] transition cursor-pointer"
             >
               <FaHeart size={20} />
             </button>
           </li>
           <li>
             <button
-              onClick={() => {
-                if (!user) navigate("/login");
-                else navigate("/cart");
-              }}
-              className="text-white hover:text-[#ffd100] transition"
+              onClick={() => (user ? navigate("/cart") : navigate("/login"))}
+              className="text-white hover:text-[#ffd100] transition cursor-pointer"
             >
               <FaShoppingCart size={20} />
             </button>
           </li>
-          {/* Notifications */}
           <li>
-             <button
-              onClick={() => {
-              if (!user) navigate("/login");
-              else navigate("/notifications");
-              }}
-              className="text-white hover:text-[#ffd100] transition"
+            <button
+              onClick={() =>
+                user ? navigate("/notifications") : navigate("/login")
+              }
+              className="text-white hover:text-[#ffd100] transition cursor-pointer"
             >
-            <FaBell size={20} />
+              <FaBell size={20} />
             </button>
-         </li>
+          </li>
 
           {/* User dropdown */}
           <li className="relative">
@@ -176,14 +171,14 @@ const Navbar = () => {
                     <>
                       <NavLink
                         to="/login"
-                        className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49]"
+                        className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
                         onClick={() => setUserMenuOpen(false)}
                       >
                         Login
                       </NavLink>
                       <NavLink
                         to="/register"
-                        className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49]"
+                        className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
                         onClick={() => setUserMenuOpen(false)}
                       >
                         Register
@@ -193,7 +188,7 @@ const Navbar = () => {
                     <>
                       <NavLink
                         to="/ProfilePage"
-                        className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49]"
+                        className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
                         onClick={() => setUserMenuOpen(false)}
                       >
                         Profile
@@ -203,7 +198,7 @@ const Navbar = () => {
                           signOut(auth);
                           setUserMenuOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49]"
+                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
                       >
                         Logout
                       </button>
@@ -223,13 +218,14 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="absolute top-16 left-0 w-full bg-[#fff] shadow-lg rounded-b-lg flex flex-col gap-3 p-5 md:hidden"
+              className="absolute top-16 left-0 w-full bg-white shadow-lg rounded-b-lg 
+              flex flex-col gap-3 p-5 md:hidden z-50 items-center text-center"
             >
               {/* Links */}
               <Link
                 to="/"
                 onClick={() => setMenuOpen(false)}
-                className="text-[#071d49] font-medium hover:text-[#ffd100]"
+                className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
               >
                 Home
               </Link>
@@ -238,7 +234,7 @@ const Navbar = () => {
               <div>
                 <button
                   onClick={() => setMobileCoursesOpen(!mobileCoursesOpen)}
-                  className="flex justify-between items-center w-full text-[#071d49] font-medium py-2"
+                  className="flex justify-between items-center w-full text-[#071d49] font-medium py-2 cursor-pointer"
                 >
                   Courses
                   <ChevronDown
@@ -260,14 +256,14 @@ const Navbar = () => {
                       <Link
                         to="/courses/kids"
                         onClick={() => setMenuOpen(false)}
-                        className="text-gray-600 hover:text-[#071d49]"
+                        className="text-gray-600 hover:text-[#071d49] cursor-pointer"
                       >
                         Kids Courses
                       </Link>
                       <Link
                         to="/courses/adults"
                         onClick={() => setMenuOpen(false)}
-                        className="text-gray-600 hover:text-[#071d49]"
+                        className="text-gray-600 hover:text-[#071d49] cursor-pointer"
                       >
                         Adult Courses
                       </Link>
@@ -276,25 +272,26 @@ const Navbar = () => {
                 </AnimatePresence>
               </div>
 
+              {/* باقي الروابط */}
               {links.map((link) => (
                 <Link
                   key={link.name}
                   to={link.to}
                   onClick={() => setMenuOpen(false)}
-                  className="text-[#071d49] font-medium hover:text-[#ffd100]"
+                  className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
                 >
                   {link.name}
                 </Link>
               ))}
 
-              {/* Wishlist & Cart */}
+              {/* Wishlist & Cart & Notifications */}
               <button
                 onClick={() => {
                   if (!user) navigate("/login");
                   else navigate("/wishlist");
                   setMenuOpen(false);
                 }}
-                className="text-[#071d49] font-medium hover:text-[#ffd100] text-left"
+                className="text-[#071d49] font-medium hover:text-[#ffd100] text-left cursor-pointer"
               >
                 Wishlist
               </button>
@@ -304,21 +301,20 @@ const Navbar = () => {
                   else navigate("/cart");
                   setMenuOpen(false);
                 }}
-                className="text-[#071d49] font-medium hover:text-[#ffd100] text-left"
+                className="text-[#071d49] font-medium hover:text-[#ffd100] text-left cursor-pointer"
               >
                 Cart
               </button>
               <button
-               onClick={() => {
-               if (!user) navigate("/login");
-               else navigate("/notifications");
-               setMenuOpen(false);
-               }}
-               className="text-[#071d49] font-medium hover:text-[#ffd100] text-left"
+                onClick={() => {
+                  if (!user) navigate("/login");
+                  else navigate("/notifications");
+                  setMenuOpen(false);
+                }}
+                className="text-[#071d49] font-medium hover:text-[#ffd100] text-left cursor-pointer"
               >
-               Notifications
-             </button>
-
+                Notifications
+              </button>
 
               {/* Auth Links */}
               {!user ? (
@@ -326,14 +322,14 @@ const Navbar = () => {
                   <Link
                     to="/login"
                     onClick={() => setMenuOpen(false)}
-                    className="text-[#071d49] font-medium hover:text-[#ffd100]"
+                    className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
                   >
                     Login
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setMenuOpen(false)}
-                    className="text-[#071d49] font-medium hover:text-[#ffd100]"
+                    className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
                   >
                     Register
                   </Link>
@@ -343,7 +339,7 @@ const Navbar = () => {
                   <Link
                     to="/profile"
                     onClick={() => setMenuOpen(false)}
-                    className="text-[#071d49] font-medium hover:text-[#ffd100]"
+                    className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
                   >
                     Profile
                   </Link>
@@ -352,7 +348,7 @@ const Navbar = () => {
                       signOut(auth);
                       setMenuOpen(false);
                     }}
-                    className="text-[#071d49] font-medium hover:text-[#ffd100] text-left"
+                    className="text-[#071d49] font-medium hover:text-[#ffd100] text-left cursor-pointer"
                   >
                     Logout
                   </button>
