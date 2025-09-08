@@ -8,7 +8,6 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  
   useEffect(() => {
     const storedCart = localStorage.getItem("cartItems");
     if (storedCart) {
@@ -21,15 +20,14 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  
   const addToCart = (course) => {
     const existing = cartItems.find((item) => item.id === course.id);
 
     if (existing) {
-      return false;  
+      return false;
     } else {
       setCartItems([...cartItems, course]);
-      return true;  
+      return true;
     }
   };
 
@@ -37,14 +35,15 @@ export const CartProvider = ({ children }) => {
     setCartItems(cartItems.filter((item) => item.id !== id));
   };
 
-
   const clearCart = () => {
     setCartItems([]);
-    localStorage.removeItem("cartItems"); 
+    localStorage.removeItem("cartItems");
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{ cartItems, addToCart, removeFromCart, clearCart }}
+    >
       {children}
     </CartContext.Provider>
   );

@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
-import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import toast from "react-hot-toast";
 
@@ -22,6 +29,8 @@ export default function AddCourse() {
   const [traineesCount, setTraineesCount] = useState("");
   const [certificate, setCertificate] = useState(""); // Yes / No
   const [lecturesAvailability, setLecturesAvailability] = useState(""); // Yes / No
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   // جلب الكاتيجوريز
   useEffect(() => {
@@ -76,7 +85,9 @@ export default function AddCourse() {
       !duration.trim() ||
       !traineesCount.trim() ||
       !certificate.trim() ||
-      !lecturesAvailability.trim()
+      !lecturesAvailability.trim() ||
+      !startDate.trim() ||
+      !endDate.trim()
     ) {
       toast.error("Please fill in all fields");
       return;
@@ -117,7 +128,10 @@ export default function AddCourse() {
         traineesCount,
         certificate,
         lecturesAvailability,
+        startDate,
+        endDate,
         image: imgUrl,
+        createdAt: serverTimestamp(),
       });
 
       setTilte("");
@@ -129,6 +143,8 @@ export default function AddCourse() {
       setTraineesCount("");
       setCertificate("");
       setLecturesAvailability("");
+      setStartDate("");
+      setEndDate("");
 
       toast.success("Course added successfully!");
     } catch (error) {
@@ -318,6 +334,32 @@ export default function AddCourse() {
                 </button>
               </div>
             )}
+          </div>
+          {/* Start + End */}
+
+          <div>
+            <label className="block text-base font-semibold mb-1 text-[#071d49]">
+              Start Date
+            </label>
+            <input
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              type="date"
+              className="w-full p-3 rounded-lg bg-[#e2e8f0] text-[#071d49]"
+            />
+          </div>
+
+          {/* End Date */}
+          <div>
+            <label className="block text-base font-semibold mb-1 text-[#071d49]">
+              End Date
+            </label>
+            <input
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              type="date"
+              className="w-full p-3 rounded-lg bg-[#e2e8f0] text-[#071d49]"
+            />
           </div>
 
           {/* Instructor + Price */}

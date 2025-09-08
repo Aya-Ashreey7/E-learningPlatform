@@ -1,129 +1,86 @@
+
 import { useState, useEffect } from "react"
 import DashboardLayout from "../components/DashboardLayout/DashboardLayout"
-import { Eye, Check, X, Star, User, Search, ChevronDown, MessageSquare, ThumbsUp } from "lucide-react"
-
-//  feedback data
-const mockFeedbacks = [
-    {
-        id: "feedback_001",
-        userId: "user_123",
-        userName: "Ahmed Mohamed",
-        userEmail: "ahmed.mohamed@email.com",
-        userAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-        courseId: "course_001",
-        courseName: "React Fundamentals",
-        rating: 5,
-        title: "Excellent Course!",
-        message:
-            "This course exceeded my expectations. The instructor explained complex concepts in a very clear and understandable way. I highly recommend it to anyone wanting to learn React.",
-        createdAt: new Date("2025-08-10T14:30:00Z"),
-        status: "pending", // pending, approved, rejected
-        isPublic: false,
-        helpfulVotes: 0,
-        category: "Adult",
-    },
-    {
-        id: "feedback_002",
-        userId: "user_456",
-        userName: "Sara Ali",
-        userEmail: "sara.ali@email.com",
-        userAvatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-        courseId: "course_002",
-        courseName: "JavaScript Mastery",
-        rating: 4,
-        title: "Great content, minor issues",
-        message:
-            "The course content is really good and comprehensive. However, some of the video quality could be improved. Overall, I learned a lot and would recommend it.",
-        createdAt: new Date("2025-08-09T10:15:00Z"),
-        status: "approved",
-        isPublic: true,
-        helpfulVotes: 12,
-        category: "Adult",
-    },
-    {
-        id: "feedback_003",
-        userId: "user_789",
-        userName: "Mohamed Hassan",
-        userEmail: "mohamed.hassan@email.com",
-        userAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-        courseId: null,
-        courseName: null,
-        rating: 3,
-        title: "Website feedback",
-        message:
-            "The website is good but the navigation could be more intuitive. Also, the search functionality needs improvement.",
-        createdAt: new Date("2025-08-08T16:45:00Z"),
-        status: "approved",
-        isPublic: true,
-        helpfulVotes: 5,
-        category: "Kids",
-    },
-    {
-        id: "feedback_004",
-        userId: "user_101",
-        userName: "Fatima Ahmed",
-        userEmail: "fatima.ahmed@email.com",
-        userAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-        courseId: "course_003",
-        courseName: "Python for Beginners",
-        rating: 2,
-        title: "Disappointing experience",
-        message:
-            "The course was not as advertised. Many topics were rushed through and the exercises were too basic. Expected more depth.",
-        createdAt: new Date("2025-08-07T09:20:00Z"),
-        status: "rejected",
-        isPublic: false,
-        helpfulVotes: 0,
-        category: "Adult",
-    },
-    {
-        id: "feedback_005",
-        userId: "user_202",
-        userName: "Omar Khaled",
-        userEmail: "omar.khaled@email.com",
-        userAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
-        courseId: "course_001",
-        courseName: "React Fundamentals",
-        rating: 5,
-        title: "Perfect for beginners",
-        message:
-            "As someone new to React, this course was exactly what I needed. Step-by-step explanations and practical examples made learning enjoyable.",
-        createdAt: new Date("2025-08-06T13:10:00Z"),
-        status: "pending",
-        isPublic: false,
-        helpfulVotes: 0,
-        category: "Adult",
-    },
-]
+import { Eye, Check, X, Star, User, Search, ChevronDown, MessageSquare, ThumbsUp, Plus, RefreshCw } from "lucide-react"
+import {
+    getAllFeedbacks,
+    updateFeedbackStatus,
+    deleteFeedback,
+    testFeedbackConnection,
+    seedFeedbackData,
+} from "../feedbackService"
+import toast from "react-hot-toast"
 
 export default function Feedback() {
-    const [feedbacks, setFeedbacks] = useState(mockFeedbacks)
-    const [filteredFeedbacks, setFilteredFeedbacks] = useState(mockFeedbacks)
+    const [feedbacks, setFeedbacks] = useState([])
+    const [filteredFeedbacks, setFilteredFeedbacks] = useState([])
     const [selectedFeedback, setSelectedFeedback] = useState(null)
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState("all")
     const [ratingFilter, setRatingFilter] = useState("all")
     const [categoryFilter, setCategoryFilter] = useState("all")
     const [showFeedbackDetails, setShowFeedbackDetails] = useState(false)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [connectionStatus, setConnectionStatus] = useState(null)
 
+    // Load feedbacks from Firestore
+    const loadFeedbacks = async () => {
+        try {
+            setLoading(true)
+            setError(null)
+
+            // Test connection first
+            const isConnected = await testFeedbackConnection()
+            setConnectionStatus(isConnected)
+
+            if (!isConnected) {
+                throw new Error("Failed to connect to Firestore")
+            }
+
+            const feedbackData = await getAllFeedbacks()
+            setFeedbacks(feedbackData)
+            setFilteredFeedbacks(feedbackData)
+        } catch (err) {
+            console.error("Error loading feedbacks:", err)
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    // Load feedbacks on component mount
+    useEffect(() => {
+        loadFeedbacks()
+    }, [])
+
+    // Filter feedbacks based on search and filters
     useEffect(() => {
         let filtered = feedbacks
+
+        // Search filter
         if (searchTerm) {
             filtered = filtered.filter(
                 (feedback) =>
-                    feedback.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    feedback.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    feedback.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    feedback.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    feedback.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    feedback.message?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     feedback.courseName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    feedback.userEmail.toLowerCase().includes(searchTerm.toLowerCase()),
+                    feedback.userEmail?.toLowerCase().includes(searchTerm.toLowerCase()),
             )
         }
+
+        // Status filter
         if (statusFilter !== "all") {
             filtered = filtered.filter((feedback) => feedback.status === statusFilter)
         }
+
+        // Rating filter
         if (ratingFilter !== "all") {
             filtered = filtered.filter((feedback) => feedback.rating === Number.parseInt(ratingFilter))
         }
+
+        // Category filter
         if (categoryFilter !== "all") {
             filtered = filtered.filter((feedback) => feedback.category === categoryFilter)
         }
@@ -131,18 +88,84 @@ export default function Feedback() {
         setFilteredFeedbacks(filtered)
     }, [searchTerm, statusFilter, ratingFilter, categoryFilter, feedbacks])
 
-    const handleStatusChange = (feedbackId, newStatus) => {
-        setFeedbacks((prevFeedbacks) =>
-            prevFeedbacks.map((feedback) =>
-                feedback.id === feedbackId
-                    ? {
-                        ...feedback,
-                        status: newStatus,
-                        isPublic: newStatus === "approved",
-                    }
-                    : feedback,
-            ),
-        )
+    const handleStatusChange = async (feedbackId, newStatus) => {
+        try {
+            await updateFeedbackStatus(feedbackId, newStatus)
+
+            // Update local state
+            setFeedbacks((prevFeedbacks) =>
+                prevFeedbacks.map((feedback) =>
+                    feedback.id === feedbackId
+                        ? {
+                            ...feedback,
+                            status: newStatus,
+                            isPublic: newStatus === "approved",
+                        }
+                        : feedback,
+                ),
+            )
+        } catch (err) {
+            console.error("Error updating feedback status:", err)
+            setError("Failed to update feedback status")
+        }
+    }
+
+
+    const handleDeleteFeedback = (feedbackId) => {
+        toast((t) => (
+            <div className="p-3">
+                <p className="font-medium text-gray-800">Are you sure you want to delete this feedback?</p>
+                <div className="mt-3 flex justify-end space-x-2">
+                    <button
+                        onClick={async () => {
+                            try {
+                                await deleteFeedback(feedbackId);
+                                setFeedbacks((prev) => prev.filter((f) => f.id !== feedbackId));
+                                toast.dismiss(t.id);
+                                toast.success("Feedback deleted successfully!");
+                            } catch (err) {
+                                console.error("Error deleting feedback:", err);
+                                setError("Failed to delete feedback");
+                                toast.dismiss(t.id);
+                                toast.error("Failed to delete feedback");
+                            }
+                        }}
+                        className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 transition"
+                    >Delete</button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-100 transition"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        ), {
+            duration: 5000, // Toast disappears if no action in 5s
+            style: {
+                background: "#fff",
+                border: "1px solid #e5e7eb",
+                borderRadius: "8px",
+                padding: "12px",
+                color: "#111",
+            },
+        });
+    };
+
+
+    const handleSeedData = async () => {
+        if (!window.confirm("This will add sample feedback data. Continue?")) {
+            return
+        }
+
+        try {
+            setLoading(true)
+            await seedFeedbackData()
+            await loadFeedbacks() // Reload data
+        } catch (err) {
+            console.error("Error seeding data:", err)
+            setError("Failed to seed feedback data")
+        }
     }
 
     const getStatusColor = (status) => {
@@ -201,7 +224,7 @@ export default function Feedback() {
                                 <div className="bg-gray-50 rounded-lg p-4 space-y-3 border border-gray-200">
                                     <div className="flex items-center gap-3">
                                         <img
-                                            src={feedback.userAvatar || "/placeholder.svg"}
+                                            src={feedback.userAvatar || "/placeholder.svg?height=48&width=48"}
                                             alt={feedback.userName}
                                             className="w-12 h-12 rounded-full object-cover border-2 border-[#071d49]"
                                         />
@@ -295,39 +318,87 @@ export default function Feedback() {
                         </div>
 
                         {/* Action Buttons */}
-                        {feedback.status === "pending" && (
-                            <div className="flex gap-4 pt-4 border-t border-gray-200">
-                                <button
-                                    onClick={() => {
-                                        handleStatusChange(feedback.id, "approved")
-                                        onClose()
-                                    }}
-                                    className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
-                                >
-                                    <Check size={20} />
-                                    Approve & Publish
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        handleStatusChange(feedback.id, "rejected")
-                                        onClose()
-                                    }}
-                                    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
-                                >
-                                    <X size={20} />
-                                    Reject Feedback
-                                </button>
-                            </div>
-                        )}
+                        <div className="flex gap-4 pt-4 border-t border-gray-200">
+                            {feedback.status === "pending" && (
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            handleStatusChange(feedback.id, "approved")
+                                            onClose()
+                                        }}
+                                        className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
+                                    >
+                                        <Check size={20} />
+                                        Approve & Publish
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            handleStatusChange(feedback.id, "rejected")
+                                            onClose()
+                                        }}
+                                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
+                                    >
+                                        <X size={20} />
+                                        Reject Feedback
+                                    </button>
+                                </>
+                            )}
+                            <button
+                                onClick={() => {
+                                    handleDeleteFeedback(feedback.id)
+                                    onClose()
+                                }}
+                                className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
+                            >
+                                <X size={20} />
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         )
     }
 
+    if (loading) {
+        return (
+            <DashboardLayout>
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="flex items-center justify-center min-h-screen -translate-y-12">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
+                    </div>
+                </div>
+            </DashboardLayout>
+        )
+    }
+
     return (
         <DashboardLayout>
             <div className="space-y-6">
+                {/* Connection Status & Error Display */}
+                {connectionStatus === false && (
+                    <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+                        <div className="flex items-center gap-2 text-red-800">
+                            <X size={20} />
+                            <span className="font-bold">Connection Failed</span>
+                        </div>
+                        <p className="text-red-700 mt-1">Unable to connect to Firestore. Please check your configuration.</p>
+                    </div>
+                )}
+
+                {error && (
+                    <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+                        <div className="flex items-center gap-2 text-red-800">
+                            <X size={20} />
+                            <span className="font-bold">Error</span>
+                        </div>
+                        <p className="text-red-700 mt-1">{error}</p>
+                        <button onClick={() => setError(null)} className="mt-2 text-red-600 hover:text-red-800 text-sm underline">
+                            Dismiss
+                        </button>
+                    </div>
+                )}
+
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
@@ -335,23 +406,49 @@ export default function Feedback() {
                         <p className="text-gray-600 mt-1">Review and manage user feedback and testimonials</p>
                     </div>
 
-                    {/* Stats Cards */}
-                    <div className="flex gap-4">
-                        <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
-                            <div className="text-[#ffd100] text-sm font-bold">Total Feedback</div>
-                            <div className="text-[#071d49] text-2xl font-bold text-center">{feedbacks.length}</div>
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                        <button
+                            onClick={loadFeedbacks}
+                            className="flex items-center gap-2 bg-[#071d49] hover:bg-[#071d49]/90 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                        >
+                            <RefreshCw size={16} />
+                            Refresh
+                        </button>
+                        {feedbacks.length === 0 && (
+                            <button
+                                onClick={handleSeedData}
+                                className="flex items-center gap-2 bg-[#ffd100] hover:bg-[#ffd100]/90 text-[#071d49] font-medium py-2 px-4 rounded-lg transition-colors"
+                            >
+                                <Plus size={16} />
+                                Add Sample Data
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-14">
+                    <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
+                        <div className="text-[#ffd100] text-sm font-bold text-center">Total Feedback</div>
+                        <div className="text-[#071d49] text-2xl font-bold text-center">{feedbacks.length}</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
+                        <div className="text-[#ffd100] text-sm font-bold text-center">Pending</div>
+                        <div className="text-[#071d49] text-2xl font-bold text-center">
+                            {feedbacks.filter((f) => f.status === "pending").length}
                         </div>
-                        <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
-                            <div className="text-[#ffd100] text-sm font-bold">Pending</div>
-                            <div className="text-[#071d49] text-2xl font-bold text-center">
-                                {feedbacks.filter((f) => f.status === "pending").length}
-                            </div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
+                        <div className="text-[#ffd100] text-sm font-bold text-center">Approved</div>
+                        <div className="text-[#071d49] text-2xl font-bold text-center">
+                            {feedbacks.filter((f) => f.status === "approved").length}
                         </div>
-                        <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
-                            <div className="text-[#ffd100] text-sm font-bold">Published</div>
-                            <div className="text-[#071d49] text-2xl font-bold text-center">
-                                {feedbacks.filter((f) => f.status === "approved").length}
-                            </div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border-2 border-[#071d49] shadow-lg">
+                        <div className="text-[#ffd100] text-sm font-bold text-center">Rejected</div>
+                        <div className="text-[#071d49] text-2xl font-bold text-center">
+                            {feedbacks.filter((f) => f.status === "rejected").length}
                         </div>
                     </div>
                 </div>
@@ -413,8 +510,9 @@ export default function Feedback() {
                                     className="appearance-none bg-gray-50 border-2 border-gray-200 rounded-lg px-4 py-3 pr-10 text-[#071d49] focus:border-[#ffd100] focus:outline-none focus:ring-2 focus:ring-[#ffd100]/20 transition-all font-medium"
                                 >
                                     <option value="all">All Categories</option>
-                                    <option value="Adult">Adult Courses</option>
-                                    <option value="Kids">Kids Courses</option>
+                                    <option value="course">Course</option>
+                                    <option value="website">Website</option>
+                                    <option value="general">General</option>
                                 </select>
                                 <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
                             </div>
@@ -434,7 +532,7 @@ export default function Feedback() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <img
-                                            src={feedback.userAvatar || "/placeholder.svg"}
+                                            src={feedback.userAvatar || "/placeholder.svg?height=40&width=40"}
                                             alt={feedback.userName}
                                             className="w-10 h-10 rounded-full object-cover border-2 border-[#071d49]"
                                         />
@@ -525,11 +623,23 @@ export default function Feedback() {
                 </div>
 
                 {/* Empty State */}
-                {filteredFeedbacks.length === 0 && (
+                {filteredFeedbacks.length === 0 && !loading && (
                     <div className="text-center py-12 bg-white rounded-lg border-2 border-gray-200">
                         <MessageSquare className="mx-auto text-gray-300 mb-4" size={48} />
                         <h3 className="text-[#071d49] text-lg font-bold mb-2">No feedback found</h3>
-                        <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+                        <p className="text-gray-600 mb-4">
+                            {feedbacks.length === 0
+                                ? "No feedback posts in the database yet."
+                                : "Try adjusting your search or filter criteria"}
+                        </p>
+                        {feedbacks.length === 0 && (
+                            <button
+                                onClick={handleSeedData}
+                                className="bg-[#ffd100] hover:bg-[#ffd100]/90 text-[#071d49] font-medium py-2 px-4 rounded-lg transition-colors"
+                            >
+                                Add Sample Feedback Data
+                            </button>
+                        )}
                     </div>
                 )}
             </div>

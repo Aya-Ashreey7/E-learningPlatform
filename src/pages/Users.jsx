@@ -25,9 +25,9 @@ export default function Users() {
     fetchUser();
   }, []);
 
-  const handelDeleteClick = (userId) => {
-    setUserDelet(userId);
-  };
+  // const handelDeleteClick = (userId) => {
+  //   setUserDelet(userId);
+  // };
 
   const confirmDelete = async () => {
     if (userDelet) {
@@ -68,7 +68,7 @@ export default function Users() {
                 <th className="p-3">#</th>
                 <th className="p-3">Full Name</th>
                 <th className="p-3">Email</th>
-                <th className="p-3">Actions</th>
+                {/* <th className="p-3">Actions</th> */}
               </tr>
             </thead>
             <tbody>
@@ -99,14 +99,14 @@ export default function Users() {
                       }`.trim() || "N/A"}
                     </td>
                     <td className="p-3">{user.email}</td>
-                    <td className="p-3">
+                    {/* <td className="p-3">
                       <button
                         onClick={() => handelDeleteClick(user.id)}
                         className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                       >
                         Delete
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
             </tbody>

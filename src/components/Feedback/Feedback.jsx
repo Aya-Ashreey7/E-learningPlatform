@@ -1,97 +1,109 @@
-// src/components/Feedback/Feedback.jsx
-import React, { useEffect, useState } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebase"; 
+import { useState, useEffect } from "react"
+import { MessageSquare, RefreshCw } from "lucide-react"
+import { getApprovedFeedbacks, testFeedbackConnection } from "../../feedbackService"
+import FeedbackHeader from "./FeedbackHeader"
+import FeedbackCarousel from "./FeedbackCarousel"
 
 export default function StudentFeedbackSlider() {
-  const [feedbackData, setFeedbackData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [feedbacks, setFeedbacks] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
+  // Load approved feedbacks from Firestore
+  const loadFeedbacks = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      // Test connection first
+      const isConnected = await testFeedbackConnection()
+
+      if (!isConnected) {
+        throw new Error("Failed to connect to Firestore")
+      }
+
+      const approvedFeedbacks = await getApprovedFeedbacks()
+      setFeedbacks(approvedFeedbacks)
+    } catch (err) {
+      console.error("Error loading feedbacks:", err)
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Load feedbacks on component mount
   useEffect(() => {
-    // Query: كل الفيدباك مرتّب حسب createdAt تنازلي (يظهر الأحدث أول)
-    const q = query(
-      collection(db, "feedback"),
-      orderBy("createdAt", "desc")
-    );
+    loadFeedbacks()
+  }, [])
 
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const items = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setFeedbackData(items);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("feedback snapshot error:", error);
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: feedbackData.length >= 2 ? 2 : 1,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: { slidesToShow: 1 }
-      }
-    ]
-  };
-
+  // Loading state
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-12 text-center">
-        Loading feedback...
-      </div>
-    );
+      <section className="py-16 bg-gradient-to-br from-[#071d49] via-[#0a2558] to-[#071d49] relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center">
+            <RefreshCw className="animate-spin mx-auto mb-4 text-[#ffd100]" size={48} />
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Loading Testimonials...</h2>
+            <p className="text-white/80 text-lg">Fetching student feedback from our database</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section className="py-16 bg-gradient-to-br from-[#071d49] via-[#0a2558] to-[#071d49] relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center">
+            <MessageSquare className="mx-auto mb-4 text-red-400" size={48} />
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Unable to Load Testimonials</h2>
+            <p className="text-white/80 text-lg mb-6">{error}</p>
+            <button
+              onClick={loadFeedbacks}
+              className="bg-[#ffd100] hover:bg-[#ffd100]/90 text-[#071d49] font-bold py-3 px-8 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // No feedbacks state
+  if (feedbacks.length === 0) {
+    return (
+      <section className="py-16 bg-gradient-to-br from-[#071d49] via-[#0a2558] to-[#071d49] relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center">
+            <MessageSquare className="mx-auto mb-4 text-white/50" size={48} />
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Student Feedbacks</h2>
+            <p className="text-white/80 text-lg">No approved Feedbacks available at the moment.</p>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <h2 className="text-3xl font-bold text-center text-[#071d49] mb-8">
-        What Our Students Say
-      </h2>
+    <section className="py-16 bg-gradient-to-br relative overflow-hidden">
+      {/* Background Decorations */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-[#ffd100] rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-[#ffd100] rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-white rounded-full blur-2xl"></div>
+      </div>
 
-      {feedbackData.length === 0 ? (
-        <p className="text-center text-gray-600">No feedback yet.</p>
-      ) : (
-        <Slider {...settings}>
-          {feedbackData.map((student) => (
-            <div key={student.id} className="p-4">
-              <div className="bg-white border border-[#ffd100] rounded-lg shadow-md p-6 text-center flex flex-col items-center h-[350px]">
-                <img
-                  src={student.img || "https://via.placeholder.com/100"}
-                  alt={student.name || "Student"}
-                  className="w-24 h-24 rounded-full border-4 border-[#ffd100] mb-4 object-cover"
-                />
+      <div className=" relative z-10">
+        {/* Header and Stats Component */}
+        <FeedbackHeader feedbacks={feedbacks} />
 
-                <h3 className="text-xl font-semibold text-[#071d49]">
-                  {student.name || "Anonymous"}
-                </h3>
-                <p className="text-sm text-gray-600">{student.course}</p>
-                <p className="text-sm text-gray-500">{student.country}</p>
-
-                <p className="mt-4 text-gray-700 italic overflow-hidden text-ellipsis">
-                  “{student.feedback}”
-                </p>
-              </div>
-            </div>
-          ))}
-        </Slider>
-      )}
-    </div>
-  );
+        {/* Carousel Component */}
+        <FeedbackCarousel feedbacks={feedbacks} />
+      </div>
+    </section>
+  )
 }

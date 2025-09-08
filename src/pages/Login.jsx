@@ -39,6 +39,7 @@ export default function LoginForm() {
 
       if (adminSnap.exists()) {
         toast.success(`Welcome back Admin !`);
+        localStorage.setItem("role", "admin");
         navigate("/dashboard/overview");
         return;
       }
@@ -55,13 +56,17 @@ export default function LoginForm() {
       }
 
       if (userSnap.exists()) {
-        toast.success(`Welcome back ${firstName || "User"}!`);
+        const userData = userSnap.data();
+        const firstName = userData.firstName || "User";
+        toast.success(`Welcome  ${firstName}!`);
+        localStorage.setItem("role", "user");
         navigate("/");
         return;
 
       } else {
         await setDoc(userRef, { email: user.email, firstName, lastName });
         toast.success(`Welcome ${firstName || "User"}! Your profile is now saved.`);
+        localStorage.setItem("role", "user");
         navigate("/");
         return;
       }

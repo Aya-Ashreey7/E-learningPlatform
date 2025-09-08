@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react"
-import { Play, Clock, Users, Award, Star, BookOpen, Heart, Share2, Download, CheckCircle, User, Trophy, Sparkles, Zap, Target, } from "lucide-react"
+import { Clock, Users, Award, Star, BookOpen, Heart, CheckCircle, User, Trophy, Sparkles, MessageSquare, } from "lucide-react"
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import StudentFeedbackSlider from "../components/Feedback/Feedback";
 import Navbar from "../components/Navbar/Navbar";
 import { useAuth } from "../components/AuthContext/AuthContext";
 import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
+import FeedbackForm from "../components/FeedbackForm";
+import FeedbackCarousel from "../components/Feedback/FeedbackCarousel";
+import { getApprovedFeedbacks } from "../feedbackService";
+
+
 
 
 
 export default function KidsCourseDetails() {
     const [activeTab, setActiveTab] = useState("overview")
     const [isInWishlist, setIsInWishlist] = useState(false);
+    const [feedbacks, setFeedbacks] = useState([])
     const { id } = useParams();
     const [course, setCourse] = useState(null);
     const { user } = useAuth();
@@ -39,6 +44,18 @@ export default function KidsCourseDetails() {
         }
     }, [course, id]);
 
+    useEffect(() => {
+        const loadFeedbacks = async () => {
+            try {
+                const approvedFeedbacks = await getApprovedFeedbacks()
+                setFeedbacks(approvedFeedbacks)
+            } catch (err) {
+                console.error("Error loading feedbacks:", err)
+            }
+        }
+        loadFeedbacks()
+    }, [])
+
     // =========================================
     const handleToggleWishlist = (course) => {
         if (!user) {
@@ -54,20 +71,37 @@ export default function KidsCourseDetails() {
             wishlist = wishlist.filter((item) => item.id !== course.id);
             localStorage.setItem("wishlist", JSON.stringify(wishlist));
             setIsInWishlist(false);
-            toast("Removed from Wishlist ❌");
+            toast.error("Removed from Wishlist ");
         } else {
             // Add to wishlist
             wishlist.push(course);
             localStorage.setItem("wishlist", JSON.stringify(wishlist));
             setIsInWishlist(true);
-            toast("Added to Wishlist ❤️");
+            toast.success("Added to Wishlist ");
         }
     };
+
+
 
 
     if (!course) return <div className="flex items-center justify-center h-screen">
         <ClipLoader color="#071d49" size={45} />
     </div>;
+
+    const courseDataForFeedback = {
+        id: course.id,
+        title: course.title || "Unknown Course",
+        instructor: course.instructor || "Unknown Instructor",
+        category: course.category || "general",
+    }
+    // Handle feedback submission
+    const handleFeedbackSubmitted = (feedbackId) => {
+        console.log("Feedback submitted with ID:", feedbackId)
+        toast.success("Thank you for your feedback! ")
+        // Optionally switch to reviews tab to show feedback was submitted
+        setActiveTab("reviews")
+    }
+
 
     return (
         <>
@@ -112,7 +146,7 @@ export default function KidsCourseDetails() {
 
                                     <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">{course.title}</h1>
 
-                                    <p className="text-white/90 text-lg leading-relaxed">{course.description}</p>
+                                    {/* <p className="text-white/90 text-lg leading-relaxed">{course.description}</p> */}
                                 </div>
 
                                 {/* Course Stats */}
@@ -131,11 +165,11 @@ export default function KidsCourseDetails() {
 
                                 {/* Instructor */}
                                 <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                    <img
+                                    {/* <img
                                         src={course.instructorAvatar || "/placeholder.svg"}
                                         alt={course.instructor}
                                         className="w-12 h-12 rounded-full border-2 border-[#ffd100]"
-                                    />
+                                    /> */}
                                     <div>
                                         <p className="text-white font-medium">Taught by</p>
                                         <p className="text-[#ffd100] font-bold">{course.instructor}</p>
@@ -227,6 +261,8 @@ export default function KidsCourseDetails() {
                                     { id: "overview", label: "Overview", icon: BookOpen },
                                     { id: "instructor", label: "Teacher", icon: User },
                                     { id: "reviews", label: "Reviews", icon: Star },
+                                    { id: "feedback", label: "Give Feedback", icon: MessageSquare },
+
                                 ].map((tab) => (
                                     <button
                                         key={tab.id}
@@ -244,6 +280,7 @@ export default function KidsCourseDetails() {
 
                             {/* Tab Content */}
                             <div className="bg-white rounded-2xl border-2 border-gray-100 p-8">
+
                                 {activeTab === "overview" && (
                                     <div className="space-y-8">
                                         {/* Course Description */}
@@ -284,8 +321,6 @@ export default function KidsCourseDetails() {
                                     </div>
                                 )}
 
-
-
                                 {activeTab === "instructor" && (
                                     <div className="space-y-6">
                                         <h3 className="text-2xl font-bold text-[#071d49] mb-6 flex items-center gap-2">
@@ -324,7 +359,19 @@ export default function KidsCourseDetails() {
                                 )}
 
                                 {activeTab === "reviews" && (
-                                    <StudentFeedbackSlider />
+                                    <div className="space-y-6">
+                                        <h3 className="text-2xl font-bold text-[#071d49] mb-6 flex items-center gap-2">
+                                            <Star className="text-[#ffd100]" />
+                                            Student Reviews
+                                        </h3>
+                                        <FeedbackCarousel feedbacks={feedbacks} />
+                                    </div>
+                                )}
+
+                                {activeTab === "feedback" && (
+                                    <div>
+                                        <FeedbackForm courseData={courseDataForFeedback} onFeedbackSubmitted={handleFeedbackSubmitted} />
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -332,20 +379,20 @@ export default function KidsCourseDetails() {
                         {/* Sidebar */}
                         <div className="space-y-6">
                             {/* Course Features */}
-                            <div className="bg-white rounded-2xl border-2 border-gray-100 p-6">
+                            {/* <div className="bg-white rounded-2xl border-2 border-gray-100 p-6">
                                 <h4 className="font-bold text-[#071d49] mb-4 flex items-center gap-2">
                                     <Trophy className="text-[#ffd100]" />
                                     Course Features
                                 </h4>
-                                {/* <div className="space-y-3">
+                               <div className="space-y-3">
                                 {course.courseIncludes.map((feature, index) => (
                                     <div key={index} className="flex items-start gap-3">
                                         <CheckCircle size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
                                         <span className="text-gray-700 text-sm">{feature}</span>
                                     </div>
                                 ))}
+                            </div> 
                             </div> */}
-                            </div>
 
                             {/* Course Info */}
                             <div className="bg-white rounded-2xl border-2 border-gray-100 p-6">
@@ -361,14 +408,6 @@ export default function KidsCourseDetails() {
                                         <span className="text-gray-600">Duration:</span>
                                         <span className="font-medium text-[#071d49]">{course.duration} hours</span>
                                     </div>
-                                    {/* <div className="flex items-center justify-between">
-                                    <span className="text-gray-600">Level:</span>
-                                    <span className="font-medium text-[#071d49]">{course.level}</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-gray-600">Language:</span>
-                                    <span className="font-medium text-[#071d49]">{course.language}</span>
-                                </div> */}
                                     <div className="flex items-center justify-between">
                                         <span className="text-gray-600">Certificate:</span>
                                         <span className="font-medium text-green-600">{course.certificate ? " Yes" : " No"}</span>
@@ -377,15 +416,22 @@ export default function KidsCourseDetails() {
                                         <span className="text-gray-600">Students:</span>
                                         <span className="font-medium text-[#071d49]">{course.traineesCount}</span>
                                     </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-gray-600">Start Date:</span>
+                                        <span className="font-medium text-[#071d49]">  {course.startDate}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-gray-600">End Date:</span>
+                                        <span className="font-medium text-[#071d49]">{course.endDate}</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Related Courses */}
 
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }

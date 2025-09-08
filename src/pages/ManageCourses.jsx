@@ -33,9 +33,14 @@ export default function ManageCourses() {
     lectures_availability: "",
     description: "",
     image: "",
+    startDate: "",
+    endDate: "",
   });
 
   const [categories, setCategories] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
 
   const toBool = (v) => {
     if (typeof v === "boolean") return v;
@@ -166,6 +171,8 @@ export default function ManageCourses() {
       lectures_availability: course.lectures_availability || "",
       description: course.description || "",
       image: course.image || "",
+      startDate: course.startDate || "",
+      endDate: course.endDate || "",
     });
   };
 
@@ -209,6 +216,8 @@ export default function ManageCourses() {
       lectures_availability: editFormData.lectures_availability || "",
       description: editFormData.description,
       image: imageUrl,
+      startDate: editFormData.startDate || "",
+      endDate: editFormData.endDate || "",
     };
 
     const docRef = doc(db, "Courses", editCourseId);
@@ -234,6 +243,45 @@ export default function ManageCourses() {
     const category = categories.find((cat) => cat.id === catId);
     return category ? category.name : "Unknown Category";
   };
+
+  // ----------- Pagination + Search Logic -------------
+  const indexOfLastCourse = currentPage * itemsPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - itemsPerPage;
+
+  const filteredCourses = courses.filter((course) => {
+    const s = search.toLowerCase();
+    const certText =
+      course.certificate === true
+        ? "yes"
+        : course.certificate === false
+        ? "no"
+        : "n/a";
+    return (
+      course.title?.toLowerCase().includes(s) ||
+      course.instructor?.toLowerCase().includes(s) ||
+      getCategoryName(course.category_id)?.toLowerCase().includes(s) ||
+      String(course.price ?? "")
+        .toLowerCase()
+        .includes(s) ||
+      course.duration?.toLowerCase().includes(s) ||
+      course.description?.toLowerCase().includes(s) ||
+      course.audience?.toLowerCase().includes(s) ||
+      String(course.trainees_count ?? "")
+        .toLowerCase()
+        .includes(s) ||
+      (course.lectures_availability || "").toLowerCase().includes(s) ||
+      certText.includes(s)
+    );
+  });
+
+  const currentCourses = filteredCourses.slice(
+    indexOfFirstCourse,
+    indexOfLastCourse
+  );
+  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   if (loading) {
     return (
@@ -294,13 +342,15 @@ export default function ManageCourses() {
                 <th className="p-3">Trainees</th>
                 <th className="p-3">Certificate</th>
                 <th className="p-3">Lectures</th>
+                <th className="p-3">Start Date</th>
+                <th className="p-3">End Date</th>
                 <th className="p-3">Description</th>
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
 
             <tbody>
-              {courses
+              {currentCourses
                 .filter((course) => {
                   const s = search.toLowerCase();
                   const certText =
@@ -362,6 +412,8 @@ export default function ManageCourses() {
                     <td className="p-3">
                       {course.lectures_availability || "N/A"}
                     </td>
+                    <td className="p-3">{course.startDate || "—"}</td>
+                    <td className="p-3">{course.endDate || "—"}</td>
                     <td className="p-3 max-w-xs group relative">
                       {course.description && course.description.length > 100 ? (
                         <>
@@ -405,9 +457,50 @@ export default function ManageCourses() {
           </table>
         </div>
 
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="sticty bottom-0 right-4 bg-white py-2 flex justify-end items-center gap-2 mt-8">
+            {/* Previous Button */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50 text-[#071d49] cursor-pointer"
+            >
+              Prev
+            </button>
+
+            {/* Page Numbers */}
+            {[...Array(totalPages)].map((_, index) => {
+              const pageNum = index + 1;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`px-3 py-1 rounded ${
+                    currentPage === pageNum
+                      ? "bg-[#071d49] text-white cursor-pointer"
+                      : "bg-gray-200 text-[#071d49] hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            {/* Next Button */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50 text-[#071d49] cursor-pointer"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
         {/* Description Modal */}
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="sticky inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 max-w-lg w-full shadow-lg">
               <h3 className="text-xl font-bold text-[#071d49] mb-4">
                 Course Description
@@ -575,6 +668,27 @@ export default function ManageCourses() {
                   <option value="Available">Available</option>
                   <option value="Unavailable">Unavailable</option>
                 </select>
+                <label className="block font-semibold text-[#071d49]">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={editFormData.startDate}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded"
+                />
+
+                <label className="block font-semibold text-[#071d49]">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={editFormData.endDate}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded"
+                />
 
                 <textarea
                   name="description"
