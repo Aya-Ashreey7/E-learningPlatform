@@ -137,6 +137,8 @@ export default function Orders() {
             Phone: order?.address?.phone || "N/A",
             Status: order?.status || "N/A",
             Total: order?.total || 0,
+            Payment: order?.paymentMethod || "N/A",
+            Items: (order.cartItems || []).map((item) => `${item.title} (x${item.quantity})`).join(", "),
             Date: formatDate(order?.createdAt),
         }));
 
@@ -244,10 +246,10 @@ export default function Orders() {
                                             <p className="text-gray-600 text-sm">{item.description}</p>
                                             <div className="flex items-center gap-4 mt-2">
                                                 <span className="text-[#ffd100] font-bold bg-[#ffd100]/10 px-2 py-1 rounded">
-                                                    ${item.price}
+                                                    {item.price} EGP
                                                 </span>
                                                 <span className="text-gray-600 text-sm">Qty: {item.quantity}</span>
-                                                <span className="text-[#071d49] font-medium">${item.price * item.quantity}</span>
+                                                <span className="text-[#071d49] font-medium">{item.price * item.quantity} EGP</span>
                                             </div>
                                         </div>
                                     </div>
@@ -274,7 +276,7 @@ export default function Orders() {
                                     <div>
                                         <span className="text-gray-600 text-sm">Total Amount:</span>
                                         <p className="text-[#ffd100] font-bold text-xl bg-[#ffd100]/10 px-3 py-2 rounded inline-block">
-                                            ${order.total}
+                                            EGP{order.total}
                                         </p>
                                     </div>
                                 </div>
@@ -451,7 +453,7 @@ export default function Orders() {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <span className="text-[#ffd100] font-bold text-lg bg-[#ffd100]/10 px-3 py-1 rounded">${order.total}</span>
+                                                <span className="text-[#ffd100] font-bold text-lg bg-[#ffd100]/10 px-3 py-1 rounded">{order.total}EGP</span>
                                             </td>
                                             <td className="p-4">
                                                 <span className="text-[#071d49] font-medium">{order.paymentMethod}</span>
