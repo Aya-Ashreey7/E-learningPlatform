@@ -1,6 +1,6 @@
-import React from 'react';
-import { FaCalendarAlt, FaBook, FaUsers, FaGlobe } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import React from "react";
+import { FaCalendarAlt, FaBook, FaUsers, FaGlobe } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const StatsSection = () => {
   return (
@@ -10,9 +10,8 @@ const StatsSection = () => {
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          viewport={{ once: true }}
         >
           <div className="flex items-center justify-center text-3xl mb-2">
             <FaCalendarAlt className="mr-2" />
@@ -25,9 +24,8 @@ const StatsSection = () => {
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          viewport={{ once: true }}
         >
           <div className="flex items-center justify-center text-3xl mb-2">
             <FaBook className="mr-2" />
@@ -40,9 +38,8 @@ const StatsSection = () => {
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
-          viewport={{ once: true }}
         >
           <div className="flex items-center justify-center text-3xl mb-2">
             <FaUsers className="mr-2" />
@@ -55,9 +52,8 @@ const StatsSection = () => {
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.6 }}
-          viewport={{ once: true }}
         >
           <div className="flex items-center justify-center text-3xl mb-2">
             <FaGlobe className="mr-2" />

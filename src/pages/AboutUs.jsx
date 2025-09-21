@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar/Navbar"; // adjust path if needed
-// import aboutImg from "../assets/about4.jpg"; // ✅ import image from assets
-import about1 from "../assets/about1.jpg";
 import Footer from "../components/Footer/Footer";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 export default function AboutUs() {
+  const [aboutImage, setAboutImage] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetchImageAbout = async () => {
+      const docRef = doc(db, "ChangeImage", "Images");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const img = new Image();
+        img.src = docSnap.data().aboutImage;
+        img.onload = () => {
+          setAboutImage(docSnap.data().aboutImage);
+          setIsLoaded(true);
+        };
+      } else {
+        console.log("No such document!");
+      }
+    };
+    fetchImageAbout();
+  }, []);
   return (
     <>
       <Navbar />
@@ -24,22 +44,23 @@ export default function AboutUs() {
           <div className="md:flex md:items-start md:gap-12">
             {/* Image */}
             <motion.img
-              src={about1} // ✅ use imported image
+              src={aboutImage}
               alt="About Us"
               className="w-full md:w-[380px] h-auto rounded-lg object-cover mb-10 md:mb-0 border-4 border-[#ffd100]"
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, filter: "blur(20px)" }}
+              animate={{
+                opacity: isLoaded ? 1 : 0,
+                filter: isLoaded ? "blur(0px)" : "blur(20px)",
+              }}
+              transition={{ duration: 1 }}
             />
 
             {/* Text */}
             <motion.div
               className="md:flex-1 space-y-6 text-[17px] leading-relaxed font-light"
               initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
             >
               <h3 className="text-4xl font-normal text-[#071d49]">
                 Welcome to Our Scientific Center

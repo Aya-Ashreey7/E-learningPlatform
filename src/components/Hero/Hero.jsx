@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "../Navbar/Navbar";
@@ -6,10 +6,22 @@ import Footer from "../Footer/Footer";
 // import "./Hero.css"; // Import the CSS file
 
 import { FaChild, FaUserGraduate } from "react-icons/fa";
-import { FaDollarSign, FaAccessibleIcon, FaClock, FaUsers, FaChalkboardTeacher, FaGlobe, FaCheckCircle, FaHeadset, FaLaptop, FaUserFriends } from 'react-icons/fa'; // Import icons
-import StatsSection from '../StatsSection/StatsSection'; 
-import StudentFeedbackSlider from '../Feedback/Feedback';
-
+import {
+  FaDollarSign,
+  FaAccessibleIcon,
+  FaClock,
+  FaUsers,
+  FaChalkboardTeacher,
+  FaGlobe,
+  FaCheckCircle,
+  FaHeadset,
+  FaLaptop,
+  FaUserFriends,
+} from "react-icons/fa"; // Import icons
+import StatsSection from "../StatsSection/StatsSection";
+import StudentFeedbackSlider from "../Feedback/Feedback";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const categories = [
   {
@@ -66,45 +78,66 @@ const features = [
 ];
 
 const Hero = () => {
+  const [heroImage, setHeroImage] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetchHeroImage = async () => {
+      const docRef = doc(db, "ChangeImage", "Images");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const img = new Image();
+        img.src = docSnap.data().heroImage;
+        img.onload = () => {
+          setHeroImage(docSnap.data().heroImage);
+          setIsLoaded(true);
+        };
+      }
+    };
+    fetchHeroImage();
+  }, []);
   return (
     <div className="hero-container">
       <Navbar />
-      <section  id="hero" className=" relative w-full bg-[url('/src/assets/hero.jpg')] bg-cover bg-center
-        py-16 px-4 md:px-10"
+      <section
+        id="hero"
+        className="relative w-full bg-cover bg-center py-16 px-4 md:px-10 transition-all duration-1000"
+        style={{
+          backgroundImage: heroImage ? `url(${heroImage})` : "none",
+          backgroundColor: "#f0f0f0", // placeholder light gray
+          filter: isLoaded ? "none" : "blur(20px)",
+        }}
       >
-  <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10">
-    {/* Text Section */}
-    <motion.div
-      className="md:w-1/2 text-center md:text-left  p-6 rounded-lg"
-      initial={{ x: -50, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.8 }}
-    >
-      <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-        Learn something new everyday.
-      </h1>
-      <p className="text-white text-lg md:text-xl mb-6">
-        Become professional and ready to join the world.
-      </p>
-      <motion.div
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{ type: 'spring', stiffness: 300 }}
-      >
-        <a
-          href="#categories"
-          className="w-[40%] text-center inline-block bg-[#071d49] text-[#ffd100] hover:bg-[#071d49] hover:text-white px-6 py-3 rounded-b-xl text-lg transition"
-        >
-            Browse Courses
-        </a>
-
-      </motion.div>
-    </motion.div>
-  </div>
-</section>
-
+        <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10">
+          {/* Text Section */}
+          <motion.div
+            className="md:w-1/2 text-center md:text-left  p-6 rounded-lg"
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Learn something new everyday.
+            </h1>
+            <p className="text-white text-lg md:text-xl mb-6">
+              Become professional and ready to join the world.
+            </p>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <a
+                href="#categories"
+                className="w-[40%] text-center inline-block bg-[#071d49] text-[#ffd100] hover:bg-[#071d49] hover:text-white px-6 py-3 rounded-b-xl text-lg transition"
+              >
+                Browse Courses
+              </a>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
       <StatsSection /> {/* Add the new section here */}
-      
       {/* Categories Section */}
       <section id="categories" className="bg-white py-16 px-4 md:px-10 mb-8">
         <div className="max-w-7xl mx-auto">
@@ -123,11 +156,10 @@ const Hero = () => {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
             {categories.map((cat, index) => (
               <Link
-               to={cat.link}
-               key={index}
-               className="bg-[#f9f9f9] p-6 rounded-lg shadow-md text-center hover:shadow-xl transition duration-300 cursor-pointer group"
-               >
-
+                to={cat.link}
+                key={index}
+                className="bg-[#f9f9f9] p-6 rounded-lg shadow-md text-center hover:shadow-xl transition duration-300 cursor-pointer group"
+              >
                 <div className="text-[#ffd100] mb-4 flex justify-center group-hover:scale-110 transition-transform duration-200">
                   {cat.icon}
                 </div>

@@ -38,12 +38,13 @@ import BlogPage from "./pages/blogUser";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Feedback from "./pages/FeedbackDashoard";
 import AdultCourseDetails from "./pages/CourseDetails";
+import ChangeImage from "./pages/ChangeImage";
+import MessageDashboard from "./pages/MessageDashboard";
 
 function App() {
   return (
     <CartProvider>
       <Routes>
-        
         {/* Public Pages */}
         <Route path="/" element={<Hero />} />
         <Route path="/wishlist" element={<Wishlist />} />
@@ -127,11 +128,29 @@ function App() {
           }
         />
         <Route
+          path="/dashboard/message"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              {" "}
+              <MessageDashboard />{" "}
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/dashboard/addblog"
           element={
             <ProtectedRoute adminOnly={true}>
               {" "}
               <BlogDashboard />{" "}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/change-image"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              {" "}
+              <ChangeImage />{" "}
             </ProtectedRoute>
           }
         />
@@ -200,7 +219,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
       </Routes>
 
       <Toaster position="top-center" reverseOrder={false} />
