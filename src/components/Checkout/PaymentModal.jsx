@@ -52,18 +52,35 @@ const PaymentModal = ({
     }
   };
 
+  // ✅ Upload receipt to Cloudinary
+  const uploadImageCloudinary = async (file) => {
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "admin_courses"); // replace with your preset
+    data.append("cloud_name", "dciqod9kj"); // replace with your cloud name
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dciqod9kj/image/upload",
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+
+    const json = await res.json();
+    return json.secure_url;
+  };
+
+  // ✅ Make receipt REQUIRED (except for cash)
   const isValid = (() => {
     if (isCash) return true;
-    const hasValidId = transactionId && validateTransactionId(transactionId);
     const hasValidReceipt = receiptFile && validateFile(receiptFile);
-    return hasValidId || hasValidReceipt;
+    return !!hasValidReceipt;
   })();
 
   const handleSubmit = async () => {
     if (!isValid) {
-      setErrorMessage(
-        "Enter a valid transaction number or upload a valid receipt."
-      );
+      setErrorMessage("Please upload a valid receipt before continuing.");
       return;
     }
 
@@ -73,6 +90,12 @@ const PaymentModal = ({
 
       const auth = getAuth();
       const user = auth.currentUser;
+
+  
+      let receiptUrl = "";
+      if (receiptFile) {
+        receiptUrl = await uploadImageCloudinary(receiptFile);
+      }
 
       const newOrder = {
         userId: user ? user.uid : "guest",
@@ -85,7 +108,7 @@ const PaymentModal = ({
         status: "pending",
         createdAt: serverTimestamp(),
         transactionId: transactionId || "",
-        receiptName: receiptFile?.name || "",
+        receiptUrl: receiptUrl || "",
       };
 
       await addDoc(collection(db, "Orders"), newOrder);
@@ -157,7 +180,9 @@ const PaymentModal = ({
 
           {(isVodafone || isInstaPay) && (
             <div className="space-y-2">
-              <p className="font-semibold">{isVodafone ? "Vodafone Cash" : "InstaPay"}</p>
+              <p className="font-semibold">
+                {isVodafone ? "Vodafone Cash" : "InstaPay"}
+              </p>
               <p>
                 {isVodafone ? (
                   <>
@@ -173,7 +198,7 @@ const PaymentModal = ({
               </p>
               <input
                 type="text"
-                placeholder="Enter transaction number"
+                placeholder="Enter transaction number (optional)"
                 value={transactionId}
                 onChange={(e) => setTransactionId(e.target.value)}
                 className="w-full mt-1 p-2 rounded border border-[#071d49]"
@@ -185,8 +210,15 @@ const PaymentModal = ({
               )}
 
               <div>
-                <label className="block mb-1">Upload receipt (optional):</label>
-                <input type="file" accept="image/*" onChange={handleFileChange} />
+                <label className="block mb-1 font-medium">
+                  Upload receipt <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
                 {fileError && (
                   <p className="text-red-500 text-xs mt-1">{fileError}</p>
                 )}
