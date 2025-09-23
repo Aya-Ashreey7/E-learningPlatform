@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../components/DashboardLayout/DashboardLayout";
-import { Eye, Check, X, MapPin, Phone, User, CreditCard, Package, Search, ChevronDown, Calendar, Download, } from "lucide-react";
+import { Eye, Check, X, MapPin, Phone, User, CreditCard, Package, Search, ChevronDown, Calendar, Download, CreditCardIcon, } from "lucide-react";
 import { db } from "../firebase";
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, addDoc, serverTimestamp, } from "firebase/firestore";
 import toast from "react-hot-toast";
@@ -304,6 +304,28 @@ export default function Orders() {
                             </div>
                         </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-[#071d49] flex items-center gap-2">
+                                    <CreditCardIcon size={20} />
+                                    Receipt image </h3>
+                                <div className="bg-gray-50 rounded-lg p-4 space-y-3 border border-gray-200">
+                                    {order?.receiptUrl ? (
+                                        <img
+                                            src={order.receiptUrl}
+                                            alt="Receipt"
+                                            className="w-full h-auto rounded-lg object-cover border border-gray-200"
+                                        />
+                                    ) : (
+                                        <p className="text-gray-600">No receipt image provided.</p>
+                                    )}
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
                         {/* Actions (approve / reject) */}
                         {order.status === "pending" && (
                             <div className="flex gap-4 pt-4 border-t border-gray-200">
@@ -332,7 +354,7 @@ export default function Orders() {
                         )}
                     </div>
                 </div>
-            </div>
+            </div >
         );
     };
 

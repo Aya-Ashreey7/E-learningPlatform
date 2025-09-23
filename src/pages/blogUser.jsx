@@ -26,8 +26,8 @@ export default function BlogPage() {
     const [showGallery, setShowGallery] = useState(false)
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
     const [error, setError] = useState(null)
-    const [email, setEmail] = useState("")
-    const [subscribed, setSubscribed] = useState(false)
+    // const [email, setEmail] = useState("")
+    // const [subscribed, setSubscribed] = useState(false)
 
     // Load published blog posts from Firestore
     useEffect(() => {
@@ -42,7 +42,7 @@ export default function BlogPage() {
                 console.error("Error loading blog posts:", err)
                 setError("Failed to load blog posts. Please try again later.")
             }
-          
+
         }
 
         loadBlogPosts()
@@ -116,14 +116,14 @@ export default function BlogPage() {
         }
     }
 
-    const handleNewsletterSubmit = (e) => {
-        e.preventDefault()
-        if (email) {
-            setSubscribed(true)
-            setEmail("")
-            setTimeout(() => setSubscribed(false), 3000)
-        }
-    }
+    // const handleNewsletterSubmit = (e) => {
+    //     e.preventDefault()
+    //     if (email) {
+    //         setSubscribed(true)
+    //         setEmail("")
+    //         setTimeout(() => setSubscribed(false), 3000)
+    //     }
+    // }
 
     const formatDate = (date) => {
         return new Intl.DateTimeFormat("en-US", {
@@ -542,7 +542,7 @@ export default function BlogPage() {
                     </div>
 
                     {/* Newsletter Signup */}
-                    <div className="bg-gradient-to-r from-[#071d49] to-[#0a2557] rounded-3xl p-8 md:p-12 text-white relative overflow-hidden">
+                    {/* <div className="bg-gradient-to-r from-[#071d49] to-[#0a2557] rounded-3xl p-8 md:p-12 text-white relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-[#ffd100]/10 rounded-full -translate-y-32 translate-x-32"></div>
                         <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#ffd100]/10 rounded-full translate-y-24 -translate-x-24"></div>
 
@@ -600,7 +600,7 @@ export default function BlogPage() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Full Post Modal */}
