@@ -13,7 +13,7 @@ import { NavLink } from "react-router-dom";
 
 export default function SidebarDash() {
   return (
-    <aside className="fixed top-0 left-0  bg-[#061a3a]  w-64 h-screen flex flex-col p-6 shadow-lg z-40">
+    <aside className="fixed top-0 left-0  bg-[#061a3a]  w-64 h-screen flex flex-col p-6 shadow-lg z-40 overflow-y-auto">
       <div>
         <h2 className="text-white text-2xl font-bold mb-8 tracking-wide border-b border-[#1f3261] pb-4">
           Dashboard
