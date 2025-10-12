@@ -31,9 +31,9 @@ export default function Footer() {
         {/* Contact Info */}
         <div>
           <h3 className="text-lg font-semibold text-[#ffd100] mb-4">Contact Us</h3>
-          <p className="text-sm">123 Science Road, Knowledge City</p>
+          <p className="text-sm">37 boarsaed street Ard Al Mahlag </p>
           <p className="text-sm">Email: info@scientificcenter.com</p>
-          <p className="text-sm">Phone: +1 (234) 567-890</p>
+          <p className="text-sm">Phone: 01000745165</p>
         </div>
       </div>
 

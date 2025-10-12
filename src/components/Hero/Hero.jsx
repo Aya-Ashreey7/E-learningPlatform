@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
-// import "./Hero.css"; // Import the CSS file
+
 
 import { FaChild, FaUserGraduate } from "react-icons/fa";
 import {
