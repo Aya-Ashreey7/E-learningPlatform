@@ -1,6 +1,7 @@
 import { useState, useEffect, memo } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import { FaStar, FaBook, FaGraduationCap, FaLaptop } from "react-icons/fa";
+import { Search, X, ChevronDown, SlidersHorizontal } from "lucide-react";
 import CoursesList from "../components/CoursesKids/CoursesList";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
@@ -12,49 +13,103 @@ const SearchBar = memo(function SearchBar({
   filter,
   setFilter,
   categories,
+  resultsCount,
 }) {
-  return (
-    <form
-      onSubmit={(e) => e.preventDefault()}
-      className="flex items-center gap-4 w-full max-w-md mt-4 p-6 ml-14"
-    >
-      <input
-        type="text"
-        placeholder="Search"
-        autoComplete="off"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="flex-grow p-2 rounded-xl border border-gray-300 shadow-md 
-          focus:outline-none focus:ring-2 focus:ring-[#071d49] hover:border-[#071d49]"
-      />
-      <div className="relative z-20 overflow-visible w-60 ">
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="appearance-none p-2 pl-8 pr-2  rounded-xl border border-gray-300 shadow-md cursor-pointer
-          focus:outline-none focus:ring-2 focus:ring-[#071d49] hover:border-[#071d49]"
-        >
-          <option value="all">All</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.name.toLowerCase()}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+  const hasActiveFilters = search.trim() !== "" || filter !== "all";
 
-        <svg
-          className="w-5 h-5 absolute left-2 top-2.5 pointer-events-none text-gray-500"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          viewBox="0 0 24 24"
-        >
-          <path d="M3 4h18M9 12h6M10 16h4" />
-        </svg>
-      </div>
-    </form>
+  const clearAll = () => {
+    setSearch("");
+    setFilter("all");
+  };
+
+  return (
+    <div className="relative max-w-7xl mx-auto px-4 md:px-6 mt-6 mb-2">
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="bg-white border border-[#e8edf5] rounded-2xl shadow-sm p-3 md:p-4"
+      >
+        <div className="flex flex-col md:flex-row gap-3 md:items-center">
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search
+              size={18}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#071d49]/45 pointer-events-none"
+            />
+            <input
+              type="text"
+              placeholder="Search kids courses by name or category..."
+              autoComplete="off"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full h-12 pl-11 pr-10 rounded-xl border border-[#e8edf5] bg-[#f8fafc] text-[#071d49] placeholder:text-slate-400 outline-none focus:border-[#ffd100] focus:ring-4 focus:ring-[#ffd100]/25 transition"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-slate-400 hover:text-[#071d49] hover:bg-[#ffd100]/30 transition"
+                aria-label="Clear search"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+
+          {/* Category filter */}
+          <div className="relative w-full md:w-60">
+            <SlidersHorizontal
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#071d49]/45 pointer-events-none z-10"
+            />
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="w-full h-12 appearance-none cursor-pointer pl-10 pr-10 rounded-xl border border-[#e8edf5] bg-[#f8fafc] text-[#071d49] font-medium outline-none focus:border-[#ffd100] focus:ring-4 focus:ring-[#ffd100]/25 transition"
+            >
+              <option value="all">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.name.toLowerCase()}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              size={16}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#071d49]/50 pointer-events-none"
+            />
+          </div>
+
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={clearAll}
+              className="h-12 px-4 rounded-xl border border-[#e8edf5] bg-white text-[#071d49] font-semibold hover:bg-[#ffd100] hover:border-[#ffd100] transition whitespace-nowrap"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+
+        <div className="mt-3 flex items-center justify-between text-sm text-slate-500 px-1">
+          <span>
+            {typeof resultsCount === "number" ? (
+              <>
+                Showing{" "}
+                <span className="font-semibold text-[#071d49]">{resultsCount}</span>{" "}
+                course{resultsCount === 1 ? "" : "s"}
+              </>
+            ) : (
+              "Filter courses"
+            )}
+          </span>
+          {filter !== "all" && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#071d49] text-[#ffd100] text-xs font-bold px-2.5 py-1">
+              {filter}
+            </span>
+          )}
+        </div>
+      </form>
+    </div>
   );
 });
 
@@ -181,7 +236,7 @@ export default function CourseKids() {
   return (
     <>
       <Navbar />
-      <div className="relative min-h-screen bg-[#f9f9f9] overflow-hidden">
+      <div className="relative min-h-screen bg-[#f4f7fb] overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           {visibleIcons.map((item) => (
             <div
@@ -198,17 +253,34 @@ export default function CourseKids() {
           ))}
         </div>
 
+        <div className="relative max-w-7xl mx-auto px-4 md:px-6 pt-10">
+          <span className="sc-eyebrow mb-3">Kids Track</span>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-[#071d49]">
+            Kids Courses
+          </h1>
+          <p className="text-slate-500 mt-2 max-w-xl">
+            Fun, safe, and engaging learning experiences designed for young minds.
+          </p>
+        </div>
+
         <SearchBar
           search={search}
-          setSearch={setSearch}
+          setSearch={(value) => {
+            setSearch(value);
+            setCurrentPage(1);
+          }}
           filter={filter}
-          setFilter={setFilter}
+          setFilter={(value) => {
+            setFilter(value);
+            setCurrentPage(1);
+          }}
           categories={categories}
+          resultsCount={filteredCourses.length}
         />
 
         {loading ? (
-          <div className="flex items-center justify-center min-h-screen -translate-y-24">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
+          <div className="flex items-center justify-center min-h-[50vh]">
+            <div className="animate-spin rounded-full h-14 w-14 border-4 border-[#ffd100] border-t-[#071d49]"></div>
           </div>
         ) : (
           <>
@@ -216,12 +288,12 @@ export default function CourseKids() {
 
             {/* Pagination buttons only if there are courses */}
             {filteredCourses.length > 0 && (
-              <div className="flex justify-center mt-6  mb-6 gap-2 ">
+              <div className="flex justify-center mt-6 mb-10 gap-2">
                 <button
                   onClick={() =>
                     setCurrentPage((prev) => Math.max(prev - 1, 1))
                   }
-                  className="px-3 py-1 rounded bg-gray-200 text-[#071d49] cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-white border border-[rgba(7,29,73,0.1)] text-[#071d49] cursor-pointer hover:bg-[#ffd100]/25 transition"
                 >
                   Previous
                 </button>
@@ -230,9 +302,9 @@ export default function CourseKids() {
                   <button
                     key={index + 1}
                     onClick={() => setCurrentPage(index + 1)}
-                    className={`px-3 py-1 rounded ${currentPage === index + 1
-                        ? "bg-[#071d49] text-white cursor-pointer"
-                        : "bg-gray-200 text-[#071d49] cursor-pointer"
+                    className={`h-10 w-10 rounded-full font-semibold ${currentPage === index + 1
+                        ? "bg-[#071d49] text-[#ffd100] cursor-pointer"
+                        : "bg-white border border-[rgba(7,29,73,0.1)] text-[#071d49] cursor-pointer hover:bg-[#ffd100]/25"
                       }`}
                   >
                     {index + 1}
@@ -243,7 +315,7 @@ export default function CourseKids() {
                   onClick={() =>
                     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                   }
-                  className="px-3 py-1 rounded bg-gray-200 text-[#071d49] cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-white border border-[rgba(7,29,73,0.1)] text-[#071d49] cursor-pointer hover:bg-[#ffd100]/25 transition"
                 >
                   Next
                 </button>

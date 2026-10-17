@@ -2,9 +2,8 @@ import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
-import { FaHeart } from "react-icons/fa";
 import { useAuth } from "../AuthContext/AuthContext";
-import { Heart } from "lucide-react";
+import { Heart, Clock, Users } from "lucide-react";
 
 export default function CourseCard({
   id,
@@ -56,57 +55,60 @@ export default function CourseCard({
   };
 
   return (
-    <Link to={`/courses/kids/${id}`} className="no-underline">
-      <div
-        className="w-80 bg-white rounded-3xl shadow-lg
-       hover:shadow-yellow-200 transition-shadow duration-300 p-6 cursor-pointer flex flex-col"
-      >
-        <div className="relative">
+    <Link to={`/courses/kids/${id}`} className="no-underline block h-full">
+      <article className="group h-full bg-white rounded-2xl border border-[#e8edf5] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+        <div className="relative aspect-[16/10] overflow-hidden bg-[#f4f7fb]">
           <img
             src={image}
             alt={title}
-            className="w-full h-65 object-cover rounded-3xl mb-5 border-4 border-[#ffd100] shadow-md"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#071d49]/55 via-transparent to-transparent" />
 
-          <Heart
-            size={24}
-            className={`absolute top-4 right-4 cursor-pointer transition-colors duration-200 ${
-              fav ? "text-red-500 fill-red-500" : "text-gray-500"
-            }`}
+          <button
+            type="button"
+            aria-label="Toggle wishlist"
+            className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md hover:bg-[#ffd100] transition"
             onClick={handleToggleWishlist}
-          />
+          >
+            <Heart
+              size={18}
+              className={
+                fav ? "text-red-500 fill-red-500" : "text-[#071d49]"
+              }
+            />
+          </button>
+
+          <span className="absolute bottom-3 left-3 text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-[#ffd100] text-[#071d49]">
+            {category}
+          </span>
         </div>
 
-        <div className="px-3 flex-grow flex flex-col justify-between">
-          <div>
-            <h2 className="text-2xl font-extrabold text-[#071d49] mb-1 tracking-wide drop-shadow-sm">
-              {title}
-            </h2>
-            <p className="text-sm  text-[#555] mb-3">{category}</p>
+        <div className="p-5 flex flex-col flex-grow">
+          <h2 className="text-lg font-bold text-[#071d49] leading-snug line-clamp-2 min-h-[3.25rem] group-hover:text-[#0d2a63] transition-colors">
+            {title}
+          </h2>
 
-            <div className="flex justify-start gap-6 text-[#071d49] text-lg mb-3 font-semibold whitespace-nowrap">
-              <p className="mr-6">
-                Enrolled:{" "}
-                <span className="font-bold text-[#ffd100]">
-                  {enrolled} students
-                </span>
-              </p>
-            </div>
+          <div className="mt-3 flex items-center gap-4 text-sm text-slate-500">
+            <span className="inline-flex items-center gap-1.5">
+              <Users size={15} className="text-[#071d49]" />
+              {enrolled} students
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Clock size={15} className="text-[#071d49]" />
+              {duration}h
+            </span>
+          </div>
 
-            <p className="text-[#071d49] text-lg font-semibold whitespace-nowrap mb-6 flex gap-14">
-              <span>
-                Price: <span className="text-[#ffd100]">{price} EGP</span>
-              </span>
-              <span>
-                Duration:{" "}
-                <span className="font-bold text-[#ffd100]">{duration}h</span>
-              </span>
+          <div className="mt-auto pt-5 flex items-center justify-between gap-3">
+            <p className="text-xl font-extrabold text-[#071d49]">
+              {price}
+              <span className="ml-1 text-xs font-semibold text-slate-400">EGP</span>
             </p>
           </div>
 
           <button
-            className="bg-[#ffd100] text-[#071d49] font-extrabold py-3 rounded-2xl hover:bg-yellow-400
-             transition-colors duration-300 shadow-md cursor-pointer"
+            className="mt-4 w-full bg-[#071d49] text-[#ffd100] font-bold py-2.5 rounded-xl hover:bg-[#ffd100] hover:text-[#071d49] transition-colors duration-300 cursor-pointer"
             type="button"
             onClick={(e) => {
               e.preventDefault();
@@ -119,8 +121,6 @@ export default function CourseCard({
                 price,
                 duration,
               });
-
-              // console.log("added value:", added);
 
               if (!user) {
                 toast.error("Please login first to add to cart");
@@ -137,7 +137,7 @@ export default function CourseCard({
             Add to Cart
           </button>
         </div>
-      </div>
+      </article>
     </Link>
   );
 }

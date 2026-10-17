@@ -29,24 +29,31 @@ export default function AboutUs() {
   return (
     <>
       <Navbar />
-      <div className="font-garamond bg-[#fff] text-[#071d49]">
-        {/* About Section */}
-        <section className="max-w-6xl mx-auto py-16 px-4">
-          <motion.h2
-            className="text-5xl font-light mb-16 border-b border-[#ffd100] pb-4 text-[#071d49]"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            About Us
-          </motion.h2>
+      <div className="bg-[#f4f7fb] text-[#071d49] min-h-screen">
+        <section className="relative overflow-hidden bg-[#071d49] text-white py-16 px-4">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,209,0,0.2),transparent_40%)]" />
+          <div className="relative max-w-6xl mx-auto">
+            <span className="sc-eyebrow mb-4 !text-[#ffd100] !bg-white/10 !border-white/20">
+              Our Story
+            </span>
+            <motion.h2
+              className="font-display text-4xl md:text-5xl font-bold"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              About Us
+            </motion.h2>
+          </div>
+        </section>
 
-          <div className="md:flex md:items-start md:gap-12">
+        <section className="max-w-6xl mx-auto py-16 px-4">
+          <div className="md:flex md:items-start md:gap-12 bg-white rounded-3xl border border-[rgba(7,29,73,0.08)] shadow-[0_16px_40px_rgba(7,29,73,0.08)] p-6 md:p-10">
             {/* Image */}
             <motion.img
               src={aboutImage}
               alt="About Us"
-              className="w-full md:w-[380px] h-auto rounded-lg object-cover mb-10 md:mb-0 border-4 border-[#ffd100]"
+              className="w-full md:w-[380px] h-auto rounded-2xl object-cover mb-10 md:mb-0 ring-4 ring-[#ffd100]/60 shadow-lg"
               initial={{ opacity: 0, filter: "blur(20px)" }}
               animate={{
                 opacity: isLoaded ? 1 : 0,
@@ -57,12 +64,12 @@ export default function AboutUs() {
 
             {/* Text */}
             <motion.div
-              className="md:flex-1 space-y-6 text-[17px] leading-relaxed font-light"
+              className="md:flex-1 space-y-6 text-[17px] leading-relaxed text-slate-600"
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <h3 className="text-4xl font-normal text-[#071d49]">
+              <h3 className="font-display text-3xl md:text-4xl font-semibold text-[#071d49]">
                 Welcome to Our Scientific Center
               </h3>
               <p>
@@ -72,7 +79,7 @@ export default function AboutUs() {
                 lifelong learning.
               </p>
 
-              <div className="border-t border-[#ffd100] pt-6 space-y-4">
+              <div className="border-t border-[#ffd100]/60 pt-6 space-y-4">
                 <p>
                   Our team consists of passionate educators, scientists, and
                   innovators who believe in the power of knowledge. We offer

@@ -51,12 +51,13 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-[#071d49] py-4 px-6 md:px-10 shadow-md">
-      <div className="container mx-auto flex items-center justify-between">
+    <nav className="sticky top-0 z-[60] bg-[#071d49] py-4 px-4 md:px-8 shadow-md">
+      <div className="max-w-7xl mx-auto flex items-center justify-between relative">
         {/* Logo */}
         <Link
           to="/"
-          className="text-[#ffd100] text-2xl font-bold cursor-pointer"
+          className="text-xl md:text-2xl font-bold cursor-pointer transition"
+          style={{ color: "#ffd100" }}
         >
           Scientific Center
         </Link>
@@ -64,13 +65,14 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-white cursor-pointer"
+          className="md:hidden text-white cursor-pointer p-2 rounded-lg hover:bg-white/10 transition"
+          aria-label="Toggle menu"
         >
-          {menuOpen ? <X size={26} /> : <Menu size={26} />}
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
         {/* Desktop Links */}
-        <ul className="hidden md:flex space-x-8 items-center font-medium">
+        <ul className="hidden md:flex space-x-6 lg:space-x-8 items-center font-medium">
           {/* Courses dropdown */}
           <li className="relative">
             <button
@@ -86,18 +88,18 @@ const Navbar = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50"
+                  className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50 overflow-hidden"
                 >
                   <NavLink
                     to="/courses/kids"
-                    className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] rounded-t-lg cursor-pointer"
+                    className="block px-4 py-2 text-[#071d49] hover:bg-[#ffd100] hover:text-[#071d49] transition cursor-pointer"
                     onClick={() => setCoursesMenuOpen(false)}
                   >
                     Kids Courses
                   </NavLink>
                   <NavLink
                     to="/courses/adults"
-                    className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] rounded-b-lg cursor-pointer"
+                    className="block px-4 py-2 text-[#071d49] hover:bg-[#ffd100] hover:text-[#071d49] transition cursor-pointer"
                     onClick={() => setCoursesMenuOpen(false)}
                   >
                     Adult Courses
@@ -126,16 +128,18 @@ const Navbar = () => {
                 user ? navigate("/wishlist") : navigate("/login")
               }
               className="text-white hover:text-[#ffd100] transition cursor-pointer"
+              aria-label="Wishlist"
             >
-              <FaHeart size={20} />
+              <FaHeart size={18} />
             </button>
           </li>
           <li>
             <button
               onClick={() => (user ? navigate("/cart") : navigate("/login"))}
               className="text-white hover:text-[#ffd100] transition cursor-pointer"
+              aria-label="Cart"
             >
-              <FaShoppingCart size={20} />
+              <FaShoppingCart size={18} />
             </button>
           </li>
           <li>
@@ -144,8 +148,9 @@ const Navbar = () => {
                 user ? navigate("/notifications") : navigate("/login")
               }
               className="text-white hover:text-[#ffd100] transition cursor-pointer"
+              aria-label="Notifications"
             >
-              <FaBell size={20} />
+              <FaBell size={18} />
             </button>
           </li>
 
@@ -165,20 +170,20 @@ const Navbar = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg z-50"
+                  className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg z-50 overflow-hidden"
                 >
                   {!user ? (
                     <>
                       <NavLink
                         to="/login"
-                        className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
+                        className="block px-4 py-2 text-[#071d49] hover:bg-[#ffd100] cursor-pointer"
                         onClick={() => setUserMenuOpen(false)}
                       >
                         Login
                       </NavLink>
                       <NavLink
                         to="/register"
-                        className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
+                        className="block px-4 py-2 text-[#071d49] hover:bg-[#ffd100] cursor-pointer"
                         onClick={() => setUserMenuOpen(false)}
                       >
                         Register
@@ -188,7 +193,7 @@ const Navbar = () => {
                     <>
                       <NavLink
                         to="/ProfilePage"
-                        className="block px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
+                        className="block px-4 py-2 text-[#071d49] hover:bg-[#ffd100] cursor-pointer"
                         onClick={() => setUserMenuOpen(false)}
                       >
                         Profile
@@ -198,7 +203,7 @@ const Navbar = () => {
                           signOut(auth);
                           setUserMenuOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-[#ffd100] hover:text-[#071d49] cursor-pointer"
+                        className="block w-full text-left px-4 py-2 text-[#071d49] hover:bg-[#ffd100] cursor-pointer"
                       >
                         Logout
                       </button>
@@ -218,23 +223,21 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="absolute top-16 left-0 w-full bg-white shadow-lg rounded-b-lg 
-              flex flex-col gap-3 p-5 md:hidden z-50 items-center text-center"
+              className="absolute top-14 left-0 w-full bg-white shadow-[0_20px_50px_rgba(7,29,73,0.2)] rounded-2xl 
+              flex flex-col gap-1 p-5 md:hidden z-50 items-stretch text-left border border-[rgba(7,29,73,0.08)]"
             >
-              {/* Links */}
               <Link
                 to="/"
                 onClick={() => setMenuOpen(false)}
-                className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
+                className="text-[#071d49] font-medium hover:bg-[#ffd100]/20 rounded-lg px-3 py-2.5 cursor-pointer"
               >
                 Home
               </Link>
 
-              {/* Mobile Courses Dropdown */}
               <div>
                 <button
                   onClick={() => setMobileCoursesOpen(!mobileCoursesOpen)}
-                  className="flex justify-between items-center w-full text-[#071d49] font-medium py-2 cursor-pointer"
+                  className="flex justify-between items-center w-full text-[#071d49] font-medium py-2.5 px-3 rounded-lg hover:bg-[#ffd100]/20 cursor-pointer"
                 >
                   Courses
                   <ChevronDown
@@ -251,19 +254,19 @@ const Navbar = () => {
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="pl-4 flex flex-col space-y-2 overflow-hidden"
+                      className="pl-4 flex flex-col space-y-1 overflow-hidden"
                     >
                       <Link
                         to="/courses/kids"
                         onClick={() => setMenuOpen(false)}
-                        className="text-gray-600 hover:text-[#071d49] cursor-pointer"
+                        className="text-slate-600 hover:text-[#071d49] cursor-pointer px-3 py-2"
                       >
                         Kids Courses
                       </Link>
                       <Link
                         to="/courses/adults"
                         onClick={() => setMenuOpen(false)}
-                        className="text-gray-600 hover:text-[#071d49] cursor-pointer"
+                        className="text-slate-600 hover:text-[#071d49] cursor-pointer px-3 py-2"
                       >
                         Adult Courses
                       </Link>
@@ -272,26 +275,24 @@ const Navbar = () => {
                 </AnimatePresence>
               </div>
 
-              {/* باقي الروابط */}
               {links.map((link) => (
                 <Link
                   key={link.name}
                   to={link.to}
                   onClick={() => setMenuOpen(false)}
-                  className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
+                  className="text-[#071d49] font-medium hover:bg-[#ffd100]/20 rounded-lg px-3 py-2.5 cursor-pointer"
                 >
                   {link.name}
                 </Link>
               ))}
 
-              {/* Wishlist & Cart & Notifications */}
               <button
                 onClick={() => {
                   if (!user) navigate("/login");
                   else navigate("/wishlist");
                   setMenuOpen(false);
                 }}
-                className="text-[#071d49] font-medium hover:text-[#ffd100] text-left cursor-pointer"
+                className="text-[#071d49] font-medium hover:bg-[#ffd100]/20 rounded-lg px-3 py-2.5 text-left cursor-pointer"
               >
                 Wishlist
               </button>
@@ -301,7 +302,7 @@ const Navbar = () => {
                   else navigate("/cart");
                   setMenuOpen(false);
                 }}
-                className="text-[#071d49] font-medium hover:text-[#ffd100] text-left cursor-pointer"
+                className="text-[#071d49] font-medium hover:bg-[#ffd100]/20 rounded-lg px-3 py-2.5 text-left cursor-pointer"
               >
                 Cart
               </button>
@@ -311,49 +312,50 @@ const Navbar = () => {
                   else navigate("/notifications");
                   setMenuOpen(false);
                 }}
-                className="text-[#071d49] font-medium hover:text-[#ffd100] text-left cursor-pointer"
+                className="text-[#071d49] font-medium hover:bg-[#ffd100]/20 rounded-lg px-3 py-2.5 text-left cursor-pointer"
               >
                 Notifications
               </button>
 
-              {/* Auth Links */}
-              {!user ? (
-                <>
-                  <Link
-                    to="/login"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
-                  >
-                    Register
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/profile"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-[#071d49] font-medium hover:text-[#ffd100] cursor-pointer"
-                  >
-                    Profile
-                  </Link>
-                  <button
-                    onClick={() => {
-                      signOut(auth);
-                      setMenuOpen(false);
-                    }}
-                    className="text-[#071d49] font-medium hover:text-[#ffd100] text-left cursor-pointer"
-                  >
-                    Logout
-                  </button>
-                </>
-              )}
+              <div className="border-t border-[rgba(7,29,73,0.08)] mt-2 pt-2">
+                {!user ? (
+                  <>
+                    <Link
+                      to="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="block text-center sc-btn sc-btn-navy w-full mb-2"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/register"
+                      onClick={() => setMenuOpen(false)}
+                      className="block text-center sc-btn sc-btn-primary w-full"
+                    >
+                      Register
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/profile"
+                      onClick={() => setMenuOpen(false)}
+                      className="text-[#071d49] font-medium hover:bg-[#ffd100]/20 rounded-lg px-3 py-2.5 cursor-pointer block"
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        signOut(auth);
+                        setMenuOpen(false);
+                      }}
+                      className="text-[#071d49] font-medium hover:bg-[#ffd100]/20 rounded-lg px-3 py-2.5 text-left cursor-pointer w-full"
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

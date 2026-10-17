@@ -63,16 +63,17 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f9f9f9] text-[#071d49] font-inter flex flex-col">
+    <div className="min-h-screen bg-[#f4f7fb] text-[#071d49] flex flex-col">
       <Navbar />
-      <div className="min-h-screen bg-[#f9f9f9] px-4 py-12 flex flex-col items-center">
-        <h1 className="text-4xl font-bold text-center mb-10">Contact Us</h1>
+      <div className="min-h-screen px-4 py-12 flex flex-col items-center">
+        <span className="sc-eyebrow mb-4">Get in touch</span>
+        <h1 className="font-display text-4xl md:text-5xl font-bold text-center mb-10">Contact Us</h1>
 
         {/* Contact Info + Map */}
-        <div className="grid md:grid-cols-2 gap-10 max-w-6xl w-full mb-14">
-          <div className="bg-white border rounded-2xl p-8 shadow-md space-y-6">
-            <h2 className="text-2xl font-semibold">Need A Direct Line?</h2>
-            <p className="text-sm text-gray-600">
+        <div className="grid md:grid-cols-2 gap-8 max-w-6xl w-full mb-14">
+          <div className="bg-white border border-[rgba(7,29,73,0.08)] rounded-2xl p-8 shadow-[0_12px_35px_rgba(7,29,73,0.08)] space-y-6">
+            <h2 className="font-display text-2xl font-semibold">Need A Direct Line?</h2>
+            <p className="text-sm text-slate-500">
               Contact us via phone or email. We’re happy to help with any questions.
             </p>
 
@@ -97,7 +98,7 @@ const ContactPage = () => {
           </div>
 
           {/* Google Maps */}
-          <div className="rounded-2xl overflow-hidden shadow-md w-full h-64 md:h-auto border">
+          <div className="rounded-2xl overflow-hidden shadow-[0_12px_35px_rgba(7,29,73,0.08)] w-full h-64 md:h-auto border border-[rgba(7,29,73,0.08)]">
             <iframe
               title="Our Location"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3476.3958733028443!2d31.097!3d29.066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145a2468b8db3f8d%3A0x0!2z2KfZhNmF2YjZhNiq2KfZitip!5e0!3m2!1sen!2seg!4vXXXXXXXXXXXX"
@@ -112,9 +113,9 @@ const ContactPage = () => {
         </div>
 
         {/* Contact Form */}
-        <div className="max-w-4xl w-full bg-white border shadow-md rounded-2xl p-8 space-y-6">
-          <h3 className="text-xl font-semibold">Send a Message</h3>
-          <p className="text-sm text-gray-600">
+        <div className="max-w-4xl w-full bg-white border border-[rgba(7,29,73,0.08)] shadow-[0_12px_35px_rgba(7,29,73,0.08)] rounded-2xl p-8 space-y-6">
+          <h3 className="font-display text-xl font-semibold">Send a Message</h3>
+          <p className="text-sm text-slate-500">
             Your email address will not be published. Required fields are marked *
           </p>
 
@@ -125,8 +126,8 @@ const ContactPage = () => {
                   type="text"
                   placeholder="Name*"
                   {...register("name")}
-                  className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ring-[#ffd100] ${
-                    errors.name ? "border-red-500" : "border-gray-300"
+                  className={`sc-input ${
+                    errors.name ? "border-red-500" : ""
                   }`}
                 />
                 {errors.name && (
@@ -138,8 +139,8 @@ const ContactPage = () => {
                   type="email"
                   placeholder="Email*"
                   {...register("email")}
-                  className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ring-[#ffd100] ${
-                    errors.email ? "border-red-500" : "border-gray-300"
+                  className={`sc-input ${
+                    errors.email ? "border-red-500" : ""
                   }`}
                 />
                 {errors.email && (
@@ -153,8 +154,8 @@ const ContactPage = () => {
                 rows="5"
                 placeholder="Comment"
                 {...register("comment")}
-                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ring-[#ffd100] ${
-                  errors.comment ? "border-red-500" : "border-gray-300"
+                className={`sc-input resize-y ${
+                  errors.comment ? "border-red-500" : ""
                 }`}
               ></textarea>
               {errors.comment && (
@@ -164,14 +165,14 @@ const ContactPage = () => {
 
             <div className="flex items-center gap-2">
               <input type="checkbox" id="save" className="accent-[#ffd100]" />
-              <label htmlFor="save" className="text-sm text-gray-600">
+              <label htmlFor="save" className="text-sm text-slate-500">
                 Save my name, email in this browser for the next time I comment
               </label>
             </div>
 
             <button
               type="submit"
-              className="bg-[#071d49] text-white px-6 py-2 rounded-md font-medium hover:bg-[#0a2b70] transition"
+              className="sc-btn sc-btn-navy"
             >
               Post Comment
             </button>

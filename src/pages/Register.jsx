@@ -71,41 +71,41 @@ export default function RegisterForm() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="min-h-screen bg-[#f4f7fb] flex items-center justify-center p-4 relative overflow-hidden">
             {/* Background decorative elements */}
             <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl" />
-                <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-pink-400/20 rounded-full blur-3xl" />
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl" />
+                <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#ffd100]/25 rounded-full blur-3xl" />
+                <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#071d49]/15 rounded-full blur-3xl" />
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#071d49]/5 rounded-full blur-3xl" />
             </div>
 
             {/* Floating icons */}
-            <div className="absolute top-20 left-20 text-blue-400/30 animate-bounce">
+            <div className="absolute top-20 left-20 text-[#071d49]/20 animate-bounce">
                 <BookOpen size={32} />
             </div>
-            <div className="absolute top-32 right-32 text-purple-400/30 animate-pulse">
+            <div className="absolute top-32 right-32 text-[#ffd100]/70 animate-pulse">
                 <GraduationCap size={28} />
             </div>
-            <div className="absolute bottom-32 left-32 text-indigo-400/30 animate-bounce delay-1000">
+            <div className="absolute bottom-32 left-32 text-[#071d49]/20 animate-bounce delay-1000">
                 <Award size={24} />
             </div>
-            <div className="absolute bottom-20 right-20 text-pink-400/30 animate-pulse delay-500">
+            <div className="absolute bottom-20 right-20 text-[#071d49]/20 animate-pulse delay-500">
                 <Users size={30} />
             </div>
 
             {/* Card */}
             <div className="w-full max-w-md relative z-10">
-                <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl shadow-black/10 rounded-xl">
+                <div className="bg-white border border-[rgba(7,29,73,0.08)] shadow-[0_24px_60px_rgba(7,29,73,0.12)] rounded-2xl">
                     {/* Header */}
                     <div className="text-center space-y-4 p-6 pb-0">
-                        <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                            <GraduationCap className="w-8 h-8 text-white" />
+                        <div className="mx-auto w-16 h-16 bg-[#071d49] rounded-2xl flex items-center justify-center shadow-lg">
+                            <GraduationCap className="w-8 h-8 text-[#ffd100]" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                                Join SCCD
+                            <h1 className="font-display text-2xl font-bold text-[#071d49]">
+                                Join Scientific Center
                             </h1>
-                            <p className="text-gray-600 mt-2">Start your learning journey today</p>
+                            <p className="text-slate-500 mt-2">Start your learning journey today</p>
                         </div>
                     </div>
 
@@ -115,14 +115,14 @@ export default function RegisterForm() {
                             <div className="grid grid-cols-2 gap-4">
                                 {/* First Name */}
                                 <div className="space-y-2">
-                                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                                    <label htmlFor="firstName" className="block text-sm font-medium text-[#071d49]">
                                         First Name
                                     </label>
                                     <input
                                         {...rhfRegister("firstName")}
                                         id="firstName"
                                         type="text"
-                                        className="w-full px-3 py-2 backdrop-blur-sm bg-white/50 border border-white/30 rounded-md focus:bg-white/70 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                                        className="sc-input"
                                         aria-invalid={!!errors.firstName}
                                     />
                                     {errors.firstName && (
@@ -132,14 +132,14 @@ export default function RegisterForm() {
 
                                 {/* Last Name */}
                                 <div className="space-y-2">
-                                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                                    <label htmlFor="lastName" className="block text-sm font-medium text-[#071d49]">
                                         Last Name
                                     </label>
                                     <input
                                         {...rhfRegister("lastName")}
                                         id="lastName"
                                         type="text"
-                                        className="w-full px-3 py-2 backdrop-blur-sm bg-white/50 border border-white/30 rounded-md focus:bg-white/70 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                                        className="sc-input"
                                         aria-invalid={!!errors.lastName}
                                     />
                                     {errors.lastName && (
@@ -150,14 +150,14 @@ export default function RegisterForm() {
 
                             {/* Email */}
                             <div className="space-y-2">
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="email" className="block text-sm font-medium text-[#071d49]">
                                     Email Address
                                 </label>
                                 <input
                                     {...rhfRegister("email")}
                                     id="email"
                                     type="email"
-                                    className="w-full px-3 py-2 backdrop-blur-sm bg-white/50 border border-white/30 rounded-md focus:bg-white/70 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                                    className="sc-input"
                                     aria-invalid={!!errors.email}
                                 />
                                 {errors.email && (
@@ -167,7 +167,7 @@ export default function RegisterForm() {
 
                             {/* Password */}
                             <div className="space-y-2">
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="password" className="block text-sm font-medium text-[#071d49]">
                                     Password
                                 </label>
                                 <div className="relative">
@@ -175,13 +175,13 @@ export default function RegisterForm() {
                                         {...rhfRegister("password")}
                                         id="password"
                                         type={showPassword ? "text" : "password"}
-                                        className="w-full px-3 py-2 pr-10 backdrop-blur-sm bg-white/50 border border-white/30 rounded-md focus:bg-white/70 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                                        className="sc-input pr-10"
                                         aria-invalid={!!errors.password}
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword((s) => !s)}
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-[#071d49] transition-colors"
                                         aria-label="toggle password visibility"
                                     >
                                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -196,7 +196,7 @@ export default function RegisterForm() {
 
                             {/* Confirm Password */}
                             <div className="space-y-2">
-                                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#071d49]">
                                     Confirm Password
                                 </label>
                                 <div className="relative">
@@ -204,13 +204,13 @@ export default function RegisterForm() {
                                         {...rhfRegister("confirmPassword")}
                                         id="confirmPassword"
                                         type={showConfirmPassword ? "text" : "password"}
-                                        className="w-full px-3 py-2 pr-10 backdrop-blur-sm bg-white/50 border border-white/30 rounded-md focus:bg-white/70 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20 transition-all duration-200"
+                                        className="sc-input pr-10"
                                         aria-invalid={!!errors.confirmPassword}
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowConfirmPassword((s) => !s)}
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-[#071d49] transition-colors"
                                         aria-label="toggle confirm password visibility"
                                     >
                                         {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -225,7 +225,7 @@ export default function RegisterForm() {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:opacity-60 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+                                className="w-full sc-btn sc-btn-navy disabled:opacity-60"
                             >
                                 {isSubmitting ? "Creating account..." : "Create Account"}
                             </button>
@@ -233,9 +233,9 @@ export default function RegisterForm() {
 
                         {/* Login link */}
                         <div className="text-center">
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-slate-500">
                                 Already have an account?{" "}
-                                <Link to="/login" className="text-blue-600 hover:text-blue-700 font-semibold underline">
+                                <Link to="/login" className="text-[#071d49] hover:text-[#0d2a63] font-semibold underline decoration-[#ffd100] underline-offset-2">
                                     Sign in here
                                 </Link>
                             </p>
@@ -244,18 +244,18 @@ export default function RegisterForm() {
                 </div>
 
                 {/* Features */}
-                <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-                    <div className="backdrop-blur-sm bg-white/10 rounded-lg p-3 border border-white/20">
-                        <BookOpen className="w-6 h-6 mx-auto text-blue-500 mb-2" />
-                        <p className="text-xs text-gray-600 font-medium">1000+ Courses</p>
+                <div className="mt-8 grid grid-cols-3 gap-3 text-center">
+                    <div className="bg-white rounded-xl p-3 border border-[rgba(7,29,73,0.08)] shadow-sm">
+                        <BookOpen className="w-6 h-6 mx-auto text-[#071d49] mb-2" />
+                        <p className="text-xs text-slate-500 font-medium">1000+ Courses</p>
                     </div>
-                    <div className="backdrop-blur-sm bg-white/10 rounded-lg p-3 border border-white/20">
-                        <Users className="w-6 h-6 mx-auto text-purple-500 mb-2" />
-                        <p className="text-xs text-gray-600 font-medium">Expert Teachers</p>
+                    <div className="bg-white rounded-xl p-3 border border-[rgba(7,29,73,0.08)] shadow-sm">
+                        <Users className="w-6 h-6 mx-auto text-[#071d49] mb-2" />
+                        <p className="text-xs text-slate-500 font-medium">Expert Teachers</p>
                     </div>
-                    <div className="backdrop-blur-sm bg-white/10 rounded-lg p-3 border border-white/20">
-                        <Award className="w-6 h-6 mx-auto text-indigo-500 mb-2" />
-                        <p className="text-xs text-gray-600 font-medium">Certificates</p>
+                    <div className="bg-white rounded-xl p-3 border border-[rgba(7,29,73,0.08)] shadow-sm">
+                        <Award className="w-6 h-6 mx-auto text-[#ffd100] mb-2" />
+                        <p className="text-xs text-slate-500 font-medium">Certificates</p>
                     </div>
                 </div>
             </div>

@@ -58,8 +58,8 @@ export default function FeedbackCarousel({ feedbacks }) {
     return (
         <>
             {/* Main Testimonial Carousel */}
-            <div className="relative max-w-4xl mx-auto mt-16">
-                <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 relative overflow-hidden">
+            <div className="relative max-w-4xl mx-auto mt-4">
+                <div className="bg-white rounded-2xl border border-[rgba(7,29,73,0.08)] shadow-[0_20px_50px_rgba(7,29,73,0.1)] p-8 md:p-12 relative overflow-hidden">
                     {/* Quote Icon */}
                     <div className="absolute top-6 right-6 opacity-10">
                         <Quote size={80} className="text-[#071d49]" />
@@ -74,7 +74,7 @@ export default function FeedbackCarousel({ feedbacks }) {
                         </div>
 
                         {/* Title */}
-                        <h3 className="text-2xl md:text-3xl font-bold text-[#071d49] text-center mb-6">
+                        <h3 className="font-display text-2xl md:text-3xl font-bold text-[#071d49] text-center mb-6">
                             "{currentFeedback.title}"
                         </h3>
 

@@ -109,22 +109,25 @@ const CoursesPage = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen px-6 py-8">
-      <div className="flex gap-8">
+    <div className="bg-[#f4f7fb] min-h-screen px-4 md:px-6 py-8">
+      <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row gap-8">
         {/* Main content */}
         <div className="flex-1">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold">All Courses</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <span className="sc-eyebrow mb-2">Catalog</span>
+              <h1 className="font-display text-3xl md:text-4xl font-bold text-[#071d49]">All Courses</h1>
+            </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               {/* Search bar */}
-              <div className="flex items-center border rounded px-3 py-1 bg-gray-50">
-                <Search size={18} className="text-gray-500" />
+              <div className="flex items-center border border-[rgba(7,29,73,0.12)] rounded-xl px-3 py-2 bg-white shadow-sm min-w-[200px]">
+                <Search size={18} className="text-slate-400" />
                 <input
                   type="text"
                   placeholder="Search"
-                  className="bg-transparent border-none outline-none px-2"
+                  className="bg-transparent border-none outline-none px-2 w-full text-sm"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -133,7 +136,7 @@ const CoursesPage = () => {
               {/* Go to Cart Button */}
               <button
                 onClick={() => navigate("/cart")}
-                className="flex items-center gap-1 px-4 py-2 rounded-lg bg-[#ffd100] text-[#071d49] font-semibold hover:bg-[#ffcd00]/90 transition-all"
+                className="flex items-center gap-1 px-4 py-2.5 rounded-xl bg-[#ffd100] text-[#071d49] font-bold hover:brightness-105 transition-all shadow-[0_8px_20px_rgba(255,209,0,0.3)]"
               >
                 Go to Cart
                 <ArrowRight size={18} />
@@ -143,8 +146,8 @@ const CoursesPage = () => {
 
           {/* Grid */}
           {loading ? (
-            <div className="flex items-center justify-center min-h-screen -translate-y-12">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-[#071d49]"></div>
+            <div className="flex items-center justify-center min-h-[50vh]">
+              <div className="animate-spin rounded-full h-14 w-14 border-4 border-[#ffd100] border-t-[#071d49]"></div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -159,24 +162,25 @@ const CoursesPage = () => {
           )}
 
           {/* Pagination */}
-          <div className="flex justify-center mt-6">
-            <button className="px-3 py-1 border rounded-full mx-1 bg-black text-white">
+          <div className="flex justify-center mt-8 gap-2">
+            <button className="h-9 w-9 border border-[rgba(7,29,73,0.12)] rounded-full bg-[#071d49] text-[#ffd100] font-semibold">
               1
             </button>
-            <button className="px-3 py-1 border rounded-full mx-1">2</button>
-            <button className="px-3 py-1 border rounded-full mx-1">3</button>
+            <button className="h-9 w-9 border border-[rgba(7,29,73,0.12)] rounded-full bg-white text-[#071d49] hover:bg-[#ffd100]/30 transition">2</button>
+            <button className="h-9 w-9 border border-[rgba(7,29,73,0.12)] rounded-full bg-white text-[#071d49] hover:bg-[#ffd100]/30 transition">3</button>
           </div>
         </div>
 
         {/* Sidebar Filters */}
-        <div className="w-64 shrink-0">
+        <aside className="w-full lg:w-72 shrink-0 bg-white rounded-2xl border border-[rgba(7,29,73,0.08)] shadow-[0_12px_35px_rgba(7,29,73,0.08)] p-5 h-fit lg:sticky lg:top-24">
           {/* Category */}
           <div className="mb-6">
-            <h3 className="font-bold mb-2">Course Category</h3>
+            <h3 className="font-bold text-[#071d49] mb-3 text-sm uppercase tracking-wide">Course Category</h3>
             {categories.map((cat) => (
-              <label key={cat} className="flex items-center space-x-2 text-sm mb-1">
+              <label key={cat} className="flex items-center space-x-2 text-sm mb-2 text-slate-600">
                 <input
                   type="checkbox"
+                  className="accent-[#ffd100]"
                   checked={categoryFilter.includes(cat)}
                   onChange={() =>
                     toggleCheckbox(cat, setCategoryFilter, categoryFilter)
@@ -189,11 +193,12 @@ const CoursesPage = () => {
 
           {/* Instructor */}
           <div className="mb-6">
-            <h3 className="font-bold mb-2">Instructors</h3>
+            <h3 className="font-bold text-[#071d49] mb-3 text-sm uppercase tracking-wide">Instructors</h3>
             {instructors.map((name) => (
-              <label key={name} className="flex items-center space-x-2 text-sm mb-1">
+              <label key={name} className="flex items-center space-x-2 text-sm mb-2 text-slate-600">
                 <input
                   type="checkbox"
+                  className="accent-[#ffd100]"
                   checked={instructorFilter.includes(name)}
                   onChange={() =>
                     toggleCheckbox(name, setInstructorFilter, instructorFilter)
@@ -206,29 +211,32 @@ const CoursesPage = () => {
 
           {/* Price */}
           <div className="mb-6">
-            <h3 className="font-bold mb-2">Price</h3>
-            <label className="flex items-center space-x-2 text-sm mb-1">
+            <h3 className="font-bold text-[#071d49] mb-3 text-sm uppercase tracking-wide">Price</h3>
+            <label className="flex items-center space-x-2 text-sm mb-2 text-slate-600">
               <input
                 type="radio"
                 name="price"
+                className="accent-[#ffd100]"
                 checked={priceFilter === ""}
                 onChange={() => setPriceFilter("")}
               />
               <span>All</span>
             </label>
-            <label className="flex items-center space-x-2 text-sm mb-1">
+            <label className="flex items-center space-x-2 text-sm mb-2 text-slate-600">
               <input
                 type="radio"
                 name="price"
+                className="accent-[#ffd100]"
                 checked={priceFilter === "free"}
                 onChange={() => setPriceFilter("free")}
               />
               <span>Free</span>
             </label>
-            <label className="flex items-center space-x-2 text-sm mb-1">
+            <label className="flex items-center space-x-2 text-sm mb-2 text-slate-600">
               <input
                 type="radio"
                 name="price"
+                className="accent-[#ffd100]"
                 checked={priceFilter === "paid"}
                 onChange={() => setPriceFilter("paid")}
               />
@@ -238,12 +246,13 @@ const CoursesPage = () => {
 
           {/* Review */}
           <div className="mb-6">
-            <h3 className="font-bold mb-2">Review</h3>
+            <h3 className="font-bold text-[#071d49] mb-3 text-sm uppercase tracking-wide">Review</h3>
             {[5, 4, 3, 2, 1].map((stars) => (
-              <label key={stars} className="flex items-center space-x-2 text-sm mb-1">
+              <label key={stars} className="flex items-center space-x-2 text-sm mb-2 text-slate-600">
                 <input
                   type="radio"
                   name="rating"
+                  className="accent-[#ffd100]"
                   checked={ratingFilter === stars}
                   onChange={() => setRatingFilter(stars)}
                 />
@@ -253,12 +262,13 @@ const CoursesPage = () => {
           </div>
 
           {/* Level */}
-          <div className="mb-6">
-            <h3 className="font-bold mb-2">Level</h3>
+          <div>
+            <h3 className="font-bold text-[#071d49] mb-3 text-sm uppercase tracking-wide">Level</h3>
             {levels.map((level) => (
-              <label key={level} className="flex items-center space-x-2 text-sm mb-1">
+              <label key={level} className="flex items-center space-x-2 text-sm mb-2 text-slate-600">
                 <input
                   type="checkbox"
+                  className="accent-[#ffd100]"
                   checked={levelFilter.includes(level)}
                   onChange={() =>
                     toggleCheckbox(level, setLevelFilter, levelFilter)
@@ -268,7 +278,7 @@ const CoursesPage = () => {
               </label>
             ))}
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );

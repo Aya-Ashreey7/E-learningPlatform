@@ -2,65 +2,41 @@ import React from "react";
 import { FaCalendarAlt, FaBook, FaUsers, FaGlobe } from "react-icons/fa";
 import { motion } from "framer-motion";
 
+const stats = [
+  { icon: FaCalendarAlt, value: "8+", label: "Years in Operation" },
+  { icon: FaBook, value: "90+", label: "Courses" },
+  { icon: FaUsers, value: "10K+", label: "Active Students" },
+  { icon: FaGlobe, value: "82+", label: "Student Base Countries" },
+];
+
 const StatsSection = () => {
   return (
-    <section className="bg-[#071d49] py-6 px-4 md:px-6">
-      <div className="max-w-7xl mx-auto grid gap-4 sm:grid-cols-2 lg:grid-cols-4 text-white">
-        {/* Years in Operation */}
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <div className="flex items-center justify-center text-3xl mb-2">
-            <FaCalendarAlt className="mr-2" />
-          </div>
-          <div className="text-4xl font-bold">8+</div>
-          <div className="text-sm mt-1">Years in Operation</div>
-        </motion.div>
-
-        {/* Programs */}
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-        >
-          <div className="flex items-center justify-center text-3xl mb-2">
-            <FaBook className="mr-2" />
-          </div>
-          <div className="text-4xl font-bold">90+</div>
-          <div className="text-sm mt-1">Courses</div>
-        </motion.div>
-
-        {/* Active Students */}
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-        >
-          <div className="flex items-center justify-center text-3xl mb-2">
-            <FaUsers className="mr-2" />
-          </div>
-          <div className="text-4xl font-bold">10K+</div>
-          <div className="text-sm mt-1">Active Students</div>
-        </motion.div>
-
-        {/* Student Base Countries */}
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.6 }}
-        >
-          <div className="flex items-center justify-center text-3xl mb-2">
-            <FaGlobe className="mr-2" />
-          </div>
-          <div className="text-4xl font-bold">82+</div>
-          <div className="text-sm mt-1">Student Base Countries</div>
-        </motion.div>
+    <section className="relative -mt-8 md:-mt-12 z-20 px-4 md:px-6">
+      <div className="max-w-7xl mx-auto rounded-2xl md:rounded-3xl bg-white border border-[rgba(7,29,73,0.08)] shadow-[0_20px_50px_rgba(7,29,73,0.12)] py-8 px-4 md:px-8">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                key={stat.label}
+                className="text-center px-2"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+              >
+                <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#071d49] text-[#ffd100]">
+                  <Icon size={20} />
+                </div>
+                <div className="font-display text-3xl md:text-4xl font-bold text-[#071d49]">
+                  {stat.value}
+                </div>
+                <div className="text-sm mt-1 text-slate-500 font-medium">
+                  {stat.label}
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
