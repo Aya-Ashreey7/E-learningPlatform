@@ -1,5 +1,5 @@
 import NavbarDash from "../NavBarDash/NavbarDash";
-import SidebarDash from "../SidebarDash/sidebarDash";
+import SidebarDash from "../SidebarDash/SidebarDash";
 
 export default function DashboardLayout({ children }) {
   return (
